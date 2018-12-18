@@ -1,14 +1,5 @@
-//
-//  WeiuiRecylerComponent.h
-//  WeexTestDemo
-//
-//  Created by apple on 2018/6/5.
-//  Copyright © 2018年 TomQin. All rights reserved.
-//
+#import "WXScrollerComponent.h"
 
-#import "WXComponent.h"
-#import "WeexSDK.h"
-
-@interface WeiuiRecylerComponent : WXComponent
+@interface WeiuiRecylerComponent : WXScrollerComponent
 
 @end

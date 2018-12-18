@@ -46,10 +46,8 @@
             [self loadCaptchaView:newImage];
         } else {//如果本地没有
             //下载图片
-            [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:imageUrl] options:0 progress:^(NSInteger receivedSize, NSInteger expectedSize) {
-                //这里是处理下载进度的,好像没必要管他
-            } completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                if (image) {//下载完成后
+            [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:imageUrl] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
+                if (image) {
                     [self loadCaptchaView:image];
                 }
             }];

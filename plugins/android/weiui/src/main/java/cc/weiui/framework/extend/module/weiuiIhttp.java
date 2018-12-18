@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.bridge.JSCallback;
 
 import cc.weiui.framework.extend.integration.xutils.cache.LruDiskCache;
@@ -105,11 +106,53 @@ public class weiuiIhttp {
                             }
                         }
                     }else{
-                        params.addQueryStringParameter(key, String.valueOf(value));
+                        if (value instanceof JSONObject) {
+                            params = jsonParams(params, key, (JSONObject) value);
+                        }else if (value instanceof JSONArray) {
+                            params = arrayParams(params, key, (JSONArray) value);
+                        }else{
+                            params.addParameter(key, value);
+                        }
                     }
                 }
             }
             params.setMultipart(isMultipart);
+        }
+        return params;
+    }
+
+    private static RequestParams jsonParams(RequestParams params, String key, JSONObject json) {
+        if (json == null) {
+            return params;
+        }
+        for (Map.Entry<String, Object> entry : json.entrySet()) {
+            String newKey = key + "[" + entry.getKey() + "]";
+            Object newValue = entry.getValue();
+            if (newValue instanceof JSONObject) {
+                params = jsonParams(params, newKey, (JSONObject) newValue);
+            }else if (newValue instanceof JSONArray) {
+                params = arrayParams(params, newKey, (JSONArray) newValue);
+            }else{
+                params.addParameter(newKey, newValue);
+            }
+        }
+        return params;
+    }
+
+    private static RequestParams arrayParams(RequestParams params, String key, JSONArray json) {
+        if (json == null) {
+            return params;
+        }
+        for (int i = 0; i < json.size(); i++) {
+            String newKey = key + "[]";
+            Object newValue = json.get(i);
+            if (newValue instanceof JSONObject) {
+                params = jsonParams(params, newKey, (JSONObject) newValue);
+            }else if (newValue instanceof JSONArray) {
+                params = arrayParams(params, newKey, (JSONArray) newValue);
+            }else{
+                params.addParameter(newKey, newValue);
+            }
         }
         return params;
     }

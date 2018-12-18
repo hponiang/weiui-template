@@ -62,7 +62,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -289,11 +289,507 @@ process.umask = function() { return 0; };
 "use strict";
 
 
-var _vue = __webpack_require__(3);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); }
+
+var global = {
+    isNullOrUndefined: function isNullOrUndefined(obj) {
+        return typeof obj === "undefined" || obj === null;
+    },
+    isFunction: function isFunction(obj) {
+        return global.isNullOrUndefined(obj) ? false : typeof obj === "function";
+    },
+    isObject: function isObject(obj) {
+        return global.isNullOrUndefined(obj) ? false : (typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object";
+    },
+    likeArray: function likeArray(obj) {
+        return global.isNullOrUndefined(obj) ? false : typeof obj.length === 'number';
+    },
+    isJson: function isJson(obj) {
+        return global.isObject(obj) && !global.likeArray(obj);
+    },
+    getObject: function getObject(obj, keys) {
+        var object = obj;
+        if (global.count(obj) > 0 && global.count(keys) > 0) {
+            var arr = keys.replace(/,/g, "|").replace(/\./g, "|").split("|");
+            global.each(arr, function (index, key) {
+                if (typeof object[key] !== "undefined") {
+                    object = object[key];
+                }
+            });
+        }
+        return object;
+    },
+
+
+    /**
+     * 遍历数组、对象
+     * @param elements
+     * @param callback
+     * @returns {*}
+     */
+    each: function each(elements, callback) {
+        var i = void 0,
+            key = void 0;
+        if (global.likeArray(elements)) {
+            if (typeof elements.length === "number") {
+                for (i = 0; i < elements.length; i++) {
+                    if (callback.call(elements[i], i, elements[i]) === false) return elements;
+                }
+            }
+        } else {
+            for (key in elements) {
+                if (!elements.hasOwnProperty(key)) continue;
+                if (callback.call(elements[key], key, elements[key]) === false) return elements;
+            }
+        }
+
+        return elements;
+    },
+
+
+    /**
+     * 获取数组最后一个值
+     * @param array
+     * @returns {*}
+     */
+    last: function last(array) {
+        var str = false;
+        if ((typeof array === "undefined" ? "undefined" : _typeof(array)) === 'object' && array.length > 0) {
+            str = array[array.length - 1];
+        }
+        return str;
+    },
+
+
+    /**
+     * 删除数组最后一个值
+     * @param array
+     * @returns {Array}
+     */
+    delLast: function delLast(array) {
+        var newArray = [];
+        if ((typeof array === "undefined" ? "undefined" : _typeof(array)) === 'object' && array.length > 0) {
+            global.each(array, function (index, item) {
+                if (index < array.length - 1) {
+                    newArray.push(item);
+                }
+            });
+        }
+        return newArray;
+    },
+
+
+    /**
+     * 字符串是否包含
+     * @param string
+     * @param find
+     * @returns {boolean}
+     */
+    strExists: function strExists(string, find) {
+        string += "";
+        find += "";
+        return string.indexOf(find) !== -1;
+    },
+
+
+    /**
+     * 字符串是否左边包含
+     * @param string
+     * @param find
+     * @returns {boolean}
+     */
+    leftExists: function leftExists(string, find) {
+        string += "";
+        find += "";
+        return string.substring(0, find.length) === find;
+    },
+
+
+    /**
+     * 字符串是否右边包含
+     * @param string
+     * @param find
+     * @returns {boolean}
+     */
+    rightExists: function rightExists(string, find) {
+        string += "";
+        find += "";
+        return string.substring(string.length - find.length) === find;
+    },
+
+
+    /**
+     * 取字符串中间
+     * @param string
+     * @param start
+     * @param end
+     * @returns {*}
+     */
+    getMiddle: function getMiddle(string, start, end) {
+        string += "";
+        if (global.ishave(start) && global.strExists(string, start)) {
+            string = string.substring(string.indexOf(start) + start.length);
+        }
+        if (global.ishave(end) && global.strExists(string, end)) {
+            string = string.substring(0, string.indexOf(end));
+        }
+        return string;
+    },
+
+
+    /**
+     * 截取字符串
+     * @param string
+     * @param start
+     * @param end
+     * @returns {string}
+     */
+    subString: function subString(string, start, end) {
+        string += "";
+        if (!global.ishave(end)) {
+            end = string.length;
+        }
+        return string.substring(start, end);
+    },
+
+
+    /**
+     * 随机字符
+     * @param len
+     * @returns {string}
+     */
+    randomString: function randomString(len) {
+        len = len || 32;
+        var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678oOLl9gqVvUuI1';
+        var maxPos = $chars.length;
+        var pwd = '';
+        for (var i = 0; i < len; i++) {
+            pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+        }
+        return pwd;
+    },
+
+
+    /**
+     * 判断是否有
+     * @param set
+     * @returns {boolean}
+     */
+    ishave: function ishave(set) {
+        return !!(set !== null && set !== "null" && set !== undefined && set !== "undefined" && set);
+    },
+
+
+    /**
+     * 补零
+     * @param str
+     * @param length
+     * @param after
+     * @returns {*}
+     */
+    zeroFill: function zeroFill(str, length, after) {
+        str += "";
+        if (str.length >= length) {
+            return str;
+        }
+        var _str = '',
+            _ret = '';
+        for (var i = 0; i < length; i++) {
+            _str += '0';
+        }
+        if (after || typeof after === 'undefined') {
+            _ret = (_str + "" + str).substr(length * -1);
+        } else {
+            _ret = (str + "" + _str).substr(0, length);
+        }
+        return _ret;
+    },
+
+
+    /**
+     * 时间戳转时间格式
+     * @param format
+     * @param v
+     * @returns {string}
+     */
+    formatDate: function formatDate(format, v) {
+        if (format === '') {
+            format = 'Y-m-d H:i:s';
+        }
+        if (typeof v === 'undefined') {
+            v = new Date().getTime();
+        } else if (/^(-)?\d{1,10}$/.test(v)) {
+            v = v * 1000;
+        } else if (/^(-)?\d{1,13}$/.test(v)) {
+            v = v * 1000;
+        } else if (/^(-)?\d{1,14}$/.test(v)) {
+            v = v * 100;
+        } else if (/^(-)?\d{1,15}$/.test(v)) {
+            v = v * 10;
+        } else if (/^(-)?\d{1,16}$/.test(v)) {
+            v = v * 1;
+        } else {
+            return v;
+        }
+        var dateObj = new Date(v);
+        if (parseInt(dateObj.getFullYear()) + "" === "NaN") {
+            return v;
+        }
+        //
+        format = format.replace(/Y/g, dateObj.getFullYear());
+        format = format.replace(/m/g, global.zeroFill(dateObj.getMonth() + 1, 2));
+        format = format.replace(/d/g, global.zeroFill(dateObj.getDate(), 2));
+        format = format.replace(/H/g, global.zeroFill(dateObj.getHours(), 2));
+        format = format.replace(/i/g, global.zeroFill(dateObj.getMinutes(), 2));
+        format = format.replace(/s/g, global.zeroFill(dateObj.getSeconds(), 2));
+        return format;
+    },
+
+
+    /**
+     * 检测手机号码格式
+     * @param str
+     * @returns {boolean}
+     */
+    isMobile: function isMobile(str) {
+        return (/^1(3|4|5|7|8)\d{9}$/.test(str)
+        );
+    },
+
+
+    /**
+     * 手机号码中间换成****
+     * @param phone
+     * @returns {string}
+     */
+    formatMobile: function formatMobile(phone) {
+        if (global.count(phone) === 0) {
+            return "";
+        }
+        return phone.substring(0, 3) + "****" + phone.substring(phone.length - 4);
+    },
+
+
+    /**
+     * 克隆对象
+     * @param myObj
+     * @returns {*}
+     */
+    clone: function clone(myObj) {
+        if ((typeof myObj === "undefined" ? "undefined" : _typeof(myObj)) !== 'object') return myObj;
+        if (myObj === null) return myObj;
+        //
+        if (global.likeArray(myObj)) {
+            var _myObj = _toArray(myObj),
+                myNewObj = _myObj.slice(0);
+
+            return myNewObj;
+        } else {
+            var _myNewObj = _objectWithoutProperties(myObj, []);
+
+            return _myNewObj;
+        }
+    },
+
+
+    /**
+     * 统计数组或对象长度
+     * @param obj
+     * @returns {number}
+     */
+    count: function count(obj) {
+        try {
+            if (typeof obj === "undefined") {
+                return 0;
+            }
+            if (typeof obj === "number") {
+                obj += "";
+            }
+            if (typeof obj.length === 'number') {
+                return obj.length;
+            } else {
+                var i = 0,
+                    key = void 0;
+                for (key in obj) {
+                    i++;
+                }
+                return i;
+            }
+        } catch (e) {
+            return 0;
+        }
+    },
+
+
+    /**
+     * 相当于 intval
+     * @param str
+     * @param fixed
+     * @returns {number}
+     */
+    runNum: function runNum(str, fixed) {
+        var _s = Number(str);
+        if (_s + "" === "NaN") {
+            _s = 0;
+        }
+        if (/^[0-9]*[1-9][0-9]*$/.test(fixed)) {
+            _s = _s.toFixed(fixed);
+            var rs = _s.indexOf('.');
+            if (rs < 0) {
+                _s += ".";
+                for (var i = 0; i < fixed; i++) {
+                    _s += "0";
+                }
+            }
+        }
+        return _s;
+    },
+
+
+    /**
+     * 秒转化为天小时分秒字符串
+     * @param value
+     * @returns {string}
+     */
+    formatSeconds: function formatSeconds(value) {
+        var theTime = parseInt(value); // 秒
+        var theTime1 = 0; // 分
+        var theTime2 = 0; // 小时
+        if (theTime > 60) {
+            theTime1 = parseInt(theTime / 60);
+            theTime = parseInt(theTime % 60);
+            if (theTime1 > 60) {
+                theTime2 = parseInt(theTime1 / 60);
+                theTime1 = parseInt(theTime1 % 60);
+            }
+        }
+        var result = parseInt(theTime) + "秒";
+        if (theTime1 > 0) {
+            result = parseInt(theTime1) + "分" + result;
+        }
+        if (theTime2 > 0) {
+            result = parseInt(theTime2) + "小时" + result;
+        }
+        return result;
+    },
+
+
+    /**
+     * 将一个 JSON 字符串转换为对象（已try）
+     * @param str
+     * @param defaultVal
+     * @returns {*}
+     */
+    jsonParse: function jsonParse(str, defaultVal) {
+        try {
+            return JSON.parse(str);
+        } catch (e) {
+            return defaultVal ? defaultVal : {};
+        }
+    },
+
+
+    /**
+     * 将 JavaScript 值转换为 JSON 字符串（已try）
+     * @param json
+     * @param defaultVal
+     * @returns {string}
+     */
+    jsonStringify: function jsonStringify(json, defaultVal) {
+        try {
+            return JSON.stringify(json);
+        } catch (e) {
+            return defaultVal ? defaultVal : "";
+        }
+    },
+
+
+    /**
+     * 去除数组中的非数字项
+     * @param value
+     * @returns {Array}
+     */
+    removerNumberNaN: function removerNumberNaN() {
+        var array = [];
+
+        for (var _len = arguments.length, value = Array(_len), _key = 0; _key < _len; _key++) {
+            value[_key] = arguments[_key];
+        }
+
+        value.forEach(function (ele) {
+            if (!isNaN(Number(ele))) {
+                array.push(ele);
+            }
+        });
+        return array;
+    },
+
+
+    /**
+     * Math.max 过滤NaN
+     * @param value
+     * @returns {number}
+     */
+    runMax: function runMax() {
+        return Math.max.apply(Math, _toConsumableArray(global.removerNumberNaN.apply(global, arguments)));
+    },
+
+
+    /**
+     * Math.min 过滤NaN
+     * @param value
+     * @returns {number}
+     */
+    runMin: function runMin() {
+        return Math.min.apply(Math, _toConsumableArray(global.removerNumberNaN.apply(global, arguments)));
+    },
+
+
+    /**
+     * 链接字符串
+     * @param value 第一个参数为连接符
+     * @returns {string}
+     */
+    stringConnect: function stringConnect() {
+        var s = null;
+        var text = "";
+
+        for (var _len2 = arguments.length, value = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+            value[_key2] = arguments[_key2];
+        }
+
+        value.forEach(function (val) {
+            if (s === null) {
+                s = val;
+            } else if (val) {
+                if (val && text) text += s;
+                text += val;
+            }
+        });
+        return text;
+    }
+};
+
+module.exports = global;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _weexVueRender = __webpack_require__(6);
+var _weexVueRender = __webpack_require__(7);
 
 var _weexVueRender2 = _interopRequireDefault(_weexVueRender);
 
@@ -301,11 +797,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _weexVueRender2.default.init(_vue2.default);
 
-var App = __webpack_require__(7);
+var App = __webpack_require__(8);
 new _vue2.default(_vue2.default.util.extend({ el: '#root' }, App));
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8343,10 +8839,10 @@ if (inBrowser) {
 
 /* harmony default export */ __webpack_exports__["default"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(1), __webpack_require__(0), __webpack_require__(4).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(1), __webpack_require__(0), __webpack_require__(5).setImmediate))
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -8402,7 +8898,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(5);
+__webpack_require__(6);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -8416,7 +8912,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -8609,7 +9105,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0), __webpack_require__(1)))
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8617,7 +9113,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-console.log('START WEEX VUE RENDER: 1.0.28, Build 2018-07-31 17:46.');
+console.log('START WEEX VUE RENDER: 1.0.31, Build 2018-09-17 14:43.');
 
 (function (global, factory) {
   ( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory() :  true ? !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
@@ -11746,7 +12242,7 @@ console.log('START WEEX VUE RENDER: 1.0.28, Build 2018-07-31 17:46.');
     scrollableTypes: ['scroller', 'list', 'waterfall'],
     gestureEvents: ['panstart', 'panmove', 'panend', 'swipe', 'longpress', 'tap'],
     // these components should not bind events with .native.
-    weexBuiltInComponents: ['div', 'container', 'text', 'image', 'img', 'cell', 'a'],
+    weexBuiltInComponents: ['div', 'container', 'text', 'image', 'gif', 'img', 'cell', 'a'],
     bindingStyleNamesForPx2Rem: allStyles
   };
 
@@ -12593,7 +13089,7 @@ console.log('START WEEX VUE RENDER: 1.0.28, Build 2018-07-31 17:46.');
     var osVersion = envInfo.os.version.val;
     var env = {
       platform: 'Web',
-      weexVersion: '1.0.28',
+      weexVersion: '1.0.31',
       userAgent: navigator.userAgent,
       appName: browserName,
       appVersion: browserVersion,
@@ -12710,7 +13206,7 @@ console.log('START WEEX VUE RENDER: 1.0.28, Build 2018-07-31 17:46.');
         method = method && method.replace(/^\./, '');
         switch (type) {
           case 'component':
-            return typeof this._components[mod] !== 'undefined';
+            return typeof this._components[mod] !== 'undefined' || config.weexBuiltInComponents.indexOf(mod) >= 0;
           case 'module':
             var module = weexModules[mod];
             return module && method ? !!module[method] : !!module;
@@ -12719,6 +13215,19 @@ console.log('START WEEX VUE RENDER: 1.0.28, Build 2018-07-31 17:46.');
         console.warn("[vue-render] invalid argument for weex.support: " + feature);
         return null;
       }
+    },
+
+    supports: function supports() {
+      return this.support.apply(this, arguments);
+    },
+
+    isRegisteredModule: function isRegisteredModule(moduleName, methodName) {
+      var feature = methodName ? moduleName + "." + methodName : moduleName;
+      return this.support('@module/' + feature);
+    },
+
+    isRegisteredComponent: function isRegisteredComponent(componentName) {
+      return this.support('@component/' + componentName);
     },
 
     /**
@@ -12952,7 +13461,7 @@ console.log('START WEEX VUE RENDER: 1.0.28, Build 2018-07-31 17:46.');
 
   // should share with precompiler.
   var metaMap = {
-    figure: ['img', 'image', 'figure'],
+    figure: ['img', 'image', 'gif', 'figure'],
     p: ['text', 'p'],
     div: ['container', 'div'],
     section: ['cell']
@@ -13198,7 +13707,7 @@ console.log('START WEEX VUE RENDER: 1.0.28, Build 2018-07-31 17:46.');
       attrs = data.attrs = {};
     }
     attrs['weex-type'] = tag;
-    if (tag === 'image') {
+    if (tag === 'image' || tag === 'gif') {
       var src = attrs.src;
       var resize = attrs.resize;
       if (src) {
@@ -15227,7 +15736,7 @@ console.log('START WEEX VUE RENDER: 1.0.28, Build 2018-07-31 17:46.');
             return children;
           }
           return children.filter(function (vnode) {
-            return vnode.componentOptions && vnode.componentOptions.tag !== 'loading-indicator';
+            return !(vnode.componentOptions && vnode.componentOptions.tag === 'loading-indicator');
           });
         }
       },
@@ -15346,7 +15855,7 @@ console.log('START WEEX VUE RENDER: 1.0.28, Build 2018-07-31 17:46.');
             return children;
           }
           return children.filter(function (vnode) {
-            return vnode.componentOptions && vnode.componentOptions.tag !== 'loading-indicator';
+            return !(vnode.componentOptions && vnode.componentOptions.tag === 'loading-indicator');
           });
         }
       },
@@ -19214,19 +19723,19 @@ console.log('START WEEX VUE RENDER: 1.0.28, Build 2018-07-31 17:46.');
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(8)
+  __webpack_require__(9)
 }
-var Component = __webpack_require__(13)(
+var Component = __webpack_require__(14)(
   /* script */
-  __webpack_require__(14),
+  __webpack_require__(15),
   /* template */
-  __webpack_require__(16),
+  __webpack_require__(17),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -19258,17 +19767,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(9);
+var content = __webpack_require__(10);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(11)("30b5e236", content, false, {});
+var update = __webpack_require__(12)("30b5e236", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -19284,10 +19793,10 @@ if(false) {
 }
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(10)(false);
+exports = module.exports = __webpack_require__(11)(false);
 // imports
 
 
@@ -19298,7 +19807,7 @@ exports.push([module.i, "\n.app[data-v-dad4f304] {\n    flex: 1;\n}\n.navbar[dat
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 /*
@@ -19380,7 +19889,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -19399,7 +19908,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   ) }
 }
 
-var listToStyles = __webpack_require__(12)
+var listToStyles = __webpack_require__(13)
 
 /*
 type StyleObject = {
@@ -19608,7 +20117,7 @@ function applyToTag (styleElement, obj) {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 /**
@@ -19641,7 +20150,7 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 /* globals __VUE_SSR_CONTEXT__ */
@@ -19738,7 +20247,7 @@ module.exports = function normalizeComponent (
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19748,9 +20257,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _global = __webpack_require__(15);
+var _global = __webpack_require__(2);
 
-var weiui = weex.requireModule('weiui'); //
+var _app = __webpack_require__(16);
+
+//
 //
 //
 //
@@ -19962,7 +20473,7 @@ var weiui = weex.requireModule('weiui'); //
 //
 //
 
-var jshome = 'http://weiui.cc/dist/';
+var weiui = weex.requireModule('weiui');
 
 exports.default = {
     data: function data() {
@@ -19971,131 +20482,146 @@ exports.default = {
                 title: '轮播控件',
                 title_en: 'weiui_banner',
                 icon: 'easel',
-                url: jshome + 'component_banner.js'
+                url: _app.jshome + 'component_banner.js'
             }, {
                 title: '常用按钮',
                 title_en: 'weiui_button',
                 icon: 'android-checkbox-blank',
-                url: jshome + 'component_button.js'
+                url: _app.jshome + 'component_button.js'
             }, {
                 title: '网格容器',
                 title_en: 'weiui_grid',
                 icon: 'grid',
-                url: jshome + 'component_grid.js'
+                url: _app.jshome + 'component_grid.js'
             }, {
                 title: '字体图标',
                 title_en: 'weiui_icon',
                 icon: 'ionic',
-                url: jshome + 'component_icon.js'
+                url: _app.jshome + 'component_icon.js'
             }, {
                 title: '跑马文字',
                 title_en: 'weiui_marquee',
                 icon: 'code-working',
-                url: jshome + 'component_marquee.js'
+                url: _app.jshome + 'component_marquee.js'
             }, {
                 title: '导航栏',
                 title_en: 'weiui_navbar',
                 icon: 'navicon',
-                url: jshome + 'component_navbar.js'
+                url: _app.jshome + 'component_navbar.js'
             }, {
                 title: '列表容器',
-                title_en: 'weiui_recyler',
+                title_en: 'weiui_list',
                 icon: 'ios-list 90%',
-                url: jshome + 'component_recyler.js'
+                url: _app.jshome + 'component_list.js'
             }, {
                 title: '滚动文字',
                 title_en: 'weiui_scroll_text',
                 icon: 'more',
-                url: jshome + 'component_scroll_text.js'
+                url: _app.jshome + 'component_scroll_text.js'
             }, {
                 title: '侧边栏',
                 title_en: 'weiui_side_panel',
                 icon: 'ios-box',
-                url: jshome + 'component_side_panel.js'
+                url: _app.jshome + 'component_side_panel.js'
             }, {
                 title: '标签页面',
                 title_en: 'weiui_tabbar',
                 icon: 'filing',
-                url: jshome + 'component_tabbar.js'
+                url: _app.jshome + 'component_tabbar.js'
             }],
 
             module: [{
                 title: '页面功能',
                 title_en: 'newPage',
                 icon: 'ios-book-outline 96%',
-                url: jshome + 'module_page.js'
+                url: _app.jshome + 'module_page.js'
             }, {
                 title: '系统信息',
                 title_en: 'system',
                 icon: 'gear-a',
-                url: jshome + 'module_system.js'
+                url: _app.jshome + 'module_system.js'
             }, {
                 title: '数据缓存',
                 title_en: 'caches',
                 icon: 'soup-can-outline',
-                url: jshome + 'module_caches.js'
+                url: _app.jshome + 'module_caches.js'
             }, {
                 title: '单位转换',
                 title_en: 'weex px',
                 icon: 'ios-calculator',
-                url: jshome + 'module_weexpx.js'
+                url: _app.jshome + 'module_weexpx.js'
             }, {
                 title: '确认对话框',
                 title_en: 'alert',
                 icon: 'android-alert 90%',
-                url: jshome + 'module_alert.js'
+                url: _app.jshome + 'module_alert.js'
             }, {
                 title: '等待弹窗',
                 title_en: 'loading',
                 icon: 'load-d',
-                url: jshome + 'module_loading.js'
+                url: _app.jshome + 'module_loading.js'
             }, {
                 title: '验证弹窗',
                 title_en: 'captcha',
                 icon: 'ios-checkmark-outline',
-                url: jshome + 'module_captcha.js'
+                url: _app.jshome + 'module_captcha.js'
             }, {
                 title: '二维码扫描',
                 title_en: 'scaner',
                 icon: 'tb-scan',
-                url: jshome + 'module_scaner.js'
+                url: _app.jshome + 'module_scaner.js'
             }, {
                 title: '跨域异步请求',
                 title_en: 'ajax',
                 icon: 'pull-request',
-                url: jshome + 'module_ajax.js'
+                url: _app.jshome + 'module_ajax.js'
             }, {
                 title: '剪切板',
                 title_en: 'clipboard',
                 icon: 'ios-copy-outline',
-                url: jshome + 'module_plate.js'
+                url: _app.jshome + 'module_plate.js'
             }, {
                 title: '提示消息',
                 title_en: 'toast',
                 icon: 'ios-barcode-outline',
-                url: jshome + 'module_toast.js'
+                url: _app.jshome + 'module_toast.js'
             }, {
                 title: '广告弹窗',
                 title_en: 'adDialog',
                 icon: 'social-buffer-outline',
-                url: jshome + 'module_ad_dialog.js'
+                url: _app.jshome + 'module_ad_dialog.js'
             }, {
-                title: '更多拓展模块',
-                title_en: 'expandModule',
-                icon: 'more',
-                url: jshome + 'index_expand.js'
-            }],
-
-            third_module: [{
                 title: '城市选择器',
                 title_en: 'citypicker',
                 icon: 'android-pin',
-                url: jshome + 'third_citypicker.js'
+                url: _app.jshome + 'third_citypicker.js'
             }, {
                 title: '图片选择器',
                 title_en: 'pictureSelector',
                 icon: 'ios-camera-outline',
-                url: jshome + 'third_picture.js'
+                url: _app.jshome + 'third_picture.js'
+            }, {
+                title: '更多拓展模块',
+                title_en: 'expandModule',
+                icon: 'more',
+                url: _app.jshome + 'index_expand.js'
+            }],
+
+            third_module: [{
+                title: '融云通信模块',
+                title_en: 'rongcloud',
+                icon: 'tb-community',
+                url: 'rongcloud'
+            }, {
+                title: '友盟推送模块',
+                title_en: 'umeng',
+                icon: 'android-send',
+                url: 'umeng'
+            }, {
+                title: '第三方支付',
+                title_en: 'pay',
+                icon: 'tb-sponsor',
+                url: 'pay'
             }],
 
             about_lists: [{
@@ -20176,10 +20702,10 @@ exports.default = {
             });
         },
         openWeb: function openWeb(url) {
-            weiui.openPage({
-                url: url,
-                pageType: 'web'
-            });
+            (0, _app.openViewUrl)(url);
+        },
+        openThird: function openThird(url) {
+            (0, _app.openViewCode)("module/third/" + url);
         },
         openAuto: function openAuto(url) {
             weiui.openPage({
@@ -20191,429 +20717,46 @@ exports.default = {
 };
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _global = __webpack_require__(2);
 
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+var weiui = weex.requireModule('weiui');
 
-function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); }
+var app = {
 
-var global = {
-    isFunction: function isFunction(value) {
-        return typeof value === "function";
+    jshome: 'http://weiui.cc/dist/',
+
+    openViewCode: function openViewCode(str) {
+        app.openViewUrl("http://weiui.cc/#/" + str);
     },
-    isObject: function isObject(obj) {
-        return obj === null ? false : (typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object";
-    },
-    likeArray: function likeArray(obj) {
-        return typeof obj.length === 'number';
-    },
-    getObject: function getObject(obj, keys) {
-        var object = obj;
-        if (global.count(obj) > 0 && global.count(keys) > 0) {
-            var arr = keys.replace(/,/g, "|").replace(/\./g, "|").split("|");
-            global.each(arr, function (index, key) {
-                if (typeof object[key] !== "undefined") {
-                    object = object[key];
-                }
-            });
-        }
-        return object;
-    },
-
-
-    /**
-     * 遍历数组、对象
-     * @param elements
-     * @param callback
-     * @returns {*}
-     */
-    each: function each(elements, callback) {
-        var i = void 0,
-            key = void 0;
-        if (global.likeArray(elements)) {
-            if (typeof elements.length === "number") {
-                for (i = 0; i < elements.length; i++) {
-                    if (callback.call(elements[i], i, elements[i]) === false) return elements;
-                }
+    openViewUrl: function openViewUrl(url) {
+        weiui.openPage({
+            url: app.jshome + 'index_browser.js',
+            pageType: 'weex',
+            statusBarColor: "#3EB4FF",
+            params: {
+                title: "WEIUI",
+                url: url
             }
-        } else {
-            for (key in elements) {
-                if (!elements.hasOwnProperty(key)) continue;
-                if (callback.call(elements[key], key, elements[key]) === false) return elements;
-            }
-        }
-
-        return elements;
+        });
     },
-
-
-    /**
-     * 获取数组最后一个值
-     * @param array
-     * @returns {*}
-     */
-    last: function last(array) {
-        var str = false;
-        if ((typeof array === "undefined" ? "undefined" : _typeof(array)) === 'object' && array.length > 0) {
-            str = array[array.length - 1];
+    checkVersion: function checkVersion(compareVersion) {
+        if (typeof weiui.getVersion !== "function") {
+            return false;
         }
-        return str;
-    },
-
-
-    /**
-     * 删除数组最后一个值
-     * @param array
-     * @returns {Array}
-     */
-    delLast: function delLast(array) {
-        var newArray = [];
-        if ((typeof array === "undefined" ? "undefined" : _typeof(array)) === 'object' && array.length > 0) {
-            global.each(array, function (index, item) {
-                if (index < array.length - 1) {
-                    newArray.push(item);
-                }
-            });
-        }
-        return newArray;
-    },
-
-
-    /**
-     * 字符串是否包含
-     * @param string
-     * @param find
-     * @returns {boolean}
-     */
-    strExists: function strExists(string, find) {
-        string += "";
-        find += "";
-        return string.indexOf(find) !== -1;
-    },
-
-
-    /**
-     * 字符串是否左边包含
-     * @param string
-     * @param find
-     * @returns {boolean}
-     */
-    leftExists: function leftExists(string, find) {
-        string += "";
-        find += "";
-        return string.substring(0, find.length) === find;
-    },
-
-
-    /**
-     * 字符串是否右边包含
-     * @param string
-     * @param find
-     * @returns {boolean}
-     */
-    rightExists: function rightExists(string, find) {
-        string += "";
-        find += "";
-        return string.substring(string.length - find.length) === find;
-    },
-
-
-    /**
-     * 取字符串中间
-     * @param string
-     * @param start
-     * @param end
-     * @returns {*}
-     */
-    getMiddle: function getMiddle(string, start, end) {
-        string += "";
-        if (global.ishave(start) && global.strExists(string, start)) {
-            string = string.substring(string.indexOf(start) + start.length);
-        }
-        if (global.ishave(end) && global.strExists(string, end)) {
-            string = string.substring(0, string.indexOf(end));
-        }
-        return string;
-    },
-
-
-    /**
-     * 截取字符串
-     * @param string
-     * @param start
-     * @param end
-     * @returns {string}
-     */
-    subString: function subString(string, start, end) {
-        string += "";
-        if (!global.ishave(end)) {
-            end = string.length;
-        }
-        return string.substring(start, end);
-    },
-
-
-    /**
-     * 随机字符
-     * @param len
-     * @returns {string}
-     */
-    randomString: function randomString(len) {
-        len = len || 32;
-        var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678oOLl9gqVvUuI1';
-        var maxPos = $chars.length;
-        var pwd = '';
-        for (var i = 0; i < len; i++) {
-            pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
-        }
-        return pwd;
-    },
-
-
-    /**
-     * 判断是否有
-     * @param set
-     * @returns {boolean}
-     */
-    ishave: function ishave(set) {
-        return !!(set !== null && set !== "null" && set !== undefined && set !== "undefined" && set);
-    },
-
-
-    /**
-     * 补零
-     * @param str
-     * @param length
-     * @param after
-     * @returns {*}
-     */
-    zeroFill: function zeroFill(str, length, after) {
-        str += "";
-        if (str.length >= length) {
-            return str;
-        }
-        var _str = '',
-            _ret = '';
-        for (var i = 0; i < length; i++) {
-            _str += '0';
-        }
-        if (after || typeof after === 'undefined') {
-            _ret = (_str + "" + str).substr(length * -1);
-        } else {
-            _ret = (str + "" + _str).substr(0, length);
-        }
-        return _ret;
-    },
-
-
-    /**
-     * 时间戳转时间格式
-     * @param format
-     * @param v
-     * @returns {string}
-     */
-    formatDate: function formatDate(format, v) {
-        if (format === '') {
-            format = 'Y-m-d H:i:s';
-        }
-        if (typeof v === 'undefined') {
-            v = new Date().getTime();
-        } else if (/^(-)?\d{1,10}$/.test(v)) {
-            v = v * 1000;
-        } else if (/^(-)?\d{1,13}$/.test(v)) {
-            v = v * 1000;
-        } else if (/^(-)?\d{1,14}$/.test(v)) {
-            v = v * 100;
-        } else if (/^(-)?\d{1,15}$/.test(v)) {
-            v = v * 10;
-        } else if (/^(-)?\d{1,16}$/.test(v)) {
-            v = v * 1;
-        } else {
-            return v;
-        }
-        var dateObj = new Date(v);
-        if (parseInt(dateObj.getFullYear()) + "" === "NaN") {
-            return v;
-        }
-        //
-        format = format.replace(/Y/g, dateObj.getFullYear());
-        format = format.replace(/m/g, global.zeroFill(dateObj.getMonth() + 1, 2));
-        format = format.replace(/d/g, global.zeroFill(dateObj.getDate(), 2));
-        format = format.replace(/H/g, global.zeroFill(dateObj.getHours(), 2));
-        format = format.replace(/i/g, global.zeroFill(dateObj.getMinutes(), 2));
-        format = format.replace(/s/g, global.zeroFill(dateObj.getSeconds(), 2));
-        return format;
-    },
-
-
-    /**
-     * 检测手机号码格式
-     * @param str
-     * @returns {boolean}
-     */
-    isMobile: function isMobile(str) {
-        return (/^1(3|4|5|7|8)\d{9}$/.test(str)
-        );
-    },
-
-
-    /**
-     * 手机号码中间换成****
-     * @param phone
-     * @returns {string}
-     */
-    formatMobile: function formatMobile(phone) {
-        if (global.count(phone) === 0) {
-            return "";
-        }
-        return phone.substring(0, 3) + "****" + phone.substring(phone.length - 4);
-    },
-
-
-    /**
-     * 克隆对象
-     * @param myObj
-     * @returns {*}
-     */
-    clone: function clone(myObj) {
-        if ((typeof myObj === "undefined" ? "undefined" : _typeof(myObj)) !== 'object') return myObj;
-        if (myObj === null) return myObj;
-        //
-        if (global.likeArray(myObj)) {
-            var _myObj = _toArray(myObj),
-                myNewObj = _myObj.slice(0);
-
-            return myNewObj;
-        } else {
-            var _myNewObj = _objectWithoutProperties(myObj, []);
-
-            return _myNewObj;
-        }
-    },
-
-
-    /**
-     * 统计数组或对象长度
-     * @param obj
-     * @returns {number}
-     */
-    count: function count(obj) {
-        try {
-            if (typeof obj === "undefined") {
-                return 0;
-            }
-            if (typeof obj === "number") {
-                obj += "";
-            }
-            if (typeof obj.length === 'number') {
-                return obj.length;
-            } else {
-                var i = 0,
-                    key = void 0;
-                for (key in obj) {
-                    i++;
-                }
-                return i;
-            }
-        } catch (e) {
-            return 0;
-        }
-    },
-
-
-    /**
-     * 相当于 intval
-     * @param str
-     * @param fixed
-     * @returns {number}
-     */
-    runNum: function runNum(str, fixed) {
-        var _s = Number(str);
-        if (_s + "" === "NaN") {
-            _s = 0;
-        }
-        if (/^[0-9]*[1-9][0-9]*$/.test(fixed)) {
-            _s = _s.toFixed(fixed);
-            var rs = _s.indexOf('.');
-            if (rs < 0) {
-                _s += ".";
-                for (var i = 0; i < fixed; i++) {
-                    _s += "0";
-                }
-            }
-        }
-        return _s;
-    },
-
-
-    /**
-     * 秒转化为天小时分秒字符串
-     * @param value
-     * @returns {string}
-     */
-    formatSeconds: function formatSeconds(value) {
-        var theTime = parseInt(value); // 秒
-        var theTime1 = 0; // 分
-        var theTime2 = 0; // 小时
-        if (theTime > 60) {
-            theTime1 = parseInt(theTime / 60);
-            theTime = parseInt(theTime % 60);
-            if (theTime1 > 60) {
-                theTime2 = parseInt(theTime1 / 60);
-                theTime1 = parseInt(theTime1 % 60);
-            }
-        }
-        var result = parseInt(theTime) + "秒";
-        if (theTime1 > 0) {
-            result = parseInt(theTime1) + "分" + result;
-        }
-        if (theTime2 > 0) {
-            result = parseInt(theTime2) + "小时" + result;
-        }
-        return result;
-    },
-
-
-    /**
-     * 将一个 JSON 字符串转换为对象（已try）
-     * @param str
-     * @param defaultVal
-     * @returns {*}
-     */
-    jsonParse: function jsonParse(str, defaultVal) {
-        try {
-            return JSON.parse(str);
-        } catch (e) {
-            return defaultVal ? defaultVal : {};
-        }
-    },
-
-
-    /**
-     * 将 JavaScript 值转换为 JSON 字符串（已try）
-     * @param json
-     * @param defaultVal
-     * @returns {string}
-     */
-    jsonStringify: function jsonStringify(json, defaultVal) {
-        try {
-            return JSON.stringify(json);
-        } catch (e) {
-            return defaultVal ? defaultVal : "";
-        }
+        return (0, _global.runNum)(weiui.getVersion()) >= (0, _global.runNum)(compareVersion);
     }
 };
 
-module.exports = global;
+module.exports = app;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -20722,7 +20865,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       attrs: {
         "weex-type": "text"
       }
-    }, [_vm._v(_vm._s(item.title_en))]), _vm._v(" "), _c('weiui_icon', {
+    }, [_vm._v("<" + _vm._s(item.title_en) + ">")]), _vm._v(" "), _c('weiui_icon', {
       staticClass: "list-right-icon",
       attrs: {
         "weiui": {
@@ -20802,7 +20945,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "click": _vm.$stopOuterA,
         "weex$tap": function($event) {
           $event.stopPropagation();
-          _vm.openUrl(item.url)
+          _vm.openThird(item.url)
         }
       }
     }, [_c('div', {

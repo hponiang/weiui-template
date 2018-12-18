@@ -1,13 +1,13 @@
 <resources>
 
-    <string name="app_name">WeexWeiui</string>
+    <string name="app_name" translatable="false">WeexWeiui</string>
 
-    <string name="welcome_content">欢迎您的到来</string>
+    <string name="welcome_content" translatable="false">欢迎您的到来</string>
 
-    <string name="scan_qr_code">扫码</string>
+    <string name="scan_qr_code" translatable="false">扫码</string>
 
-    <string name="page_refresh">刷新</string>
+    <string name="page_refresh" translatable="false">刷新</string>
 
-    <string name="load_config">正在加载配置</string>
+    <string name="load_config" translatable="false">正在加载配置</string>
 
 </resources>

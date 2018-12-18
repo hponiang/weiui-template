@@ -1,15 +1,23 @@
 let global = {
 
-    isFunction(value) {
-        return typeof value === "function"
+    isNullOrUndefined(obj) {
+        return typeof obj === "undefined" || obj === null;
+    },
+
+    isFunction(obj) {
+        return global.isNullOrUndefined(obj) ? false : typeof obj === "function"
     },
 
     isObject(obj) {
-        return obj === null ? false : typeof obj === "object";
+        return global.isNullOrUndefined(obj) ? false : typeof obj === "object";
     },
 
     likeArray(obj) {
-        return typeof obj.length === 'number'
+        return global.isNullOrUndefined(obj) ? false : typeof obj.length === 'number';
+    },
+
+    isJson(obj) {
+        return global.isObject(obj) && !global.likeArray(obj);
     },
 
     getObject(obj, keys) {
@@ -380,6 +388,58 @@ let global = {
         }catch (e) {
             return defaultVal ? defaultVal : "";
         }
+    },
+
+    /**
+     * 去除数组中的非数字项
+     * @param value
+     * @returns {Array}
+     */
+    removerNumberNaN(...value) {
+        let array = [];
+        value.forEach((ele) => {
+            if (!isNaN(Number(ele))) {
+                array.push(ele);
+            }
+        });
+        return array;
+    },
+
+    /**
+     * Math.max 过滤NaN
+     * @param value
+     * @returns {number}
+     */
+    runMax(...value) {
+        return Math.max(...global.removerNumberNaN(...value));
+    },
+
+    /**
+     * Math.min 过滤NaN
+     * @param value
+     * @returns {number}
+     */
+    runMin(...value) {
+        return Math.min(...global.removerNumberNaN(...value));
+    },
+
+    /**
+     * 链接字符串
+     * @param value 第一个参数为连接符
+     * @returns {string}
+     */
+    stringConnect(...value) {
+        let s = null;
+        let text = "";
+        value.forEach((val) => {
+            if (s === null) {
+                s = val;
+            }else if (val){
+                if (val && text) text+= s;
+                text+= val;
+            }
+        });
+        return text;
     },
 };
 

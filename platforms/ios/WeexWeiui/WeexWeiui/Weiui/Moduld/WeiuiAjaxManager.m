@@ -50,13 +50,13 @@
     callback(result, YES);
     
     //处理data，防止参数键值嵌套
-    for (NSString *key in data.allKeys) {
-        if ([data[key] isKindOfClass:[NSDictionary class]]) {
-            NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data[key] options:NSJSONWritingPrettyPrinted error:nil];
-            NSString * str = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-            [data setValue:str forKey:key];
-        }
-    }
+    //for (NSString *key in data.allKeys) {
+    //    if ([data[key] isKindOfClass:[NSDictionary class]]) {
+    //        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data[key] options:NSJSONWritingPrettyPrinted error:nil];
+    //        NSString * str = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    //        [data setValue:str forKey:key];
+    //    }
+    //}
     
     //网络请求
     NSLog(@"ajax = %@", url);

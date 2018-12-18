@@ -12,7 +12,7 @@
         </weiui_navbar>
 
         <!--样式①-->
-        <weiui_navbar class="navbar2">
+        <weiui_navbar class="navbarb">
 
             <weiui_navbar_item type="back"></weiui_navbar_item>
 
@@ -23,7 +23,7 @@
         </weiui_navbar>
 
         <!--样式②-->
-        <weiui_navbar class="navbar2" :weiui="{titleType:'left'}">
+        <weiui_navbar class="navbarb" :weiui="{titleType:'left'}">
 
             <weiui_navbar_item type="back"></weiui_navbar_item>
 
@@ -34,7 +34,7 @@
         </weiui_navbar>
 
         <!--样式③-->
-        <weiui_navbar class="navbar2">
+        <weiui_navbar class="navbarb">
 
             <weiui_navbar_item type="back"></weiui_navbar_item>
 
@@ -49,7 +49,7 @@
         </weiui_navbar>
 
         <!--样式④-->
-        <weiui_navbar class="navbar2">
+        <weiui_navbar class="navbarc">
 
             <weiui_navbar_item type="left">
                 <weiui_icon content="navicon-round" class="icon"></weiui_icon>
@@ -66,7 +66,7 @@
         </weiui_navbar>
 
         <!--样式⑤-->
-        <weiui_navbar class="navbar2">
+        <weiui_navbar class="navbarb">
 
             <!--返回按钮-->
             <weiui_navbar_item type="back"></weiui_navbar_item>
@@ -114,9 +114,17 @@
         color: #ffffff;
     }
 
-    .navbar2 {
+    .navbarb {
         width: 750px;
+        height: 100px;
         margin-top: 50px;
+    }
+
+    .navbarc {
+        width: 750px;
+        height: 100px;
+        margin-top: 50px;
+        background-color: #FF5001;
     }
 
     .nav-title {

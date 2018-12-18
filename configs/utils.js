@@ -1,4 +1,5 @@
 const path = require('path');
+const notifier = require('node-notifier');
 const config = require('./config');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const packageConfig = require('../package.json');
@@ -68,8 +69,6 @@ exports.styleLoaders = function (options) {
 };
 
 exports.createNotifierCallback = () => {
-    const notifier = require('node-notifier');
-
     return (severity, errors) => {
         if (severity !== 'error') return;
 
@@ -100,6 +99,33 @@ let getQueryString = (search, name) => {
     let r = search.match(reg);
     if (r != null) return (r[2]);
     return "";
+};
+
+/**
+ * 复制src其他资源到dist
+ */
+exports.copySrcToDist = (cover) => {
+    let copyJsEvent = (originDir, newDir) => {
+        let lists = fs.readdirSync(originDir);
+        lists.forEach((item) => {
+            let originPath = originDir + "/" + item;
+            let newPath = newDir + "/" + item;
+            fs.stat(originPath, (err, stats) => {
+                if (typeof stats === 'object') {
+                    if (stats.isFile()) {
+                        if (/(\.(png|jpe?g|gif)$|^((?!font).)*\.svg$)/.test(originPath)) {
+                            if (cover || !fs.existsSync(newPath)) {
+                                fsEx.copy(originPath, newPath);
+                            }
+                        }
+                    } else if (stats.isDirectory()) {
+                        copyJsEvent(originPath, newPath)
+                    }
+                }
+            });
+        });
+    };
+    copyJsEvent(helper.rootNode('src'), helper.rootNode('dist'));
 };
 
 /**
@@ -219,15 +245,17 @@ exports.syncFolderEvent = (host, port, socketPort) => {
                 (client.ws.readyState !== 2) && client.ws.send('RELOADPAGE')
             });
         }
-        setTimeout(() => {
-            let msg = '    ';
-            msg+= chalk.bgBlue.bold.black(`【WiFI真机同步】`);
-            msg+= chalk.bgBlue.black(`IP地址: `);
-            msg+= chalk.bgBlue.bold.black.underline(`${jsonData.socketHost}`);
-            msg+= chalk.bgBlue.black(`、端口号: `);
-            msg+= chalk.bgBlue.bold.black.underline(`${jsonData.socketPort}`);
-            console.log(msg);
-        }, 800);
+        notifier.notify({
+            title: 'WiFi真机同步',
+            message: jsonData.socketHost + ':' + jsonData.socketPort,
+            contentImage: path.join(__dirname, 'logo.png')
+        });
+    }else{
+        notifier.notify({
+            title: 'Weex Weiui',
+            message: "Build successful",
+            contentImage: path.join(__dirname, 'logo.png')
+        });
     }
 };
 

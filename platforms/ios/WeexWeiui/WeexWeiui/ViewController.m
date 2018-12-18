@@ -11,6 +11,7 @@
 #import "WeexSDKManager.h"
 #import "WXMainViewController.h"
 #import "WeiuiRongcloudManager.h"
+#import "WeiuiNewPageManager.h"
 #import "Config.h"
 #import "Cloud.h"
 
@@ -37,10 +38,10 @@ WXMainViewController *homeController;
             self.ready = YES;
             homeController = [[WXMainViewController alloc] init];
             homeController.url = bundleUrl;
-            homeController.pageName = [Config getHomeParams:@"params" defaultVal:@"FirstPage"];
+            homeController.pageName = [Config getHomeParams:@"params" defaultVal:@"firstPage"];
             homeController.pageType = [Config getHomeParams:@"pageType" defaultVal:@"weex"];
             homeController.params = [Config getHomeParams:@"params" defaultVal:@"{}"];
-            homeController.cache = [[Config getHomeParams:@"cache" defaultVal:@"1000"] intValue];
+            homeController.cache = [[Config getHomeParams:@"cache" defaultVal:@"0"] intValue];
             homeController.loading = [[Config getHomeParams:@"loading" defaultVal:@"true"] isEqualToString:@"true"] ? YES : NO;
             homeController.isDisSwipeBack = YES;
             homeController.statusBarType = [Config getHomeParams:@"statusBarType" defaultVal:@"normal"];
@@ -53,6 +54,7 @@ WXMainViewController *homeController;
                 }
             };
             [[UIApplication sharedApplication] delegate].window.rootViewController =  [[WXRootViewController alloc] initWithRootViewController:homeController];
+            [[WeiuiNewPageManager sharedIntstance] setPageData:homeController.pageName vc:homeController];
         });
     });
 }

@@ -119,6 +119,7 @@ const webConfig = webpackMerge(commonConfig[0], {
 
 webpack(webConfig, (err, stats) => {
     if (!err) {
+        utils.copySrcToDist(true);
         utils.syncFolderEvent();
     }
 });

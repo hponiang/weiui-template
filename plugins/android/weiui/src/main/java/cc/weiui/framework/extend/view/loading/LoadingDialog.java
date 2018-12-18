@@ -239,6 +239,8 @@ public class LoadingDialog extends weiuiDialog {
         try {
             super.show();
             return true;
+        }catch (RuntimeException ignored) {
+            return false;
         }catch (Exception ignored) {
             return false;
         }

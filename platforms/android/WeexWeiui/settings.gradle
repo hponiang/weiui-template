@@ -17,3 +17,6 @@ project (':weiui_rongim').projectDir = new File("../../../plugins/android/weiui_
 
 include ":weiui_citypicker"
 project (':weiui_citypicker').projectDir = new File("../../../plugins/android/weiui_citypicker")
+
+include ":weiui_pay"
+project (':weiui_pay').projectDir = new File("../../../plugins/android/weiui_pay")

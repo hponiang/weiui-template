@@ -1,0 +1,115 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:2:1-55:12
+INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:2:1-55:12
+INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:2:1-55:12
+INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:2:1-55:12
+INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:2:1-55:12
+INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:2:1-55:12
+INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:2:1-55:12
+	package
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:4:5-27
+		INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml
+		INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:2:1-55:12
+		INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml
+	xmlns:tools
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:3:5-51
+	android:versionCode
+		INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:2:1-55:12
+		INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:2:11-69
+supports-screens
+ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:6:5-11:39
+	android:largeScreens
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:8:9-36
+	android:smallScreens
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:11:9-36
+	android:normalScreens
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:9:9-37
+	android:resizeable
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:10:9-34
+	android:anyDensity
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:7:9-34
+application
+ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:13:5-53:19
+	android:supportsRtl
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:16:9-35
+	android:allowBackup
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:15:9-36
+	android:theme
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:17:9-40
+	tools:replace
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:14:9-58
+meta-data#CurrentEnvironment
+ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:19:9-22:21
+	android:value
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:21:13-33
+	android:name
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:20:13-46
+meta-data#PPPaySDK
+ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:24:9-26:36
+	android:value
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:26:13-33
+	android:name
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:25:13-36
+uses-library#org.simalliance.openmobileapi
+ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:28:9-30:39
+	android:required
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:30:13-37
+	android:name
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:29:13-57
+activity#com.unionpay.uppay.PayActivity
+ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:32:9-38:57
+	android:screenOrientation
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:35:13-49
+	android:label
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:34:13-45
+	android:excludeFromRecents
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:37:13-46
+	android:windowSoftInputMode
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:38:13-55
+	android:configChanges
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:36:13-63
+	android:name
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:33:13-58
+activity#com.unionpay.UPPayWapActivity
+ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:40:9-44:57
+	android:screenOrientation
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:43:13-49
+	android:windowSoftInputMode
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:44:13-55
+	android:configChanges
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:42:13-63
+	android:name
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:41:13-57
+activity#cn.xuanma.agou.wxapi.WXPayEntryActivity
+ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:46:9-51:75
+	android:launchMode
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:49:13-43
+	android:windowSoftInputMode
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:51:13-72
+	android:exported
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:48:13-36
+	android:theme
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:50:13-55
+	android:name
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml:47:13-67
+uses-sdk
+INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml
+INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml
+INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml
+INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml
+		INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml
+		ADDED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml
+		INJECTED from /Users/GAOYI/wwwroot/weiui/weiui-template/plugins/android/weiui_pay/src/main/AndroidManifest.xml

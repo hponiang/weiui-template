@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.dom.WXAttr;
-import com.taobao.weex.dom.WXDomObject;
+import com.taobao.weex.ui.action.BasicComponentData;
 import com.taobao.weex.ui.component.WXVContainer;
 
 import com.alibaba.fastjson.JSONObject;
@@ -15,8 +15,8 @@ import cc.weiui.framework.extend.module.weiuiParse;
 
 public class SidePanelMenu extends WXVContainer<SidePanelMenuView> {
 
-    public SidePanelMenu(WXSDKInstance instance, WXDomObject node, WXVContainer parent) {
-        super(instance, node, parent);
+    public SidePanelMenu(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
+        super(instance, parent, basicComponentData);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class SidePanelMenu extends WXVContainer<SidePanelMenuView> {
         SidePanelMenuView view = new SidePanelMenuView(context);
         if (getParent() instanceof SidePanel) {
             SidePanel panel = (SidePanel) getParent();
-            view.setName(getName(getDomObject().getAttrs()));
+            view.setName(getName(getAttrs()));
             view.setTag(panel.getMenuNum());
             view.setOnClickListener(panel.menuClick);
             view.setOnLongClickListener(panel.menuLongClick);

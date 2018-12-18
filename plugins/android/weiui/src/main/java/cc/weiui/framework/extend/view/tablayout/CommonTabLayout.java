@@ -848,7 +848,10 @@ public class CommonTabLayout extends FrameLayout implements ValueAnimator.Animat
         }
 
         View tabView = mTabsContainer.getChildAt(position);
-        MsgView tipView = (MsgView) tabView.findViewById(R.id.rtv_msg_tip);
+        if (tabView == null) {
+            return;
+        }
+        MsgView tipView = tabView.findViewById(R.id.rtv_msg_tip);
         if (tipView != null) {
             UnreadMsgUtils.show(tipView, num);
 
@@ -990,8 +993,9 @@ public class CommonTabLayout extends FrameLayout implements ValueAnimator.Animat
 
 
     public int dp2px(float dp) {
-        final float scale = mContext.getResources().getDisplayMetrics().density;
-        return (int) (dp * scale + 0.5f);
+        return (int) dp;
+        /*final float scale = mContext.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);*/
     }
 
     public int sp2px(float sp) {

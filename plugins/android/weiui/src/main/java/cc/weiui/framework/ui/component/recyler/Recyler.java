@@ -2,7 +2,6 @@ package cc.weiui.framework.ui.component.recyler;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -19,7 +18,8 @@ import com.alibaba.fastjson.JSONObject;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.annotation.JSMethod;
-import com.taobao.weex.dom.WXDomObject;
+import com.taobao.weex.dom.CSSShorthand;
+import com.taobao.weex.ui.action.BasicComponentData;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXVContainer;
 
@@ -61,8 +61,8 @@ public class Recyler extends WXVContainer<ViewGroup> implements SwipeRefreshLayo
     private Runnable listUpdateRunnable;
     private Handler mHandler = new Handler();
 
-    public Recyler(WXSDKInstance instance, WXDomObject dom, WXVContainer parent) {
-        super(instance, dom, parent);
+    public Recyler(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
+        super(instance, parent, basicComponentData);
     }
 
     @Override
@@ -76,12 +76,12 @@ public class Recyler extends WXVContainer<ViewGroup> implements SwipeRefreshLayo
             }
         };
         //
-        formatAttrs(getDomObject().getAttrs());
+        formatAttrs(getAttrs());
         if (isRefreshAuto) {
             setRefreshing(true);
         }
         //
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.READY)) {
+        if (getEvents().contains(weiuiConstants.Event.READY)) {
             fireEvent(weiuiConstants.Event.READY, null);
         }
         //
@@ -142,7 +142,8 @@ public class Recyler extends WXVContainer<ViewGroup> implements SwipeRefreshLayo
             lp.height = height;
         }
         if (lp instanceof ViewGroup.MarginLayoutParams) {
-            top = weiuiScreenUtils.weexPx2dp(getInstance(), child.getDomObject().getStyles().get("marginTop"), 0);
+            top = weiuiScreenUtils.weexDp2px(getInstance(), child.getMargin().get(CSSShorthand.EDGE.TOP));
+            top = weiuiScreenUtils.weexPx2dp(getInstance(), top, 0);
             ((ViewGroup.MarginLayoutParams) lp).setMargins(left, top, right, bottom);
         }
         return lp;
@@ -161,7 +162,7 @@ public class Recyler extends WXVContainer<ViewGroup> implements SwipeRefreshLayo
         isLoading = true;
         isRefreshing = true;
         v_swipeRefresh.setRefreshing(true);
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.REFRESH_LISTENER)) {
+        if (getEvents().contains(weiuiConstants.Event.REFRESH_LISTENER)) {
             Map<String, Object> data = new HashMap<>();
             data.put("realLastPosition", mAdapter.getRealLastPosition());
             data.put("lastVisibleItem", lastVisibleItem);
@@ -186,8 +187,8 @@ public class Recyler extends WXVContainer<ViewGroup> implements SwipeRefreshLayo
                 return true;
 
             case "row":
-                gridRow = weiuiParse.parseInt(val, 1);
-                mLayoutManager.setSpanCount(gridRow);
+                //gridRow = weiuiParse.parseInt(val, 1);
+                //mLayoutManager.setSpanCount(gridRow);
                 return true;
 
             case "pullTips":
@@ -221,7 +222,7 @@ public class Recyler extends WXVContainer<ViewGroup> implements SwipeRefreshLayo
         //
         v_swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
         v_swipeRefresh.setOnRefreshListener(this);
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.REFRESH_LISTENER)) {
+        if (getEvents().contains(weiuiConstants.Event.REFRESH_LISTENER)) {
             isSwipeRefresh = true;
             v_swipeRefresh.setEnabled(true);
         }else{
@@ -236,7 +237,7 @@ public class Recyler extends WXVContainer<ViewGroup> implements SwipeRefreshLayo
         v_recyler.setAdapter(mAdapter);
         v_recyler.setItemAnimator(new DefaultItemAnimator());
         itemDefaultAnimator(false);
-        v_recyler.addOnScrollListener((RecyclerView.OnScrollListener) new RecylerOnBottomScrollListener() {
+        v_recyler.addOnScrollListener(new RecylerOnBottomScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -248,7 +249,7 @@ public class Recyler extends WXVContainer<ViewGroup> implements SwipeRefreshLayo
                         loadData();
                     }
                 }
-                if (getDomObject().getEvents().contains(weiuiConstants.Event.SCROLL_STATE_CHANGED)) {
+                if (getEvents().contains(weiuiConstants.Event.SCROLL_STATE_CHANGED)) {
                     Map<String, Object> data = new HashMap<>();
                     data.put("x", recyclerView.computeHorizontalScrollOffset());
                     data.put("y", recyclerView.computeVerticalScrollOffset());
@@ -268,7 +269,7 @@ public class Recyler extends WXVContainer<ViewGroup> implements SwipeRefreshLayo
                     }
                     v_swipeRefresh.setEnabled(isFirst);
                 }
-                if (getDomObject().getEvents().contains(weiuiConstants.Event.SCROLLED)) {
+                if (getEvents().contains(weiuiConstants.Event.SCROLLED)) {
                     Map<String, Object> data = new HashMap<>();
                     data.put("x", recyclerView.computeHorizontalScrollOffset());
                     data.put("y", recyclerView.computeVerticalScrollOffset());
@@ -282,7 +283,7 @@ public class Recyler extends WXVContainer<ViewGroup> implements SwipeRefreshLayo
         mAdapter.setOnItemClickListener(new RecylerAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position) {
-                if (getDomObject().getEvents().contains(weiuiConstants.Event.ITEM_CLICK)) {
+                if (getEvents().contains(weiuiConstants.Event.ITEM_CLICK)) {
                     Map<String, Object> data = new HashMap<>();
                     data.put("position", position);
                     fireEvent(weiuiConstants.Event.ITEM_CLICK, data);
@@ -291,7 +292,7 @@ public class Recyler extends WXVContainer<ViewGroup> implements SwipeRefreshLayo
 
             @Override
             public void onLongClick(int position) {
-                if (getDomObject().getEvents().contains(weiuiConstants.Event.ITEM_LONG_CLICK)) {
+                if (getEvents().contains(weiuiConstants.Event.ITEM_LONG_CLICK)) {
                     Map<String, Object> data = new HashMap<>();
                     data.put("position", position);
                     fireEvent(weiuiConstants.Event.ITEM_LONG_CLICK, data);
@@ -332,7 +333,7 @@ public class Recyler extends WXVContainer<ViewGroup> implements SwipeRefreshLayo
     private void loadData() {
         isLoading = true;
         if (hasMore) {
-            if (getDomObject().getEvents().contains(weiuiConstants.Event.PULLLOAD_LISTENER)) {
+            if (getEvents().contains(weiuiConstants.Event.PULLLOAD_LISTENER)) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("realLastPosition", mAdapter.getRealLastPosition());
                 data.put("lastVisibleItem", lastVisibleItem);

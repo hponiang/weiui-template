@@ -2,7 +2,6 @@ package cc.weiui.framework.ui.component.banner;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -12,7 +11,8 @@ import android.widget.FrameLayout;
 import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.annotation.JSMethod;
-import com.taobao.weex.dom.WXDomObject;
+import com.taobao.weex.dom.CSSShorthand;
+import com.taobao.weex.ui.action.BasicComponentData;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXVContainer;
 
@@ -46,11 +46,8 @@ public class Banner extends WXVContainer<ViewGroup> {
 
     private Handler mHandler = new Handler();
 
-    public Banner(WXSDKInstance instance, WXDomObject dom, WXVContainer parent) {
-        super(instance, dom, parent);
-        if (Float.isNaN(dom.getStyleHeight())) {
-            dom.setStyleHeight(weiuiScreenUtils.weexPx2dp(getInstance(), 420));
-        }
+    public Banner(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
+        super(instance, parent, basicComponentData);
     }
 
     @Override
@@ -58,7 +55,7 @@ public class Banner extends WXVContainer<ViewGroup> {
         mView = ((Activity) context).getLayoutInflater().inflate(R.layout.layout_weiui_banner, null);
         initPagerView();
         //
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.READY)) {
+        if (getEvents().contains(weiuiConstants.Event.READY)) {
             fireEvent(weiuiConstants.Event.READY, null);
         }
         //
@@ -94,7 +91,8 @@ public class Banner extends WXVContainer<ViewGroup> {
             lp.height = height;
         }
         if (lp instanceof ViewGroup.MarginLayoutParams) {
-            top = weiuiScreenUtils.weexPx2dp(getInstance(), child.getDomObject().getStyles().get("marginTop"), 0);
+            top = weiuiScreenUtils.weexDp2px(getInstance(), child.getMargin().get(CSSShorthand.EDGE.TOP));
+            top = weiuiScreenUtils.weexPx2dp(getInstance(), top, 0);
             ((ViewGroup.MarginLayoutParams) lp).setMargins(left, top, right, bottom);
         }
         return lp;
@@ -171,7 +169,7 @@ public class Banner extends WXVContainer<ViewGroup> {
         v_banner.setOnBannerItemClickListener(new BannerLayout.OnBannerItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                if (getDomObject().getEvents().contains(weiuiConstants.Event.ITEM_CLICK)) {
+                if (getEvents().contains(weiuiConstants.Event.ITEM_CLICK)) {
                     Map<String, Object> data = new HashMap<>();
                     data.put("position", position);
                     fireEvent(weiuiConstants.Event.ITEM_CLICK, data);
@@ -180,7 +178,7 @@ public class Banner extends WXVContainer<ViewGroup> {
 
             @Override
             public void onLongItemClick(int position) {
-                if (getDomObject().getEvents().contains(weiuiConstants.Event.ITEM_LONG_CLICK)) {
+                if (getEvents().contains(weiuiConstants.Event.ITEM_LONG_CLICK)) {
                     Map<String, Object> data = new HashMap<>();
                     data.put("position", position);
                     fireEvent(weiuiConstants.Event.ITEM_LONG_CLICK, data);
@@ -302,7 +300,7 @@ public class Banner extends WXVContainer<ViewGroup> {
      */
     @JSMethod
     public void setSelectedIndicatorColor(String color) {
-        v_banner.setSelectedIndicatorColor(Color.parseColor(color));
+        v_banner.setSelectedIndicatorColor(weiuiParse.parseColor(color));
         notifyDataSetChanged(false);
     }
 
@@ -312,7 +310,7 @@ public class Banner extends WXVContainer<ViewGroup> {
      */
     @JSMethod
     public void setUnSelectedIndicatorColor(String color) {
-        v_banner.setUnSelectedIndicatorColor(Color.parseColor(color));
+        v_banner.setUnSelectedIndicatorColor(weiuiParse.parseColor(color));
         notifyDataSetChanged(false);
     }
 

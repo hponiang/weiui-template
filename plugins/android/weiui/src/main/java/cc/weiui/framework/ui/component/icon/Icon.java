@@ -2,7 +2,6 @@ package cc.weiui.framework.ui.component.icon;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -12,9 +11,8 @@ import com.alibaba.fastjson.JSONObject;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.annotation.JSMethod;
-import com.taobao.weex.dom.WXDomObject;
-import com.taobao.weex.dom.flex.CSSAlign;
-import com.taobao.weex.dom.flex.CSSJustify;
+import com.taobao.weex.common.Constants;
+import com.taobao.weex.ui.action.BasicComponentData;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXVContainer;
 
@@ -41,25 +39,10 @@ public class Icon extends WXComponent<IconView> {
 
     private int mIconClickColor;
 
-    public Icon(WXSDKInstance instance, WXDomObject dom, WXVContainer parent) {
-        super(instance, dom, parent);
-        initDom(dom);
-    }
-
-    public Icon(WXSDKInstance instance, WXDomObject dom, WXVContainer parent, int type) {
-        super(instance, dom, parent, type);
-        initDom(dom);
-    }
-
-    private void initDom(WXDomObject dom) {
-        dom.setJustifyContent(CSSJustify.CENTER);
-        dom.setAlignItems(CSSAlign.CENTER);
-        if (Float.isNaN(dom.getStyleWidth())) {
-            dom.setStyleWidth(weiuiScreenUtils.weexPx2dp(getInstance(), 50));
-        }
-        if (Float.isNaN(dom.getStyleHeight())) {
-            dom.setStyleHeight(weiuiScreenUtils.weexPx2dp(getInstance(), 50));
-        }
+    public Icon(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
+        super(instance, parent, basicComponentData);
+        updateNativeStyle(Constants.Name.JUSTIFY_CONTENT, "center");
+        updateNativeStyle(Constants.Name.ALIGN_ITEMS, "center");
     }
 
     @Override
@@ -67,7 +50,7 @@ public class Icon extends WXComponent<IconView> {
         mIconView = new IconView(context);
         appleStyleAfterCreated();
         //
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.READY)) {
+        if (getEvents().contains(weiuiConstants.Event.READY)) {
             fireEvent(weiuiConstants.Event.READY, null);
         }
         //
@@ -162,7 +145,7 @@ public class Icon extends WXComponent<IconView> {
         if (var == null) {
             return;
         }
-        mIconColor = Color.parseColor(var);
+        mIconColor = weiuiParse.parseColor(var);
         mIconView.setTextColor(mIconColor);
     }
 
@@ -175,7 +158,7 @@ public class Icon extends WXComponent<IconView> {
         if (var == null) {
             return;
         }
-        int color = Color.parseColor(var);
+        int color = weiuiParse.parseColor(var);
         if (mIconClickColor == 0) {
             mIconView.setClickable(true);
             mIconView.setFocusable(true);

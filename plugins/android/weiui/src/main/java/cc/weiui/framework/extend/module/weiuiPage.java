@@ -123,7 +123,7 @@ public class weiuiPage {
     }
 
     /**
-     * 关闭页面
+     * 关闭页面按pageName
      * @param name
      */
     public static void closeWin(String name) {
@@ -140,6 +140,22 @@ public class weiuiPage {
         }
         BGAKeyboardUtil.closeKeyboard(activity);
         activity.finish();
+    }
+
+    /**
+     * 关闭页面按activity
+     * @param activity
+     */
+    public static void closeActivity(Activity activity) {
+        if (activity == null) {
+            return;
+        }
+        if (activity instanceof PageActivity) {
+            closeWin(((PageActivity) activity).getPageInfo().getPageName());
+        }else{
+            BGAKeyboardUtil.closeKeyboard(activity);
+            activity.finish();
+        }
     }
 
     /**

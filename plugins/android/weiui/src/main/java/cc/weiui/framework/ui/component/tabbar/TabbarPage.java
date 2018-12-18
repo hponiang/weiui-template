@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.alibaba.fastjson.JSONObject;
 
 import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.dom.WXDomObject;
+import com.taobao.weex.ui.action.BasicComponentData;
 import com.taobao.weex.ui.component.WXVContainer;
 
 import java.util.HashMap;
@@ -26,15 +26,15 @@ public class TabbarPage extends WXVContainer<TabbarPageView> {
 
     private TabbarPageView mView;
 
-    public TabbarPage(WXSDKInstance instance, WXDomObject node, WXVContainer parent) {
-        super(instance, node, parent);
+    public TabbarPage(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
+        super(instance, parent, basicComponentData);
     }
 
     @Override
     protected TabbarPageView initComponentHostView(@NonNull Context context) {
         if (getParent() instanceof Tabbar) {
             mView = new TabbarPageView(context);
-            formatAttrs(getDomObject().getAttrs());
+            formatAttrs(getAttrs());
             return mView;
         }
         return null;

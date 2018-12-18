@@ -12,7 +12,7 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <AVFoundation/AVFoundation.h>
 #import "ZLShowMultimedia.h"
-#import "ImagePreviewViewController.h"
+#import "KSPhotoBrowser.h"
 
 @interface WeiuiPictureSelectorModule ()<TZImagePickerControllerDelegate,UIActionSheetDelegate,UIImagePickerControllerDelegate,UIAlertViewDelegate,UINavigationControllerDelegate>
 
@@ -637,28 +637,35 @@ WX_EXPORT_METHOD(@selector(deleteCache))
 
 - (void)picturePreview:(NSInteger)index paths:(NSArray*)paths callback:(WXModuleKeepAliveCallback)callback
 {
-    NSMutableArray *list = [NSMutableArray arrayWithCapacity:5];
+    NSMutableArray *items = @[].mutableCopy;
     for (id dic in paths) {
+        NSString * path = nil;
         if ([dic isKindOfClass:[NSDictionary class]]) {
             if (dic[@"path"]) {
-                [list addObject:dic[@"path"]];
+                path = dic[@"path"];
             }
         } else if ([dic isKindOfClass:[NSString class]]) {
-            [list addObject:dic];
+            path = dic;
+        }
+        if (path != nil) {
+            NSString *url = [path stringByReplacingOccurrencesOfString:@"bmiddle" withString:@"large"];
+            KSPhotoItem *item = nil;
+            if ([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"] || [url hasPrefix:@"ftp://"]) {
+                item = [KSPhotoItem itemWithSourceView:nil imageUrl:[NSURL URLWithString:url]];
+            }else{
+                item = [KSPhotoItem itemWithSourceView:nil image:[UIImage imageNamed:url]];
+            }
+            [items addObject:item];
         }
     }
-    
-    ImagePreviewViewController *vc = [[ImagePreviewViewController alloc] init];
-    vc.index = index;
-    vc.paths = list;
-    vc.isAddDelete = callback ? YES : NO;
-    vc.deleteBlock = ^(NSInteger dix) {
-        if (callback) {
-            callback(@{@"position":@(dix)}, YES);
-        }
-    };
-    [[[DeviceUtil getTopviewControler] navigationController] pushViewController:vc
-                                                                    animated:YES];
+    KSPhotoBrowser *browser = [KSPhotoBrowser browserWithPhotoItems:items selectedIndex:index];
+    browser.dismissalStyle = KSPhotoBrowserInteractiveDismissalStyleScale;
+    browser.backgroundStyle = KSPhotoBrowserBackgroundStyleBlack;
+    browser.pageindicatorStyle = KSPhotoBrowserPageIndicatorStyleText;
+    browser.removeCallback = callback ? ^(NSInteger currentPage) {
+        callback(@{@"position":@(currentPage)}, YES);
+    } : 0;
+    [browser showFromViewController:[[DeviceUtil getTopviewControler] navigationController]];
 }
 
 - (void)videoPreview:(NSString*)path

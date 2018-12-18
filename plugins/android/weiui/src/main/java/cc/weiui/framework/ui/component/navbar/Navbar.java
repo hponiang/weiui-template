@@ -2,7 +2,6 @@ package cc.weiui.framework.ui.component.navbar;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.Gravity;
 import android.view.View;
@@ -16,8 +15,9 @@ import com.alibaba.fastjson.JSONObject;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.annotation.JSMethod;
-import com.taobao.weex.dom.WXDomObject;
-import com.taobao.weex.dom.flex.CSSFlexDirection;
+import com.taobao.weex.common.Constants;
+import com.taobao.weex.dom.CSSShorthand;
+import com.taobao.weex.ui.action.BasicComponentData;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXVContainer;
 
@@ -52,12 +52,9 @@ public class Navbar extends WXVContainer<ViewGroup> {
 
     private int leftBoxWidth, rightBoxWidth, maxBoxWidth;
 
-    public Navbar(WXSDKInstance instance, WXDomObject node, WXVContainer parent) {
-        super(instance, node, parent);
-        node.setFlexDirection(CSSFlexDirection.ROW);
-        if (Float.isNaN(node.getStyleHeight())) {
-            node.setStyleHeight(weiuiScreenUtils.weexPx2dp(getInstance(), 100));
-        }
+    public Navbar(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
+        super(instance, parent, basicComponentData);
+        updateNativeStyle(Constants.Name.FLEX_DIRECTION, "row");
     }
 
     @Override
@@ -65,7 +62,7 @@ public class Navbar extends WXVContainer<ViewGroup> {
         mView = ((Activity) context).getLayoutInflater().inflate(R.layout.layout_weiui_navbar, null);
         initPagerView();
         //
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.READY)) {
+        if (getEvents().contains(weiuiConstants.Event.READY)) {
             fireEvent(weiuiConstants.Event.READY, null);
         }
         //
@@ -82,7 +79,8 @@ public class Navbar extends WXVContainer<ViewGroup> {
             lp.height = height;
         }
         if (lp instanceof ViewGroup.MarginLayoutParams) {
-            left = weiuiScreenUtils.weexPx2dp(getInstance(), child.getDomObject().getStyles().get("marginLeft"), 0);
+            left = weiuiScreenUtils.weexDp2px(getInstance(), child.getMargin().get(CSSShorthand.EDGE.LEFT));
+            left = weiuiScreenUtils.weexPx2dp(getInstance(), left, 0);
             ((ViewGroup.MarginLayoutParams) lp).setMargins(left, top, right, bottom);
         }
         return lp;
@@ -140,7 +138,7 @@ public class Navbar extends WXVContainer<ViewGroup> {
                 return true;
 
             case "backgroundColor":
-                l_main.setBackgroundColor(Color.parseColor(weiuiParse.parseStr(val, "#3EB4FF")));
+                l_main.setBackgroundColor(weiuiParse.parseColor(weiuiParse.parseStr(val, "#3EB4FF")));
                 return true;
 
             default:
@@ -180,7 +178,7 @@ public class Navbar extends WXVContainer<ViewGroup> {
         l_main = mView.findViewById(R.id.l_main);
         v_back = mView.findViewById(R.id.v_back);
         v_back.setOnClickListener((View view)->{
-            if (getDomObject().getEvents().contains(weiuiConstants.Event.GO_BACK_OVERRIDE)) {
+            if (getEvents().contains(weiuiConstants.Event.GO_BACK_OVERRIDE)) {
                 fireEvent(weiuiConstants.Event.GO_BACK_OVERRIDE, null);
             }else{
                 if (getContext() instanceof PageActivity) {
@@ -189,7 +187,7 @@ public class Navbar extends WXVContainer<ViewGroup> {
                     ((Activity) getContext()).onBackPressed();
                 }
             }
-            if (getDomObject().getEvents().contains(weiuiConstants.Event.GO_BACK)) {
+            if (getEvents().contains(weiuiConstants.Event.GO_BACK)) {
                 fireEvent(weiuiConstants.Event.GO_BACK, null);
             }
         });

@@ -13,6 +13,7 @@
 #import "WXMainViewController.h"
 #import "WeiuiTabbarPageComponent.h"
 #import "MJRefresh.h"
+#import "SDWebImageDownloader.h"
 #import "UIButton+WebCache.h"
 
 #define TabItemBtnTag 1000
@@ -30,30 +31,31 @@
 @property (nonatomic, strong) NSString *textSelectColor;
 @property (nonatomic, strong) NSString *textUnselectColor;
 
-@property (nonatomic, assign) NSInteger ktabHeight;
-@property (nonatomic, assign) NSInteger tabPadding;
-@property (nonatomic, assign) NSInteger tabWidth;
+@property (nonatomic, assign) CGFloat ktabHeight;
+@property (nonatomic, assign) CGFloat tabPadding;
+@property (nonatomic, assign) CGFloat tabWidth;
 @property (nonatomic, assign) NSInteger indicatorStyle;
 @property (nonatomic, assign) NSInteger indicatorGravity;
-@property (nonatomic, assign) NSInteger indicatorHeight;
-@property (nonatomic, assign) NSInteger indicatorWidth;
+@property (nonatomic, assign) CGFloat indicatorHeight;
+@property (nonatomic, assign) CGFloat indicatorWidth;
 @property (nonatomic, assign) NSInteger indicatorCornerRadius;
 @property (nonatomic, assign) NSInteger indicatorAnimDuration;
 @property (nonatomic, assign) NSInteger underlineGravity;
-@property (nonatomic, assign) NSInteger underlineHeight;
-@property (nonatomic, assign) NSInteger dividerWidth;
-@property (nonatomic, assign) NSInteger dividerPadding;
+@property (nonatomic, assign) CGFloat underlineHeight;
+@property (nonatomic, assign) CGFloat dividerWidth;
+@property (nonatomic, assign) CGFloat dividerPadding;
 @property (nonatomic, assign) NSInteger textBold;
 @property (nonatomic, assign) NSInteger textSize;
 @property (nonatomic, assign) NSInteger fontSize;
 @property (nonatomic, assign) NSInteger iconGravity;
-@property (nonatomic, assign) NSInteger iconWidth;
-@property (nonatomic, assign) NSInteger iconHeight;
+@property (nonatomic, assign) CGFloat iconWidth;
+@property (nonatomic, assign) CGFloat iconHeight;
 @property (nonatomic, assign) NSInteger iconMargin;
 
 #warning ssss 无用参数
 @property (nonatomic, assign) NSInteger ksideLine;
 
+@property (nonatomic, assign) BOOL tabPageAnimated;
 @property (nonatomic, assign) BOOL tabSpaceEqual;
 @property (nonatomic, assign) BOOL indicatorAnimEnable;
 @property (nonatomic, assign) BOOL indicatorBounceEnable;
@@ -69,13 +71,13 @@
 @property (nonatomic, strong) NSMutableArray *tabPages;
 @property (nonatomic, assign) NSInteger selectedIndex;
 @property (nonatomic, assign) NSInteger lastSelectedIndex;//上次被选中的标签
-@property (nonatomic, assign) NSInteger reSelectedIndex;//标签被再次点击选择标记
 
 @property (nonatomic, strong) WXSDKInstance *tabInstance;
 @property (nonatomic, strong) NSMutableArray *tabNameList;
 @property (nonatomic, strong) NSMutableArray *childPageList;
 @property (nonatomic, strong) NSMutableArray *childComponentList;
 @property (nonatomic, strong) NSMutableDictionary *lifeTabPages;
+@property (nonatomic, assign) CGFloat calculatedHeight;
 
 @property (nonatomic, assign) BOOL isRefreshListener;
 
@@ -104,6 +106,7 @@ WX_EXPORT_METHOD(@selector(setTabIconVisible:))
 WX_EXPORT_METHOD(@selector(setTabIconWidth:))
 WX_EXPORT_METHOD(@selector(setTabIconHeight:))
 WX_EXPORT_METHOD(@selector(setSideline:))
+WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
 
 - (instancetype)initWithRef:(NSString *)ref type:(NSString *)type styles:(NSDictionary *)styles attributes:(NSDictionary *)attributes events:(NSArray *)events weexInstance:(WXSDKInstance *)weexInstance
 {
@@ -114,7 +117,6 @@ WX_EXPORT_METHOD(@selector(setSideline:))
         
         _selectedIndex = 0;
         _lastSelectedIndex = 0;
-        _reSelectedIndex = 0;
         
         _tabInstance = weexInstance;
         
@@ -145,6 +147,7 @@ WX_EXPORT_METHOD(@selector(setSideline:))
         _iconHeight = 0;
         _iconMargin = SCALE(10);
         _ksideLine = 1;
+        _tabPageAnimated = YES;
         _tabSpaceEqual = YES;
         _indicatorAnimEnable = YES;
         _indicatorBounceEnable = YES;
@@ -177,6 +180,14 @@ WX_EXPORT_METHOD(@selector(setSideline:))
     }
     
     return self;
+}
+
+- (void)dealloc
+{
+    for (id key in _lifeTabPages) {
+        WXMainViewController *vc = [_lifeTabPages objectForKey:key];
+        [vc removeFromParentViewController];
+    }
 }
 
 - (void)viewDidLoad
@@ -299,19 +310,21 @@ WX_EXPORT_METHOD(@selector(setSideline:))
     } else if ([key isEqualToString:@"textUnselectColor"]) {
         _textUnselectColor = [WXConvert NSString:value];
     } else if ([key isEqualToString:@"tabHeight"]) {
-        _ktabHeight = SCALE([WXConvert NSInteger:value]);
+        _ktabHeight = SCALEFLOAT([WXConvert CGFloat:value]);
     } else if ([key isEqualToString:@"tabPadding"]) {
-        _tabPadding = SCALE([WXConvert NSInteger:value]);
+        _tabPadding = SCALEFLOAT([WXConvert CGFloat:value]);
     } else if ([key isEqualToString:@"tabWidth"]) {
-        _tabWidth = SCALE([WXConvert NSInteger:value]);
+        _tabWidth = SCALEFLOAT([WXConvert CGFloat:value]);
+    } else if ([key isEqualToString:@"tabPageAnimated"]) {
+        _tabPageAnimated = [WXConvert BOOL:value];
     } else if ([key isEqualToString:@"indicatorStyle"]) {
         _indicatorStyle = [WXConvert NSInteger:value];
     } else if ([key isEqualToString:@"indicatorGravity"]) {
         _indicatorGravity = [WXConvert NSInteger:value];
     } else if ([key isEqualToString:@"indicatorHeight"]) {
-        _indicatorHeight = SCALE([WXConvert NSInteger:value]);
+        _indicatorHeight = SCALEFLOAT([WXConvert CGFloat:value]);
     } else if ([key isEqualToString:@"indicatorWidth"]) {
-        _indicatorWidth = SCALE([WXConvert NSInteger:value]);
+        _indicatorWidth = SCALEFLOAT([WXConvert CGFloat:value]);
     } else if ([key isEqualToString:@"indicatorCornerRadius"]) {
         _indicatorCornerRadius = [WXConvert NSInteger:value];
     } else if ([key isEqualToString:@"indicatorAnimDuration"]) {
@@ -319,11 +332,11 @@ WX_EXPORT_METHOD(@selector(setSideline:))
     } else if ([key isEqualToString:@"underlineGravity"]) {
         _underlineGravity = [WXConvert NSInteger:value];
     } else if ([key isEqualToString:@"underlineHeight"]) {
-        _underlineHeight = SCALE([WXConvert NSInteger:value]);
+        _underlineHeight = SCALEFLOAT([WXConvert CGFloat:value]);
     } else if ([key isEqualToString:@"dividerWidth"]) {
-        _dividerWidth = SCALE([WXConvert NSInteger:value]);
+        _dividerWidth = SCALEFLOAT([WXConvert CGFloat:value]);
     } else if ([key isEqualToString:@"dividerPadding"]) {
-        _dividerPadding = SCALE([WXConvert NSInteger:value]);
+        _dividerPadding = SCALEFLOAT([WXConvert CGFloat:value]);
     } else if ([key isEqualToString:@"textBold"]) {
         _textBold = [WXConvert NSInteger:value];
     } else if ([key isEqualToString:@"textSize"]) {
@@ -333,7 +346,7 @@ WX_EXPORT_METHOD(@selector(setSideline:))
     } else if ([key isEqualToString:@"iconGravity"]) {
         _iconGravity = [WXConvert NSInteger:value];
     } else if ([key isEqualToString:@"iconWidth"]) {
-        _iconWidth = SCALE([WXConvert NSInteger:value]);
+        _iconWidth = SCALEFLOAT([WXConvert CGFloat:value]);
     } else if ([key isEqualToString:@"iconHeight"]) {
         _iconHeight = [WXConvert NSInteger:value];
     } else if ([key isEqualToString:@"iconMargin"]) {
@@ -358,13 +371,12 @@ WX_EXPORT_METHOD(@selector(setSideline:))
 
 - (void)loadTabView
 {
-    NSLog(@"%f, %f", self.view.frame.size.width, self.view.frame.size.height);
     if ([_ktabType isEqualToString:@"bottom"]) {
-        self.bodyView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - _ktabHeight);
-        self.tabView.frame = CGRectMake(0, self.view.frame.size.height - _ktabHeight, self.view.frame.size.width, _ktabHeight);
+        self.bodyView.frame = CGRectMake(0, 0, self.calculatedFrame.size.width, self.calculatedFrame.size.height - _ktabHeight);
+        self.tabView.frame = CGRectMake(0, self.calculatedFrame.size.height - _ktabHeight, self.calculatedFrame.size.width, _ktabHeight);
     } else {
-        self.bodyView.frame = CGRectMake(0, _ktabHeight, self.view.frame.size.width, self.view.frame.size.height - _ktabHeight);
-        self.tabView.frame = CGRectMake(0, 0, self.view.frame.size.width, _ktabHeight);
+        self.bodyView.frame = CGRectMake(0, _ktabHeight, self.calculatedFrame.size.width, self.calculatedFrame.size.height - _ktabHeight);
+        self.tabView.frame = CGRectMake(0, 0, self.calculatedFrame.size.width, _ktabHeight);
     }
     
     self.tabView.backgroundColor = [WXConvert UIColor:_ktabBackgroundColor];
@@ -438,7 +450,7 @@ WX_EXPORT_METHOD(@selector(setSideline:))
                 if ([_ktabType isEqualToString:@"slidingTop"]) {
                     tabWidth = [title boundingRectWithSize:CGSizeMake(1000,30)options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:_textSize]}context:nil].size.width + 8 + _tabPadding*2;
                 } else {
-                    tabWidth = (self.view.frame.size.width - _tabPadding*2) / dataList.count;
+                    tabWidth = (self.calculatedFrame.size.width - _tabPadding*2) / dataList.count;
                 }
             }
             
@@ -456,7 +468,7 @@ WX_EXPORT_METHOD(@selector(setSideline:))
             
             //图片
             if ([unSelectedIcon hasPrefix:@"http"]) {
-                [SDWebImageManager.sharedManager downloadImageWithURL:[NSURL URLWithString:unSelectedIcon] options:SDWebImageRetryFailed progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:unSelectedIcon] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
                     if (image) {
                         WXPerformBlockOnMainThread(^{
                             [btn setImage:[self imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight)] forState:UIControlStateNormal];
@@ -468,7 +480,7 @@ WX_EXPORT_METHOD(@selector(setSideline:))
             }
             
             if ([selectedIcon hasPrefix:@"http"]) {
-                [SDWebImageManager.sharedManager downloadImageWithURL:[NSURL URLWithString:selectedIcon] options:SDWebImageRetryFailed progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:selectedIcon] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
                     if (image) {
                         WXPerformBlockOnMainThread(^{
                             [btn setImage:[self imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight)] forState:UIControlStateSelected];
@@ -516,13 +528,14 @@ WX_EXPORT_METHOD(@selector(setSideline:))
             }
             
             //消息数量
-            UILabel *msgLab = [[UILabel alloc] initWithFrame:CGRectMake((tabWidth + btn.imageView.frame.size.width)/2 - 5, 5, message >= 10 ? 20 : 15, 15)];
+            NSInteger labWitdh = message >= 100 ? 25 : message >= 10 ? 20 : 15;
+            UILabel *msgLab = [[UILabel alloc] initWithFrame:CGRectMake((tabWidth + btn.imageView.frame.size.width)/2 - 2, 5, labWitdh, 15)];
             msgLab.backgroundColor = [UIColor redColor];
             msgLab.font = [UIFont systemFontOfSize:10.f];
             msgLab.textAlignment = NSTextAlignmentCenter;
             msgLab.textColor = [UIColor whiteColor];
             msgLab.adjustsFontSizeToFitWidth = YES;
-            msgLab.text = [NSString stringWithFormat:@"%ld", message];
+            msgLab.text = message > 99 ? @"99+" : [NSString stringWithFormat:@"%ld", message];
             msgLab.layer.cornerRadius = 7.5f;
             msgLab.layer.masksToBounds = YES;
             msgLab.tag = TabItemMessageTag + i;
@@ -541,6 +554,14 @@ WX_EXPORT_METHOD(@selector(setSideline:))
         
         allWidth += _tabPadding;
         [_tabView setContentSize:CGSizeMake(allWidth, 0)];
+    }
+    
+    if (_calculatedHeight != self.calculatedFrame.size.height) {
+        _calculatedHeight = self.calculatedFrame.size.height;
+        for (int i = 0; i < _tabNameList.count; i++) {
+            UIScrollView *scoView = (UIScrollView*)[self.bodyView viewWithTag:TabBgScrollTag + i];
+            scoView.frame = CGRectMake(i * self.bodyView.frame.size.width, 0, self.bodyView.frame.size.width, self.bodyView.frame.size.height);
+        }
     }
 }
 
@@ -639,7 +660,7 @@ WX_EXPORT_METHOD(@selector(setSideline:))
 - (void)loadUnderLineView
 {
     CGFloat y = 0;
-    CGFloat lineHeight = _underlineHeight ? _underlineHeight : 1;
+    CGFloat lineHeight = _underlineHeight ? _underlineHeight : 0;
     if (_underlineGravity == 0) {
         //下方
         y = self.tabView.frame.origin.y + _ktabHeight - lineHeight;
@@ -661,7 +682,6 @@ WX_EXPORT_METHOD(@selector(setSideline:))
     
     return newImage;
 }
-
 
 - (void)loadTabPagesView
 {
@@ -771,9 +791,6 @@ WX_EXPORT_METHOD(@selector(setSideline:))
 //处理滚动或点击到当前页面再加载
 - (void)loadSelectedView
 {
-    //先处理生命周期
-    [self lifeCycleEvent];
-    
     //判断数据源,优先子组件
     NSMutableArray *dataList = [NSMutableArray arrayWithCapacity:5];
     
@@ -826,22 +843,22 @@ WX_EXPORT_METHOD(@selector(setSideline:))
 #pragma mark action
 - (void)tabbarClick:(UIButton*)sender
 {
-    [self fireEvent:@"tabSelect" params:@{@"position":@(_selectedIndex)}];
-
+    if (_selectedIndex == sender.tag - TabItemBtnTag) {
+        [self fireEvent:@"tabReselect" params:@{@"position":@(_selectedIndex)}];
+        return;
+    }
+    
     _lastSelectedIndex = _selectedIndex;
     _selectedIndex = sender.tag - TabItemBtnTag;
     
-    if (_selectedIndex == _reSelectedIndex) {
-        [self fireEvent:@"tabReselect" params:@{@"position":@(_selectedIndex)}];
-    }
-
-    _reSelectedIndex = _selectedIndex;
+    [self fireEvent:@"tabSelect" params:@{@"position":@(_selectedIndex)}];
     
     [self reloadIndicator];
     
+    [self lifeCycleEvent];
     [self loadSelectedView];
     
-    [self.bodyView setContentOffset:CGPointMake(_selectedIndex * self.bodyView.frame.size.width, 0) animated:YES];
+    [self.bodyView setContentOffset:CGPointMake(_selectedIndex * self.bodyView.frame.size.width, 0) animated:_tabPageAnimated];
 }
 
 #pragma mark scrollViewDelegate
@@ -857,12 +874,15 @@ WX_EXPORT_METHOD(@selector(setSideline:))
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     if (scrollView == self.bodyView) {
-        _lastSelectedIndex = _selectedIndex;
-        _selectedIndex = scrollView.contentOffset.x / scrollView.frame.size.width;
-
-        [self reloadIndicator];
-
-        [self loadSelectedView];
+        if (_selectedIndex != scrollView.contentOffset.x / scrollView.frame.size.width) {
+            _lastSelectedIndex = _selectedIndex;
+            _selectedIndex = scrollView.contentOffset.x / scrollView.frame.size.width;
+            
+            [self reloadIndicator];
+            
+            [self lifeCycleEvent];
+            [self loadSelectedView];
+        }
     }
 }
 
@@ -896,8 +916,10 @@ WX_EXPORT_METHOD(@selector(setSideline:))
         if (dic) {
             NSString *name = dic[@"tabName"];
             if ([name isEqualToString:tabName]) {
+                NSInteger labWitdh = num >= 100 ? 25 : num >= 10 ? 20 : 15;
                 UILabel *msgLab = (UILabel*)[_tabView viewWithTag:TabItemMessageTag + i];
-                msgLab.text = [NSString stringWithFormat:@"%ld", num];
+                msgLab.frame = CGRectMake(msgLab.frame.origin.x, msgLab.frame.origin.y, labWitdh, 15);
+                msgLab.text = num > 99 ? @"99+" : [NSString stringWithFormat:@"%ld", num];
                 msgLab.hidden = NO;
                 break;
             }
@@ -965,11 +987,14 @@ WX_EXPORT_METHOD(@selector(setSideline:))
         if (dic) {
             NSString *name = dic[@"tabName"];
             if ([name isEqualToString:tabName]) {
-                _lastSelectedIndex = _selectedIndex;
-                _selectedIndex = i;
-                [self.bodyView setContentOffset:CGPointMake(_selectedIndex * self.bodyView.frame.size.width, 0) animated:YES];
-                [self reloadIndicator];
-                [self loadSelectedView];
+                if (_selectedIndex != i) {
+                    _lastSelectedIndex = _selectedIndex;
+                    _selectedIndex = i;
+                    [self.bodyView setContentOffset:CGPointMake(_selectedIndex * self.bodyView.frame.size.width, 0) animated:_tabPageAnimated];
+                    [self reloadIndicator];
+                    [self lifeCycleEvent];
+                    [self loadSelectedView];
+                }
                 break;
             }
         }
@@ -1132,6 +1157,10 @@ WX_EXPORT_METHOD(@selector(setSideline:))
 {
     _ksideLine = sideLine;
     [self loadTabView];
+}
+- (void)setTabPageAnimated:(BOOL)isAnimated
+{
+    _tabPageAnimated = isAnimated;
 }
 
 

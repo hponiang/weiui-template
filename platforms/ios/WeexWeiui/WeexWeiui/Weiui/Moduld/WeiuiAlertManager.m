@@ -57,7 +57,9 @@
 
     UIAlertController *alertCtrl = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *confirmAction = [UIAlertAction actionWithTitle:button style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        callback(nil, NO);
+        if (callback != nil) {
+            callback(nil, NO);
+        }
     }];
     [alertCtrl addAction:confirmAction];
     [[DeviceUtil getTopviewControler] presentViewController:alertCtrl animated:YES completion:nil];
@@ -76,7 +78,7 @@
         title = params[@"title"] ? [WXConvert NSString:params[@"title"]] : @"";
         message = params[@"message"] ? [WXConvert NSString:params[@"message"]] : @"";
         cancelable = params[@"cancelable"] ? [WXConvert BOOL:params[@"cancelable"]] : YES;
-        buttons = params[@"buttons"];
+        if (params[@"buttons"]) buttons = params[@"buttons"];
     }
     
     UIAlertController *alertCtrl = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
@@ -103,15 +105,21 @@
         }
         
         UIAlertAction *action = [UIAlertAction actionWithTitle:title style:style handler:^(UIAlertAction * _Nonnull action) {
-            NSDictionary *res = @{@"status":@"click", @"position":@(i), @"title":title};
-            callback(res, YES);
+            if (callback != nil) {
+                NSDictionary *res = @{@"status":@"click", @"position":@(i), @"title":title};
+                callback(res, YES);
+            }
             
-            NSDictionary *res1 = @{@"status":@"cancel", @"position":@(i), @"title":title};
-            callback(res1, NO);
+            if (callback != nil) {
+                NSDictionary *res1 = @{@"status":@"cancel", @"position":@(i), @"title":title};
+                callback(res1, NO);
+            }
         }];
         [alertCtrl addAction:action];
-        NSDictionary *res2 = @{@"status":@"show", @"position":@(i), @"title":title};
-        callback(res2, YES);
+        if (callback != nil) {
+            NSDictionary *res2 = @{@"status":@"show", @"position":@(i), @"title":title};
+            callback(res2, YES);
+        }
     }
     
     [[DeviceUtil getTopviewControler] presentViewController:alertCtrl animated:YES completion:nil];
@@ -215,16 +223,20 @@
                 [data addObject:tf.text];
             }
             
-            NSDictionary *res = @{@"status":@"click", @"data":data, @"position":@(i), @"title":title};
-            callback(res, NO);
+            if (callback != nil) {
+                NSDictionary *res = @{@"status":@"click", @"data":data, @"position":@(i), @"title":title};
+                callback(res, NO);
+            }
             
             [ws.inputTextFieldList removeAllObjects];
             [ws.inputTextLengthList removeAllObjects];
         }];
         [alertCtrl addAction:action];
         
-        NSDictionary *res2 = @{@"status":@"show", @"data":@[], @"position":@(i), @"title":title};
-        callback(res2, YES);
+        if (callback != nil) {
+            NSDictionary *res2 = @{@"status":@"show", @"data":@[], @"position":@(i), @"title":title};
+            callback(res2, YES);
+        }
     }
     
     [[DeviceUtil getTopviewControler] presentViewController:alertCtrl animated:YES completion:nil];

@@ -63,6 +63,9 @@ public class weiuiConstants {
 
         //状态发生改变
         String STATE_CHANGED = "stateChanged";
+
+        //高度发生改变
+        String HEIGHT_CHANGED = "heightChanged";
     }
 
 }

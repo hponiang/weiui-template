@@ -28,7 +28,7 @@
 
 - (void)loadLoadingView
 {
-    self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.7];
+    self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.3];
     [self addTarget:self action:@selector(closeClick) forControlEvents:UIControlEventTouchUpInside];
     
     CGFloat width = 80, height = 0;

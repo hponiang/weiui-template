@@ -92,7 +92,7 @@ static UIImageView *welcomeView;
 {
     WeiuiStorageManager *storage = [WeiuiStorageManager sharedIntstance];
     if ([url hasPrefix:@"http"]) {
-        [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:url] options:0 progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+        [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:url] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
             if (finished) {
                 [storage setCachesString:@"welcome_image" value:[NSString stringWithFormat:@"%@", url] expired:0];
             }

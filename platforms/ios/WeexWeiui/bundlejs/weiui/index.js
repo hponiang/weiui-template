@@ -62,7 +62,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -72,637 +72,29 @@
 "use strict";
 
 
-var _index = __webpack_require__(1);
-
-var _index2 = _interopRequireDefault(_index);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_index2.default.el = '#root';
-new Vue(_index2.default);
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_exports__, __vue_options__
-var __vue_styles__ = []
-
-/* styles */
-__vue_styles__.push(__webpack_require__(2)
-)
-
-/* script */
-__vue_exports__ = __webpack_require__(3)
-
-/* template */
-var __vue_template__ = __webpack_require__(5)
-__vue_options__ = __vue_exports__ = __vue_exports__ || {}
-if (
-  typeof __vue_exports__.default === "object" ||
-  typeof __vue_exports__.default === "function"
-) {
-if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
-__vue_options__ = __vue_exports__ = __vue_exports__.default
-}
-if (typeof __vue_options__ === "function") {
-  __vue_options__ = __vue_options__.options
-}
-__vue_options__.__file = "/Users/GAOYI/wwwroot/weiui/weiui-template/src/index.vue"
-__vue_options__.render = __vue_template__.render
-__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-__vue_options__._scopeId = "data-v-2964abc9"
-__vue_options__.style = __vue_options__.style || {}
-__vue_styles__.forEach(function (module) {
-  for (var name in module) {
-    __vue_options__.style[name] = module[name]
-  }
-})
-if (typeof __register_static_styles__ === "function") {
-  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
-}
-
-module.exports = __vue_exports__
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  "app": {
-    "flex": 1
-  },
-  "navbar": {
-    "width": "750",
-    "height": "100"
-  },
-  "navbar-title": {
-    "fontSize": "32",
-    "color": "#ffffff"
-  },
-  "navbar-icon": {
-    "width": "100",
-    "height": "100",
-    "color": "#ffffff"
-  },
-  "list": {
-    "width": "750",
-    "flex": 1
-  },
-  "list-title-box": {
-    "flexDirection": "row",
-    "alignItems": "center"
-  },
-  "list-title": {
-    "paddingTop": "36",
-    "paddingRight": "24",
-    "paddingBottom": "24",
-    "paddingLeft": "24",
-    "fontSize": "28",
-    "color": "#757575"
-  },
-  "list-subtitle": {
-    "position": "absolute",
-    "right": "24",
-    "bottom": "24",
-    "fontSize": "24"
-  },
-  "list-item": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "height": "100",
-    "width": "750",
-    "paddingLeft": "20",
-    "paddingRight": "20",
-    "borderTopWidth": "1",
-    "borderTopColor": "#e8e8e8",
-    "borderTopStyle": "solid"
-  },
-  "list-item-left": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "flex-start",
-    "height": "100",
-    "flex": 1
-  },
-  "list-left-icon": {
-    "width": "60",
-    "height": "60",
-    "color": "#3EB4FF"
-  },
-  "list-left-title": {
-    "color": "#242424",
-    "paddingLeft": "12",
-    "width": "380",
-    "fontSize": "26",
-    "textOverflow": "ellipsis",
-    "lines": 1
-  },
-  "list-left-title-history": {
-    "color": "#242424",
-    "paddingLeft": "12",
-    "width": "600",
-    "fontSize": "26",
-    "textOverflow": "ellipsis",
-    "lines": 1
-  },
-  "list-right-title": {
-    "color": "#a2a2a2",
-    "paddingRight": "3",
-    "fontSize": "22",
-    "textOverflow": "ellipsis",
-    "lines": 1
-  },
-  "list-right-icon": {
-    "width": "40",
-    "height": "40",
-    "color": "#C9C9CE"
-  },
-  "list-item-right": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "flex-end",
-    "height": "100"
-  }
-}
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _global = __webpack_require__(4);
-
-var weiui = weex.requireModule('weiui'); //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-var jshome = 'http://weiui.cc/dist/';
-
-exports.default = {
-    data: function data() {
-        return {
-            components: [{
-                title: '轮播控件',
-                title_en: 'weiui_banner',
-                icon: 'easel',
-                url: jshome + 'component_banner.js'
-            }, {
-                title: '常用按钮',
-                title_en: 'weiui_button',
-                icon: 'android-checkbox-blank',
-                url: jshome + 'component_button.js'
-            }, {
-                title: '网格容器',
-                title_en: 'weiui_grid',
-                icon: 'grid',
-                url: jshome + 'component_grid.js'
-            }, {
-                title: '字体图标',
-                title_en: 'weiui_icon',
-                icon: 'ionic',
-                url: jshome + 'component_icon.js'
-            }, {
-                title: '跑马文字',
-                title_en: 'weiui_marquee',
-                icon: 'code-working',
-                url: jshome + 'component_marquee.js'
-            }, {
-                title: '导航栏',
-                title_en: 'weiui_navbar',
-                icon: 'navicon',
-                url: jshome + 'component_navbar.js'
-            }, {
-                title: '列表容器',
-                title_en: 'weiui_recyler',
-                icon: 'ios-list 90%',
-                url: jshome + 'component_recyler.js'
-            }, {
-                title: '滚动文字',
-                title_en: 'weiui_scroll_text',
-                icon: 'more',
-                url: jshome + 'component_scroll_text.js'
-            }, {
-                title: '侧边栏',
-                title_en: 'weiui_side_panel',
-                icon: 'ios-box',
-                url: jshome + 'component_side_panel.js'
-            }, {
-                title: '标签页面',
-                title_en: 'weiui_tabbar',
-                icon: 'filing',
-                url: jshome + 'component_tabbar.js'
-            }],
-
-            module: [{
-                title: '页面功能',
-                title_en: 'newPage',
-                icon: 'ios-book-outline 96%',
-                url: jshome + 'module_page.js'
-            }, {
-                title: '系统信息',
-                title_en: 'system',
-                icon: 'gear-a',
-                url: jshome + 'module_system.js'
-            }, {
-                title: '数据缓存',
-                title_en: 'caches',
-                icon: 'soup-can-outline',
-                url: jshome + 'module_caches.js'
-            }, {
-                title: '单位转换',
-                title_en: 'weex px',
-                icon: 'ios-calculator',
-                url: jshome + 'module_weexpx.js'
-            }, {
-                title: '确认对话框',
-                title_en: 'alert',
-                icon: 'android-alert 90%',
-                url: jshome + 'module_alert.js'
-            }, {
-                title: '等待弹窗',
-                title_en: 'loading',
-                icon: 'load-d',
-                url: jshome + 'module_loading.js'
-            }, {
-                title: '验证弹窗',
-                title_en: 'captcha',
-                icon: 'ios-checkmark-outline',
-                url: jshome + 'module_captcha.js'
-            }, {
-                title: '二维码扫描',
-                title_en: 'scaner',
-                icon: 'tb-scan',
-                url: jshome + 'module_scaner.js'
-            }, {
-                title: '跨域异步请求',
-                title_en: 'ajax',
-                icon: 'pull-request',
-                url: jshome + 'module_ajax.js'
-            }, {
-                title: '剪切板',
-                title_en: 'clipboard',
-                icon: 'ios-copy-outline',
-                url: jshome + 'module_plate.js'
-            }, {
-                title: '提示消息',
-                title_en: 'toast',
-                icon: 'ios-barcode-outline',
-                url: jshome + 'module_toast.js'
-            }, {
-                title: '广告弹窗',
-                title_en: 'adDialog',
-                icon: 'social-buffer-outline',
-                url: jshome + 'module_ad_dialog.js'
-            }, {
-                title: '更多拓展模块',
-                title_en: 'expandModule',
-                icon: 'more',
-                url: jshome + 'index_expand.js'
-            }],
-
-            third_module: [{
-                title: '城市选择器',
-                title_en: 'citypicker',
-                icon: 'android-pin',
-                url: jshome + 'third_citypicker.js'
-            }, {
-                title: '图片选择器',
-                title_en: 'pictureSelector',
-                icon: 'ios-camera-outline',
-                url: jshome + 'third_picture.js'
-            }],
-
-            about_lists: [{
-                title: '开发文档',
-                title_en: 'document',
-                icon: 'code-working',
-                url: 'http://weiui.cc'
-            }, {
-                title: '托管平台',
-                title_en: 'github',
-                icon: 'social-github-outline',
-                url: 'https://github.com/kuaifan/weiui'
-            }, {
-                title: '个人博客',
-                title_en: 'http://kuaifan.vip',
-                icon: 'social-rss-outline',
-                url: 'http://kuaifan.vip'
-            }, {
-                title: 'WEIUI版本',
-                title_en: weiui.getVersionName(),
-                icon: 'ios-information-outline',
-                url: 'http://weiui.cc'
-            }],
-
-            history: []
-        };
-    },
-    mounted: function mounted() {
-        this.history = (0, _global.jsonParse)(weiui.getCachesString("scaner", []), []);
-        //
-        weiui.setPageBackPressed(null, function () {
-            weiui.confirm({
-                title: "温馨提示",
-                message: "你确定要退出WEIUI吗？",
-                buttons: ["取消", "确定"]
-            }, function (result) {
-                if (result.status === "click" && result.title === "确定") {
-                    weiui.closePage(null);
-                }
-            });
-        });
-    },
-
-
-    methods: {
-        scaner: function scaner() {
-            var _this = this;
-
-            weiui.openScaner(null, function (res) {
-                if (res.status === "success") {
-                    _this.history.unshift(res.text);
-                    weiui.setCachesString("scaner", (0, _global.jsonStringify)(_this.history), 0);
-                    _this.openAuto(res.text);
-                }
-            });
-        },
-        refresh: function refresh() {
-            weiui.reloadPage();
-        },
-        clearHistory: function clearHistory() {
-            var _this2 = this;
-
-            weiui.confirm({
-                title: "删除提示",
-                message: "你确定要删除扫码记录吗？",
-                buttons: ["取消", "确定"]
-            }, function (result) {
-                if (result.status === "click" && result.title === "确定") {
-                    _this2.history = [];
-                    weiui.setCachesString("scaner", (0, _global.jsonStringify)(_this2.history), 0);
-                }
-            });
-        },
-        openUrl: function openUrl(url) {
-            weiui.openPage({
-                url: url,
-                pageType: 'weex'
-            });
-        },
-        openWeb: function openWeb(url) {
-            weiui.openPage({
-                url: url,
-                pageType: 'web'
-            });
-        },
-        openAuto: function openAuto(url) {
-            weiui.openPage({
-                url: url,
-                pageType: 'auto'
-            });
-        }
-    }
-};
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 function _toArray(arr) { return Array.isArray(arr) ? arr : Array.from(arr); }
 
 var global = {
-    isFunction: function isFunction(value) {
-        return typeof value === "function";
+    isNullOrUndefined: function isNullOrUndefined(obj) {
+        return typeof obj === "undefined" || obj === null;
+    },
+    isFunction: function isFunction(obj) {
+        return global.isNullOrUndefined(obj) ? false : typeof obj === "function";
     },
     isObject: function isObject(obj) {
-        return obj === null ? false : (typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object";
+        return global.isNullOrUndefined(obj) ? false : (typeof obj === "undefined" ? "undefined" : _typeof(obj)) === "object";
     },
     likeArray: function likeArray(obj) {
-        return typeof obj.length === 'number';
+        return global.isNullOrUndefined(obj) ? false : typeof obj.length === 'number';
+    },
+    isJson: function isJson(obj) {
+        return global.isObject(obj) && !global.likeArray(obj);
     },
     getObject: function getObject(obj, keys) {
         var object = obj;
@@ -1098,13 +490,751 @@ var global = {
         } catch (e) {
             return defaultVal ? defaultVal : "";
         }
+    },
+
+
+    /**
+     * 去除数组中的非数字项
+     * @param value
+     * @returns {Array}
+     */
+    removerNumberNaN: function removerNumberNaN() {
+        var array = [];
+
+        for (var _len = arguments.length, value = Array(_len), _key = 0; _key < _len; _key++) {
+            value[_key] = arguments[_key];
+        }
+
+        value.forEach(function (ele) {
+            if (!isNaN(Number(ele))) {
+                array.push(ele);
+            }
+        });
+        return array;
+    },
+
+
+    /**
+     * Math.max 过滤NaN
+     * @param value
+     * @returns {number}
+     */
+    runMax: function runMax() {
+        return Math.max.apply(Math, _toConsumableArray(global.removerNumberNaN.apply(global, arguments)));
+    },
+
+
+    /**
+     * Math.min 过滤NaN
+     * @param value
+     * @returns {number}
+     */
+    runMin: function runMin() {
+        return Math.min.apply(Math, _toConsumableArray(global.removerNumberNaN.apply(global, arguments)));
+    },
+
+
+    /**
+     * 链接字符串
+     * @param value 第一个参数为连接符
+     * @returns {string}
+     */
+    stringConnect: function stringConnect() {
+        var s = null;
+        var text = "";
+
+        for (var _len2 = arguments.length, value = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+            value[_key2] = arguments[_key2];
+        }
+
+        value.forEach(function (val) {
+            if (s === null) {
+                s = val;
+            } else if (val) {
+                if (val && text) text += s;
+                text += val;
+            }
+        });
+        return text;
     }
 };
 
 module.exports = global;
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _index = __webpack_require__(2);
+
+var _index2 = _interopRequireDefault(_index);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_index2.default.el = '#root';
+new Vue(_index2.default);
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_exports__, __vue_options__
+var __vue_styles__ = []
+
+/* styles */
+__vue_styles__.push(__webpack_require__(3)
+)
+
+/* script */
+__vue_exports__ = __webpack_require__(4)
+
+/* template */
+var __vue_template__ = __webpack_require__(6)
+__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+if (
+  typeof __vue_exports__.default === "object" ||
+  typeof __vue_exports__.default === "function"
+) {
+if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+__vue_options__ = __vue_exports__ = __vue_exports__.default
+}
+if (typeof __vue_options__ === "function") {
+  __vue_options__ = __vue_options__.options
+}
+__vue_options__.__file = "/Users/GAOYI/wwwroot/weiui/weiui-template/src/index.vue"
+__vue_options__.render = __vue_template__.render
+__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+__vue_options__._scopeId = "data-v-2964abc9"
+__vue_options__.style = __vue_options__.style || {}
+__vue_styles__.forEach(function (module) {
+  for (var name in module) {
+    __vue_options__.style[name] = module[name]
+  }
+})
+if (typeof __register_static_styles__ === "function") {
+  __register_static_styles__(__vue_options__._scopeId, __vue_styles__)
+}
+
+module.exports = __vue_exports__
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  "app": {
+    "flex": 1
+  },
+  "navbar": {
+    "width": "750",
+    "height": "100"
+  },
+  "navbar-title": {
+    "fontSize": "32",
+    "color": "#ffffff"
+  },
+  "navbar-icon": {
+    "width": "100",
+    "height": "100",
+    "color": "#ffffff"
+  },
+  "list": {
+    "width": "750",
+    "flex": 1
+  },
+  "list-title-box": {
+    "flexDirection": "row",
+    "alignItems": "center"
+  },
+  "list-title": {
+    "paddingTop": "36",
+    "paddingRight": "24",
+    "paddingBottom": "24",
+    "paddingLeft": "24",
+    "fontSize": "28",
+    "color": "#757575"
+  },
+  "list-subtitle": {
+    "position": "absolute",
+    "right": "24",
+    "bottom": "24",
+    "fontSize": "24"
+  },
+  "list-item": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between",
+    "height": "100",
+    "width": "750",
+    "paddingLeft": "20",
+    "paddingRight": "20",
+    "borderTopWidth": "1",
+    "borderTopColor": "#e8e8e8",
+    "borderTopStyle": "solid"
+  },
+  "list-item-left": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "flex-start",
+    "height": "100",
+    "flex": 1
+  },
+  "list-left-icon": {
+    "width": "60",
+    "height": "60",
+    "color": "#3EB4FF"
+  },
+  "list-left-title": {
+    "color": "#242424",
+    "paddingLeft": "12",
+    "width": "380",
+    "fontSize": "26",
+    "textOverflow": "ellipsis",
+    "lines": 1
+  },
+  "list-left-title-history": {
+    "color": "#242424",
+    "paddingLeft": "12",
+    "width": "600",
+    "fontSize": "26",
+    "textOverflow": "ellipsis",
+    "lines": 1
+  },
+  "list-right-title": {
+    "color": "#a2a2a2",
+    "paddingRight": "3",
+    "fontSize": "22",
+    "textOverflow": "ellipsis",
+    "lines": 1
+  },
+  "list-right-icon": {
+    "width": "40",
+    "height": "40",
+    "color": "#C9C9CE"
+  },
+  "list-item-right": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "flex-end",
+    "height": "100"
+  }
+}
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _global = __webpack_require__(0);
+
+var _app = __webpack_require__(5);
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+var weiui = weex.requireModule('weiui');
+
+exports.default = {
+    data: function data() {
+        return {
+            components: [{
+                title: '轮播控件',
+                title_en: 'weiui_banner',
+                icon: 'easel',
+                url: _app.jshome + 'component_banner.js'
+            }, {
+                title: '常用按钮',
+                title_en: 'weiui_button',
+                icon: 'android-checkbox-blank',
+                url: _app.jshome + 'component_button.js'
+            }, {
+                title: '网格容器',
+                title_en: 'weiui_grid',
+                icon: 'grid',
+                url: _app.jshome + 'component_grid.js'
+            }, {
+                title: '字体图标',
+                title_en: 'weiui_icon',
+                icon: 'ionic',
+                url: _app.jshome + 'component_icon.js'
+            }, {
+                title: '跑马文字',
+                title_en: 'weiui_marquee',
+                icon: 'code-working',
+                url: _app.jshome + 'component_marquee.js'
+            }, {
+                title: '导航栏',
+                title_en: 'weiui_navbar',
+                icon: 'navicon',
+                url: _app.jshome + 'component_navbar.js'
+            }, {
+                title: '列表容器',
+                title_en: 'weiui_list',
+                icon: 'ios-list 90%',
+                url: _app.jshome + 'component_list.js'
+            }, {
+                title: '滚动文字',
+                title_en: 'weiui_scroll_text',
+                icon: 'more',
+                url: _app.jshome + 'component_scroll_text.js'
+            }, {
+                title: '侧边栏',
+                title_en: 'weiui_side_panel',
+                icon: 'ios-box',
+                url: _app.jshome + 'component_side_panel.js'
+            }, {
+                title: '标签页面',
+                title_en: 'weiui_tabbar',
+                icon: 'filing',
+                url: _app.jshome + 'component_tabbar.js'
+            }],
+
+            module: [{
+                title: '页面功能',
+                title_en: 'newPage',
+                icon: 'ios-book-outline 96%',
+                url: _app.jshome + 'module_page.js'
+            }, {
+                title: '系统信息',
+                title_en: 'system',
+                icon: 'gear-a',
+                url: _app.jshome + 'module_system.js'
+            }, {
+                title: '数据缓存',
+                title_en: 'caches',
+                icon: 'soup-can-outline',
+                url: _app.jshome + 'module_caches.js'
+            }, {
+                title: '单位转换',
+                title_en: 'weex px',
+                icon: 'ios-calculator',
+                url: _app.jshome + 'module_weexpx.js'
+            }, {
+                title: '确认对话框',
+                title_en: 'alert',
+                icon: 'android-alert 90%',
+                url: _app.jshome + 'module_alert.js'
+            }, {
+                title: '等待弹窗',
+                title_en: 'loading',
+                icon: 'load-d',
+                url: _app.jshome + 'module_loading.js'
+            }, {
+                title: '验证弹窗',
+                title_en: 'captcha',
+                icon: 'ios-checkmark-outline',
+                url: _app.jshome + 'module_captcha.js'
+            }, {
+                title: '二维码扫描',
+                title_en: 'scaner',
+                icon: 'tb-scan',
+                url: _app.jshome + 'module_scaner.js'
+            }, {
+                title: '跨域异步请求',
+                title_en: 'ajax',
+                icon: 'pull-request',
+                url: _app.jshome + 'module_ajax.js'
+            }, {
+                title: '剪切板',
+                title_en: 'clipboard',
+                icon: 'ios-copy-outline',
+                url: _app.jshome + 'module_plate.js'
+            }, {
+                title: '提示消息',
+                title_en: 'toast',
+                icon: 'ios-barcode-outline',
+                url: _app.jshome + 'module_toast.js'
+            }, {
+                title: '广告弹窗',
+                title_en: 'adDialog',
+                icon: 'social-buffer-outline',
+                url: _app.jshome + 'module_ad_dialog.js'
+            }, {
+                title: '城市选择器',
+                title_en: 'citypicker',
+                icon: 'android-pin',
+                url: _app.jshome + 'third_citypicker.js'
+            }, {
+                title: '图片选择器',
+                title_en: 'pictureSelector',
+                icon: 'ios-camera-outline',
+                url: _app.jshome + 'third_picture.js'
+            }, {
+                title: '更多拓展模块',
+                title_en: 'expandModule',
+                icon: 'more',
+                url: _app.jshome + 'index_expand.js'
+            }],
+
+            third_module: [{
+                title: '融云通信模块',
+                title_en: 'rongcloud',
+                icon: 'tb-community',
+                url: 'rongcloud'
+            }, {
+                title: '友盟推送模块',
+                title_en: 'umeng',
+                icon: 'android-send',
+                url: 'umeng'
+            }, {
+                title: '第三方支付',
+                title_en: 'pay',
+                icon: 'tb-sponsor',
+                url: 'pay'
+            }],
+
+            about_lists: [{
+                title: '开发文档',
+                title_en: 'document',
+                icon: 'code-working',
+                url: 'http://weiui.cc'
+            }, {
+                title: '托管平台',
+                title_en: 'github',
+                icon: 'social-github-outline',
+                url: 'https://github.com/kuaifan/weiui'
+            }, {
+                title: '个人博客',
+                title_en: 'http://kuaifan.vip',
+                icon: 'social-rss-outline',
+                url: 'http://kuaifan.vip'
+            }, {
+                title: 'WEIUI版本',
+                title_en: weiui.getVersionName(),
+                icon: 'ios-information-outline',
+                url: 'http://weiui.cc'
+            }],
+
+            history: []
+        };
+    },
+    mounted: function mounted() {
+        this.history = (0, _global.jsonParse)(weiui.getCachesString("scaner", []), []);
+        //
+        weiui.setPageBackPressed(null, function () {
+            weiui.confirm({
+                title: "温馨提示",
+                message: "你确定要退出WEIUI吗？",
+                buttons: ["取消", "确定"]
+            }, function (result) {
+                if (result.status === "click" && result.title === "确定") {
+                    weiui.closePage(null);
+                }
+            });
+        });
+    },
+
+
+    methods: {
+        scaner: function scaner() {
+            var _this = this;
+
+            weiui.openScaner(null, function (res) {
+                if (res.status === "success") {
+                    _this.history.unshift(res.text);
+                    weiui.setCachesString("scaner", (0, _global.jsonStringify)(_this.history), 0);
+                    _this.openAuto(res.text);
+                }
+            });
+        },
+        refresh: function refresh() {
+            weiui.reloadPage();
+        },
+        clearHistory: function clearHistory() {
+            var _this2 = this;
+
+            weiui.confirm({
+                title: "删除提示",
+                message: "你确定要删除扫码记录吗？",
+                buttons: ["取消", "确定"]
+            }, function (result) {
+                if (result.status === "click" && result.title === "确定") {
+                    _this2.history = [];
+                    weiui.setCachesString("scaner", (0, _global.jsonStringify)(_this2.history), 0);
+                }
+            });
+        },
+        openUrl: function openUrl(url) {
+            weiui.openPage({
+                url: url,
+                pageType: 'weex'
+            });
+        },
+        openWeb: function openWeb(url) {
+            (0, _app.openViewUrl)(url);
+        },
+        openThird: function openThird(url) {
+            (0, _app.openViewCode)("module/third/" + url);
+        },
+        openAuto: function openAuto(url) {
+            weiui.openPage({
+                url: url,
+                pageType: 'auto'
+            });
+        }
+    }
+};
+
+/***/ }),
 /* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _global = __webpack_require__(0);
+
+var weiui = weex.requireModule('weiui');
+
+var app = {
+
+    jshome: 'http://weiui.cc/dist/',
+
+    openViewCode: function openViewCode(str) {
+        app.openViewUrl("http://weiui.cc/#/" + str);
+    },
+    openViewUrl: function openViewUrl(url) {
+        weiui.openPage({
+            url: app.jshome + 'index_browser.js',
+            pageType: 'weex',
+            statusBarColor: "#3EB4FF",
+            params: {
+                title: "WEIUI",
+                url: url
+            }
+        });
+    },
+    checkVersion: function checkVersion(compareVersion) {
+        if (typeof weiui.getVersion !== "function") {
+            return false;
+        }
+        return (0, _global.runNum)(weiui.getVersion()) >= (0, _global.runNum)(compareVersion);
+    }
+};
+
+module.exports = app;
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -1174,7 +1304,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: ["list-item-right"]
     }, [_c('text', {
       staticClass: ["list-right-title"]
-    }, [_vm._v(_vm._s(item.title_en))]), _c('weiui_icon', {
+    }, [_vm._v("<" + _vm._s(item.title_en) + ">")]), _c('weiui_icon', {
       staticClass: ["list-right-icon"],
       attrs: {
         "weiui": {
@@ -1224,7 +1354,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: ["list-item"],
       on: {
         "click": function($event) {
-          _vm.openUrl(item.url)
+          _vm.openThird(item.url)
         }
       }
     }, [_c('div', {

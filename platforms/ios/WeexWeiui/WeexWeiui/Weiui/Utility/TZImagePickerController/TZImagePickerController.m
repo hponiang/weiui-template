@@ -140,12 +140,6 @@
 
     UIColor *barTintColor = [UIColor colorWithRed:(34/255.0) green:(34/255.0)  blue:(34/255.0) alpha:1.0];
     self.navigationController.navigationBar.barTintColor = barTintColor;
-
-    UIView *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
-    self.barColor = statusBar.backgroundColor;
-    if ([statusBar respondsToSelector:@selector(setBackgroundColor:)]) {
-        statusBar.backgroundColor = [barTintColor colorWithAlphaComponent:1];
-    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

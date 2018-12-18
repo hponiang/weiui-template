@@ -2,7 +2,6 @@ package cc.weiui.framework.ui.component.marquee;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -12,7 +11,7 @@ import android.widget.LinearLayout;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.annotation.JSMethod;
-import com.taobao.weex.dom.WXDomObject;
+import com.taobao.weex.ui.action.BasicComponentData;
 import com.taobao.weex.ui.component.WXVContainer;
 
 import java.util.Map;
@@ -43,8 +42,8 @@ public class Marquee extends WXVContainer<ViewGroup> {
 
     private FocusedTextView v_autotext;
 
-    public Marquee(WXSDKInstance instance, WXDomObject node, WXVContainer parent) {
-        super(instance, node, parent);
+    public Marquee(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
+        super(instance, parent, basicComponentData);
     }
 
     @Override
@@ -53,7 +52,7 @@ public class Marquee extends WXVContainer<ViewGroup> {
         initPagerView();
         appleStyleAfterCreated();
         //
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.READY)) {
+        if (getEvents().contains(weiuiConstants.Event.READY)) {
             fireEvent(weiuiConstants.Event.READY, null);
         }
         //
@@ -186,7 +185,7 @@ public class Marquee extends WXVContainer<ViewGroup> {
      */
     @JSMethod
     public void setTextColor(String var) {
-        v_autotext.setTextColor(Color.parseColor(var));
+        v_autotext.setTextColor(weiuiParse.parseColor(var));
     }
 
     /**
@@ -195,6 +194,6 @@ public class Marquee extends WXVContainer<ViewGroup> {
      */
     @JSMethod
     public void setBackgroundColor(String var) {
-        v_body.setBackgroundColor(Color.parseColor(var));
+        v_body.setBackgroundColor(weiuiParse.parseColor(var));
     }
 }

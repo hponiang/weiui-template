@@ -15,7 +15,7 @@
             <input class="inPut" v-model="url"/>
             <text class="button" @click="startAjax">开始请求</text>
             <text class="subtitle">状态：{{status}}</text>
-            <textarea class="textarea" v-model="content"></textarea>
+            <textarea class="textarea" v-model="content" rows="20"></textarea>
         </div>
 
     </div>
@@ -87,7 +87,7 @@
     .textarea {
         font-size: 20px;
         width: 650px;
-        height: 500px;
+        height: 480px;
         margin-top: 20px;
         padding-top: 5px;
         padding-bottom: 5px;

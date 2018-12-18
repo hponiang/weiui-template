@@ -8,6 +8,7 @@
 
 #import "WeiuiShareManager.h"
 #import "DeviceUtil.h"
+#import "SDWebImageManager.h"
 #import "UIButton+WebCache.h"
 
 @implementation WeiuiShareManager
@@ -54,8 +55,8 @@
         [self imageShare:newImage];
     } else {//如果本地没有
         //下载图片
-        [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:imageUrl] options:0 progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-            if (image) {//下载完成后
+        [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:imageUrl] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
+            if (image) {
                 [self imageShare:image];
             }
         }];

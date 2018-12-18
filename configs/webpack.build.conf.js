@@ -6,6 +6,7 @@ const weexConfig = commonConfig[1];
 
 webpack(weexConfig, (err, stats) => {
     if (!err) {
+        utils.copySrcToDist(true);
         utils.syncFolderEvent();
     }
 });

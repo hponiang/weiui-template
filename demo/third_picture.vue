@@ -6,7 +6,7 @@
             <weiui_navbar_item type="title">
                 <text class="title">图片选择器</text>
             </weiui_navbar_item>
-            <weiui_navbar_item type="right" @click="viewCode('module/third/pictureSelector/install')">
+            <weiui_navbar_item type="right" @click="viewCode('module/third/pictureSelector')">
                 <weiui_icon content="code-working" class="iconr"></weiui_icon>
             </weiui_navbar_item>
         </weiui_navbar>
@@ -15,9 +15,11 @@
 
             <weiui_list v-if="lists.length > 0"
                         :style="{width:'750px', height: (Math.ceil(lists.length / 5) * 150) + 'px'}"
-                        :weiui="{row:5,pullTips:false}">
-                <div v-for="(item, position) in lists" class="imgbox" @click="pictureView(position)">
-                    <image :src="'file://' + item.path" class="image" resize="cover"></image>
+                        :weiui="{pullTips:false}">
+                <div v-for="list in sliceLists(lists, 5)" class="list">
+                    <div v-for="item in list" class="imgbox" @click="pictureView(item.position)">
+                        <image :src="'file://' + item.path" class="image" resize="cover"></image>
+                    </div>
                 </div>
             </weiui_list>
 
@@ -55,6 +57,12 @@
         flex: 1;
         justify-content: center;
         align-items: center;
+    }
+
+    .list {
+        width: 750px;
+        flex-direction: row;
+        justify-content: center;
     }
 
     .imgbox {
@@ -95,6 +103,7 @@
 
 <script>
     import {openViewCode} from "../statics/js/app";
+    import {each} from "../statics/js/global";
 
     const weiui_picture = weex.requireModule('weiui_picture');
 
@@ -107,6 +116,20 @@
         methods: {
             viewCode(str) {
                 openViewCode(str);
+            },
+            sliceLists(data, slice) {
+                let lists = [];
+                let j = 0;
+                for (let i = 0, len = data.length; i < len; i += slice) {
+                    let temp = [];
+                    each(data.slice(i, i + slice), (index, item) => {
+                        item.position = j;
+                        temp.push(item);
+                        j++;
+                    });
+                    lists.push(temp);
+                }
+                return lists;
             },
             openPicture() {
                 weiui_picture.create({

@@ -32,12 +32,6 @@
             android:visibility="gone"
             tl:tl_textsize="14sp"/>
 
-        <View
-            android:id="@+id/navigation_tline"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#EAEAEA"/>
-
     </LinearLayout>
 
     <cc.weiui.framework.extend.view.NoAnimationViewPager
@@ -50,12 +44,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <View
-            android:id="@+id/navigation_bline"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#EAEAEA"/>
 
         <cc.weiui.framework.extend.view.tablayout.CommonTabLayout
             android:id="@+id/navigation_bottom"

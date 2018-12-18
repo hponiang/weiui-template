@@ -913,8 +913,9 @@ public class SlidingTabLayout extends HorizontalScrollView implements ViewPager.
     }
 
     protected int dp2px(float dp) {
-        final float scale = mContext.getResources().getDisplayMetrics().density;
-        return (int) (dp * scale + 0.5f);
+        return (int) dp;
+        /*final float scale = mContext.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);*/
     }
 
     protected int sp2px(float sp) {

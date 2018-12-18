@@ -9,6 +9,7 @@
 #import "WXMainViewController.h"
 #import "WeexSDK.h"
 #import "WeexSDKManager.h"
+#import "weiuiNewPageManager.h"
 #import "UINavigationController+FDFullscreenPopGesture.h"
 
 #define kCacheUrl @"cache_url"
@@ -26,6 +27,10 @@
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic, strong) UIView *statusBar;
+@property (nonatomic, assign) NSString *notificationStatus;
+@property (nonatomic, assign) NSString *liftCycleLastStatus;
+@property (nonatomic, assign) NSString *liftCycleLastStatusChild;
+@property (nonatomic, assign) BOOL didWillEnter;
 //@property (nonatomic, strong) UIScrollView *mainScrollView;
 
 @end
@@ -92,21 +97,18 @@
     [super viewDidAppear:animated];
     [self updateInstanceState:WeexInstanceAppear];
     
-    [self updateStatus:@"resume"];
-    
     //页面生命周期:页面激活(恢复)
-    if (_isTabbarChildView && _isTabbarChildSelected == NO) {
-        return;
-    }
+    //if (_isTabbarChildView && _isTabbarChildSelected == NO) {
+    //    return;
+    //}
     
+    [self updateStatus:@"resume"];
     [self liftCycleEvent:LifeCycleResume];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    
-    [self updateStatus:@"pause"];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -114,15 +116,15 @@
     [super viewDidDisappear:animated];
     [self updateInstanceState:WeexInstanceDisappear];
     
-    [self updateStatus:@"stop"];
-    
     //页面生命周期:页面失活(暂停)
+    //if (_isTabbarChildView && _isTabbarChildSelected == NO) {
+    //    return;
+    //}
     
-    if (_isTabbarChildView && _isTabbarChildSelected == NO) {
-        return;
-    }
-    
+    [self updateStatus:@"pause"];
     [self liftCycleEvent:LifeCyclePause];
+    
+    [self updateStatus:@"stop"];
 }
 
 //TODO get height
@@ -159,6 +161,7 @@
 
 - (void)dealloc
 {
+    NSLog(@"gggggggg::dealloc");
     [self updateStatus:@"destroy"];
     
     [_instance destroyInstance];
@@ -167,6 +170,15 @@
 #endif
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)didMoveToParentViewController:(UIViewController *)parent
+{
+    [super didMoveToParentViewController:parent];
+    
+    if (parent == nil) {
+        [[WeiuiNewPageManager sharedIntstance] removePageData:self.pageName];
+    }
 }
 
 #pragma mark 生命周期
@@ -185,7 +197,28 @@
             status = @"pause";
             break;
         default:
-            break;
+            return;
+    }
+    if ([status isEqualToString:_liftCycleLastStatus]) {
+        return;
+    }
+    _liftCycleLastStatus = status;
+    
+    for (UIViewController * childViewController in self.childViewControllers) {
+        if ([childViewController isKindOfClass:[WXMainViewController class]]) {
+            WXMainViewController *vc = (WXMainViewController*) childViewController;
+            if ([status isEqualToString:@"pause"]) {
+                if ([vc.liftCycleLastStatus isEqualToString:@"resume"]) {
+                    [vc liftCycleEvent:type];
+                    vc.liftCycleLastStatusChild = status;
+                }
+            }else if ([status isEqualToString:@"resume"]) {
+                if ([vc.liftCycleLastStatusChild isEqualToString:@"pause"]) {
+                    [vc liftCycleEvent:type];
+                    vc.liftCycleLastStatusChild = status;
+                }
+            }
+        }
     }
 
     [[WXSDKManager bridgeMgr] fireEvent:_instance.instanceId ref:WX_SDK_ROOT_REF type:kLifeCycle params:@{@"status":status} domChanges:nil];
@@ -278,11 +311,15 @@
                 NSString *cacheUrl = data[kCacheUrl];
                 //使用缓存文件
                 self.URL = [NSURL fileURLWithPath:cacheUrl];
-                [self renderView];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self renderView];
+                });
                 isCache = NO;
             } else {
                 self.URL = [NSURL URLWithString:_url];
-                [self renderView];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self renderView];
+                });
                 //重新下载
                 isCache = YES;
             }
@@ -382,9 +419,8 @@
         [weakSelf updateInstanceState:WeexInstanceAppear];
         [weakSelf stopLoading];
         [weakSelf updateStatus:@"renderSuccess"];
-        
-        //页面生命周期:生命周期
         [weakSelf liftCycleEvent:LifeCycleReady];
+        [weakSelf liftCycleEvent:LifeCycleResume];
     };
     
     _instance.updateFinish = ^(UIView *view) {
@@ -406,6 +442,11 @@
     
     [_instance renderWithURL:_URL options:@{@"params":_params?_params:@""} data:nil];
     
+    if (_didWillEnter == NO) {
+        _didWillEnter = YES;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
+    }
     
     //    NSURL *URL = [self testURL: [self.url absoluteString]];
     //    NSString *randomURL = [NSString stringWithFormat:@"%@%@random=%d",URL.absoluteString,URL.query?@"&":@"?",arc4random()];
@@ -419,6 +460,24 @@
     //    } else {
     //        self.navigationItem.title = _instance.pageName;
     //    }
+}
+
+- (void)appDidEnterBackground:(NSNotification*)notification
+{
+    if ([self.liftCycleLastStatus isEqualToString:@"resume"]) {
+        [self updateStatus:@"pause"];
+        [self liftCycleEvent:LifeCyclePause];
+        self.liftCycleLastStatusChild = @"pause";
+    }
+}
+
+- (void)appWillEnterForeground:(NSNotification*)notification
+{
+    if ([self.liftCycleLastStatusChild isEqualToString:@"pause"]) {
+        [self updateStatus:@"resume"];
+        [self liftCycleEvent:LifeCycleResume];
+        self.liftCycleLastStatusChild = @"resume";
+    }
 }
 
 #pragma mark action
@@ -466,6 +525,10 @@
     }
     
     //通知监听
+    if ([status isEqualToString:_notificationStatus]) {
+        return;
+    }
+    _notificationStatus = status;
     for (NSString *key in self.listenerList) {
         [[NSNotificationCenter defaultCenter] postNotificationName:key object:@{@"status":status}];
     }

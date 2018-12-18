@@ -10,16 +10,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
-import com.taobao.weex.dom.WXDomObject;
+import com.taobao.weex.ui.action.BasicComponentData;
 import com.taobao.weex.ui.component.WXVContainer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cc.weiui.framework.R;
 import cc.weiui.framework.extend.module.weiuiConstants;
 import cc.weiui.framework.extend.module.weiuiJson;
 import cc.weiui.framework.extend.module.weiuiParse;
+import cc.weiui.framework.extend.module.weiuiScreenUtils;
 import cc.weiui.framework.extend.view.ProgressWebView;
 
 /**
@@ -33,8 +36,14 @@ public class WebView extends WXVContainer<ViewGroup> {
 
     private ProgressWebView v_webview;
 
-    public WebView(WXSDKInstance instance, WXDomObject dom, WXVContainer parent) {
-        super(instance, dom, parent);
+    private Timer webTimer;
+
+    private TimerTask webTask;
+
+    private float webHeight = -1f;
+
+    public WebView(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
+        super(instance, parent, basicComponentData);
     }
 
     @Override
@@ -42,7 +51,7 @@ public class WebView extends WXVContainer<ViewGroup> {
         mView = ((Activity) context).getLayoutInflater().inflate(R.layout.layout_weiui_webview, null);
         initPagerView();
         //
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.READY)) {
+        if (getEvents().contains(weiuiConstants.Event.READY)) {
             fireEvent(weiuiConstants.Event.READY, null);
         }
         //
@@ -57,7 +66,7 @@ public class WebView extends WXVContainer<ViewGroup> {
     private void initPagerView() {
         v_webview = mView.findViewById(R.id.v_webview);
         //
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.STATE_CHANGED)) {
+        if (getEvents().contains(weiuiConstants.Event.STATE_CHANGED)) {
             v_webview.setOnStatusClient(new ProgressWebView.StatusCall() {
                 @Override
                 public void onStatusChanged(android.webkit.WebView view, String status) {
@@ -85,11 +94,46 @@ public class WebView extends WXVContainer<ViewGroup> {
                 }
             });
         }
+        if (getEvents().contains(weiuiConstants.Event.HEIGHT_CHANGED)) {
+            if (webTimer != null) {
+                webTimer.cancel();
+                webTimer = null;
+                webTask = null;
+                webHeight = -1f;
+            }
+            webTimer = new Timer();
+            webTask = new TimerTask() {
+                @Override
+                public void run() {
+                    v_webview.post(() -> {
+                        float tempHeight = v_webview.getContentHeight() * v_webview.getScale();
+                        if (tempHeight != webHeight) {
+                            webHeight = tempHeight;
+                            Map<String, Object> retData = new HashMap<>();
+                            retData.put("height", weiuiScreenUtils.weexDp2px(getInstance(), webHeight));
+                            fireEvent(weiuiConstants.Event.HEIGHT_CHANGED, retData);
+                        }
+                    });
+                }
+            };
+            webTimer.schedule(webTask, 1000, 1000);
+        }
     }
 
     @Override
     protected boolean setProperty(String key, Object param) {
         return initProperty(key, param) || super.setProperty(key, param);
+    }
+
+    @Override
+    public void destroy() {
+        if (webTimer != null) {
+            webTimer.cancel();
+            webTimer = null;
+            webTask = null;
+            webHeight = -1f;
+        }
+        super.destroy();
     }
 
     private boolean initProperty(String key, Object val) {
@@ -109,6 +153,14 @@ public class WebView extends WXVContainer<ViewGroup> {
 
             case "content":
                 setContent(weiuiParse.parseStr(val, ""));
+                return true;
+
+            case "progressbarVisibility":
+                setProgressbarVisibility(weiuiParse.parseBool(val, true));
+                return true;
+
+            case "scrollEnabled":
+                setScrollEnabled(weiuiParse.parseBool(val, true));
                 return true;
 
             default:
@@ -154,6 +206,30 @@ public class WebView extends WXVContainer<ViewGroup> {
                     "</header>" +
                     "<body>" + content + "</body>" +
                     "</html>", "text/html", "utf-8", null);
+        }
+    }
+
+    /**
+     * 是否显示进度条
+     * @param var
+     */
+    @JSMethod
+    public void setProgressbarVisibility(boolean var) {
+        if (v_webview != null) {
+            v_webview.setProgressbarVisibility(var);
+        }
+    }
+
+    /**
+     * 设置是否允许滚动
+     * @param var
+     */
+    @JSMethod
+    public void setScrollEnabled(boolean var) {
+        if (v_webview != null) {
+            v_webview.setScrollContainer(var);
+            v_webview.setVerticalScrollBarEnabled(var);
+            v_webview.setHorizontalScrollBarEnabled(var);
         }
     }
 

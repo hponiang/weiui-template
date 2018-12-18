@@ -5,11 +5,13 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.weex.plugin.loader.WeexPluginContainer;
 import com.lljjcoder.weiui.ui.weiui_citypicker;
 import com.luck.picture.lib.weiui.ui.weiui_picture;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKEngine;
 
+import cc.weiui.pay.weiui.ui.weiui_pay;
 import io.rong.imlib.weiui.ui.weiui_rongim;
 import cc.weiui.framework.extend.module.weiui;
 import cc.weiui.framework.extend.module.weiuiJson;
@@ -34,6 +36,8 @@ public class MyApplication extends Application {
         weiui.init(this);
         weiui_citypicker.init();
         weiui_picture.init();
+        weiui_pay.init();
+        WeexPluginContainer.loadAll(this);
         //
         initRongim();
         initUmeng();

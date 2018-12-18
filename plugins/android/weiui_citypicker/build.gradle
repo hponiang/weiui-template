@@ -27,7 +27,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     compileOnly "com.android.support:appcompat-v7:${project.supportLibVersion}"
-    compileOnly "com.google.code.gson:gson:2.8.2"
+    compileOnly "com.google.code.gson:gson:2.8.5"
     //
     compileOnly "com.alibaba:fastjson:${project.fastjsonLibVersion}"
     compileOnly "com.taobao.android:weex_sdk:${project.weex_sdkLibVersion}"

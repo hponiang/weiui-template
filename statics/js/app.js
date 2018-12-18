@@ -4,10 +4,21 @@ let weiui = weex.requireModule('weiui');
 
 let app = {
 
+    jshome: 'http://weiui.cc/dist/',
+
     openViewCode(str) {
+        app.openViewUrl("http://weiui.cc/#/" + str);
+    },
+
+    openViewUrl(url) {
         weiui.openPage({
-            url: "http://weiui.cc/#/" + str,
-            pageType: 'web'
+            url: app.jshome + 'index_browser.js',
+            pageType: 'weex',
+            statusBarColor: "#3EB4FF",
+            params: {
+                title: "WEIUI",
+                url: url,
+            }
         });
     },
 

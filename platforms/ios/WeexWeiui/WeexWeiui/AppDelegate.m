@@ -18,6 +18,7 @@
 #import <SocketRocket/SRWebSocket.h>
 #import "Config.h"
 #import "Cloud.h"
+#import "WeiuiPayModule.h"
 
 @interface AppDelegate ()<SRWebSocketDelegate>
 
@@ -52,6 +53,18 @@ NSDictionary *mLaunchOptions;
     [self initRongcloud];
     [self initUmeng];
     
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options
+{
+    if ([url.host isEqualToString:@"safepay"]) {
+        // 支付宝处理支付结果
+        [WeiuiPayModule alipayHandleOpenURL:url];
+    }else if ([url.host isEqualToString:@"pay"]) {
+        // 微信支付处理支付结果
+        return [WeiuiPayModule weixinHandleOpenURL:url];
+    }
     return YES;
 }
 
@@ -334,7 +347,9 @@ NSDictionary *mLaunchOptions;
     NSString *msg = (NSString *)message;
     if ([msg hasPrefix:@"HOMEPAGE:"]) {
         [[[DeviceUtil getTopviewControler] navigationController] popToRootViewControllerAnimated:NO];
-        [mController loadUrl:[msg substringFromIndex:9]];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [mController loadUrl:[msg substringFromIndex:9]];
+        });
     }else if ([msg hasPrefix:@"HOMEPAGEBACK:"]) {
         [mController loadUrl:[msg substringFromIndex:13]];
     }else if ([msg isEqualToString:@"RELOADPAGE"]) {

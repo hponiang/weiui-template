@@ -24,8 +24,7 @@
 #import <UIKit/UIKit.h>
 #import <AdSupport/AdSupport.h>
 
-#define KISIphoneX (CGSizeEqualToSize(CGSizeMake(375.f, 812.f), [UIScreen mainScreen].bounds.size) || CGSizeEqualToSize(CGSizeMake(812.f, 375.f), [UIScreen mainScreen].bounds.size))
-
+#define iPhoneXSeries (([[UIApplication sharedApplication] statusBarFrame].size.height == 44.0f) ? (YES):(NO))
 
 @implementation WeiuiModule
 
@@ -146,7 +145,6 @@ WX_EXPORT_METHOD(@selector(loadingClose:))
 - (NSString*)loading:(id)params callback:(WXModuleKeepAliveCallback)callback
 {
     NSString *str = [[WeiuiLoadingManager sharedIntstance] loading:params callback:callback];
-    
     return str;
 }
 
@@ -171,6 +169,7 @@ WX_EXPORT_METHOD(@selector(onPageStatusListener:status:))
 WX_EXPORT_METHOD(@selector(getCacheSizePage:))
 WX_EXPORT_METHOD(@selector(clearCachePage))
 WX_EXPORT_METHOD(@selector(closePage:))
+WX_EXPORT_METHOD(@selector(closePageTo:))
 WX_EXPORT_METHOD(@selector(openWeb:))
 WX_EXPORT_METHOD(@selector(goDesktop))
 
@@ -238,6 +237,11 @@ WX_EXPORT_METHOD(@selector(goDesktop))
 - (void)closePage:(id)params
 {
     [[WeiuiNewPageManager sharedIntstance] closePage:params];
+}
+
+- (void)closePageTo:(id)params
+{
+    [[WeiuiNewPageManager sharedIntstance] closePageTo:params];
 }
 
 - (void)openWeb:(NSString*)url
@@ -350,9 +354,9 @@ WX_EXPORT_METHOD(@selector(shareImage:))
 
 #pragma mark 保存数据信息
 
-WX_EXPORT_METHOD(@selector(setCachesString:value:expired:))
+WX_EXPORT_METHOD_SYNC(@selector(setCachesString:value:expired:))
 WX_EXPORT_METHOD_SYNC(@selector(getCachesString:defaultVal:))
-WX_EXPORT_METHOD(@selector(setVariate:value:))
+WX_EXPORT_METHOD_SYNC(@selector(setVariate:value:))
 WX_EXPORT_METHOD_SYNC(@selector(getVariate:defaultVal:))
 
 - (void)setCachesString:(NSString*)key value:(id)value expired:(NSInteger)expired
@@ -389,11 +393,12 @@ WX_EXPORT_METHOD_SYNC(@selector(compareVersion:secondVersion:))
 WX_EXPORT_METHOD_SYNC(@selector(getImei))
 WX_EXPORT_METHOD_SYNC(@selector(getSDKVersionCode))
 WX_EXPORT_METHOD_SYNC(@selector(getSDKVersionName))
+WX_EXPORT_METHOD_SYNC(@selector(isIPhoneXType))
 WX_EXPORT_METHOD_SYNC(@selector(getIfa))
 
 - (NSInteger)getStatusBarHeight
 {
-    if (KISIphoneX) {
+    if (iPhoneXSeries) {
         return 44;
     } else {
         return 20;
@@ -457,14 +462,14 @@ WX_EXPORT_METHOD_SYNC(@selector(getIfa))
     }
 }
 
-//ios 使用udid代替
 - (NSString*)getImei
 {
-    CFUUIDRef uuid = CFUUIDCreate(NULL);
-    assert(uuid != NULL);
-    CFStringRef uuidStr = CFUUIDCreateString(NULL, uuid);
+    return (NSString*)[[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
+}
 
-    return [NSString stringWithFormat:@"%@", uuidStr];
+- (NSString*)getIfa
+{
+    return (NSString*)[[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
 }
 
 - (NSInteger)getSDKVersionCode
@@ -483,11 +488,10 @@ WX_EXPORT_METHOD_SYNC(@selector(getIfa))
     return (NSString*)[[UIDevice currentDevice] systemVersion];
 }
 
-- (NSString*)getIfa
+- (Boolean)isIPhoneXType
 {
-    return (NSString*)[[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];;
+    return iPhoneXSeries;
 }
-
 
 #pragma mark 吐司提示
 

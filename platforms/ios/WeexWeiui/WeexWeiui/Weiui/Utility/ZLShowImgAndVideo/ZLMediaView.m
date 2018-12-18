@@ -233,11 +233,10 @@
                 __unsafe_unretained ZLMediaView *mediaView = self;
                 __unsafe_unretained ZLMediaLoadingView *loading = _mediaLoadingView;
                 
-                [_imageView sd_setImageWithURL:[NSURL URLWithString:_info.url] placeholderImage:self.info.insetsImageView.image options:SDWebImageRetryFailed|SDWebImageLowPriority|SDWebImageProgressiveDownload progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+                [_imageView sd_setImageWithURL:[NSURL URLWithString:_info.url] placeholderImage:self.info.insetsImageView.image options:SDWebImageRetryFailed|SDWebImageLowPriority|SDWebImageProgressiveDownload progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
                     if (receivedSize > kMinProgress) {
                         loading.progress = (float)receivedSize/expectedSize;
                     }
-                    
                 } completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
                     [mediaView photoDidFinishLoadWithImage:image];
                 }];

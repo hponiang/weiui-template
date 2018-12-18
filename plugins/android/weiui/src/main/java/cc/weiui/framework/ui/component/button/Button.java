@@ -2,19 +2,18 @@ package cc.weiui.framework.ui.component.button;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.annotation.JSMethod;
-import com.taobao.weex.dom.WXDomObject;
+import com.taobao.weex.ui.action.BasicComponentData;
 import com.taobao.weex.ui.component.WXVContainer;
 
 import java.util.Map;
@@ -39,7 +38,7 @@ public class Button extends WXVContainer<ViewGroup> implements View.OnClickListe
     private boolean isDisabled;
     private boolean isLoading;
 
-    private RelativeLayout l_button;
+    private FrameLayout l_button;
     private IconTextView v_loading;
     private View v_unclick;
     private TextView v_text;
@@ -50,11 +49,8 @@ public class Button extends WXVContainer<ViewGroup> implements View.OnClickListe
     private int button_borderColor;
     private int text_color = 0xFFFFFFFF;
 
-    public Button(WXSDKInstance instance, WXDomObject dom, WXVContainer parent) {
-        super(instance, dom, parent);
-        if (Float.isNaN(dom.getStyleHeight())) {
-            dom.setStyleHeight(weiuiScreenUtils.weexPx2dp(getInstance(), 80));
-        }
+    public Button(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
+        super(instance, parent, basicComponentData);
     }
 
     @Override
@@ -62,7 +58,7 @@ public class Button extends WXVContainer<ViewGroup> implements View.OnClickListe
         mView = ((Activity) context).getLayoutInflater().inflate(R.layout.layout_weiui_button, null);
         initPagerView();
         //
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.READY)) {
+        if (getEvents().contains(weiuiConstants.Event.READY)) {
             fireEvent(weiuiConstants.Event.READY, null);
         }
         //
@@ -81,7 +77,7 @@ public class Button extends WXVContainer<ViewGroup> implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.l_click) {
-            if (!isDisabled && !isLoading && getDomObject().getEvents().contains(weiuiConstants.Event.CLICK)) {
+            if (!isDisabled && !isLoading && getEvents().contains(weiuiConstants.Event.CLICK)) {
                 fireEvent(weiuiConstants.Event.CLICK, null);
             }
         }
@@ -153,9 +149,9 @@ public class Button extends WXVContainer<ViewGroup> implements View.OnClickListe
         int buttonBorderColor = button_borderColor;
         int textColor =  text_color;
         if (isDisabled) {
-            buttonBackgroundColor = Color.parseColor("#1E000000");
-            buttonBorderColor = Color.parseColor("#20000000");
-            textColor = Color.parseColor("#ffffff");
+            buttonBackgroundColor = weiuiParse.parseColor("#1E000000");
+            buttonBorderColor = weiuiParse.parseColor("#20000000");
+            textColor = weiuiParse.parseColor("#ffffff");
         }
         v_loading.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         v_unclick.setVisibility(isLoading || isDisabled ? View.VISIBLE : View.GONE);
@@ -191,7 +187,7 @@ public class Button extends WXVContainer<ViewGroup> implements View.OnClickListe
      */
     @JSMethod
     public void setTextColor(Object var) {
-        text_color = Color.parseColor(weiuiParse.parseStr(var));
+        text_color = weiuiParse.parseColor(weiuiParse.parseStr(var));
         updateStyle();
     }
 
@@ -212,39 +208,39 @@ public class Button extends WXVContainer<ViewGroup> implements View.OnClickListe
     public void setModel(Object var) {
         switch (weiuiParse.parseStr(var).toLowerCase()) {
             case "red":
-                button_backgroundColor = Color.parseColor("#f44336");
+                button_backgroundColor = weiuiParse.parseColor("#f44336");
                 break;
 
             case "green":
-                button_backgroundColor = Color.parseColor("#4caf50");
+                button_backgroundColor = weiuiParse.parseColor("#4caf50");
                 break;
 
             case "blue":
-                button_backgroundColor = Color.parseColor("#2196f3");
+                button_backgroundColor = weiuiParse.parseColor("#2196f3");
                 break;
 
             case "pink":
-                button_backgroundColor = Color.parseColor("#e91e63");
+                button_backgroundColor = weiuiParse.parseColor("#e91e63");
                 break;
 
             case "yellow":
-                button_backgroundColor = Color.parseColor("#ffeb3b");
+                button_backgroundColor = weiuiParse.parseColor("#ffeb3b");
                 break;
 
             case "orange":
-                button_backgroundColor = Color.parseColor("#ff9800");
+                button_backgroundColor = weiuiParse.parseColor("#ff9800");
                 break;
 
             case "gray":
-                button_backgroundColor = Color.parseColor("#9e9e9e");
+                button_backgroundColor = weiuiParse.parseColor("#9e9e9e");
                 break;
 
             case "black":
-                button_backgroundColor = Color.parseColor("#000000");
+                button_backgroundColor = weiuiParse.parseColor("#000000");
                 break;
 
             case "white":
-                button_backgroundColor = Color.parseColor("#ffffff");
+                button_backgroundColor = weiuiParse.parseColor("#ffffff");
                 break;
         }
         if (weiuiParse.parseStr(var).toLowerCase().equals("white")) {
@@ -272,7 +268,7 @@ public class Button extends WXVContainer<ViewGroup> implements View.OnClickListe
      */
     @JSMethod
     public void setBackgroundColor(Object var) {
-        button_backgroundColor = Color.parseColor(weiuiParse.parseStr(var));
+        button_backgroundColor = weiuiParse.parseColor(weiuiParse.parseStr(var));
         updateStyle();
     }
 
@@ -287,7 +283,7 @@ public class Button extends WXVContainer<ViewGroup> implements View.OnClickListe
             button_borderWidth = weiuiScreenUtils.weexPx2dp(getInstance(), width, 0);
         }
         if (color != null) {
-            button_borderColor = Color.parseColor(weiuiParse.parseStr(color));
+            button_borderColor = weiuiParse.parseColor(weiuiParse.parseStr(color));
         }
         updateStyle();
     }

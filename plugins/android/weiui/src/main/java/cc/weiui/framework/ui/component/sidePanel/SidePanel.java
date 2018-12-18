@@ -2,7 +2,6 @@ package cc.weiui.framework.ui.component.sidePanel;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +10,9 @@ import android.widget.LinearLayout;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.annotation.JSMethod;
-import com.taobao.weex.dom.WXDomObject;
-import com.taobao.weex.dom.flex.CSSFlexDirection;
+import com.taobao.weex.common.Constants;
+import com.taobao.weex.dom.CSSShorthand;
+import com.taobao.weex.ui.action.BasicComponentData;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXVContainer;
 
@@ -56,9 +56,9 @@ public class SidePanel extends WXVContainer<ViewGroup> {
         menuNum++;
     }
 
-    public SidePanel(WXSDKInstance instance, WXDomObject node, WXVContainer parent) {
-        super(instance, node, parent);
-        node.setFlexDirection(CSSFlexDirection.ROW);
+    public SidePanel(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
+        super(instance, parent, basicComponentData);
+        updateNativeStyle(Constants.Name.FLEX_DIRECTION, "row");
     }
 
     @Override
@@ -70,7 +70,7 @@ public class SidePanel extends WXVContainer<ViewGroup> {
             ((PageActivity) getContext()).setSwipeBackEnable(false);
         }
         //
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.READY)) {
+        if (getEvents().contains(weiuiConstants.Event.READY)) {
             fireEvent(weiuiConstants.Event.READY, null);
         }
         //
@@ -136,7 +136,8 @@ public class SidePanel extends WXVContainer<ViewGroup> {
             lp.height = FrameLayout.LayoutParams.WRAP_CONTENT;
         }
         if (lp instanceof ViewGroup.MarginLayoutParams) {
-            left = weiuiScreenUtils.weexPx2dp(getInstance(), child.getDomObject().getStyles().get("marginLeft"), 0);
+            left = weiuiScreenUtils.weexDp2px(getInstance(), child.getMargin().get(CSSShorthand.EDGE.LEFT));
+            left = weiuiScreenUtils.weexPx2dp(getInstance(), left, 0);
             ((ViewGroup.MarginLayoutParams) lp).setMargins(left, top, right, bottom);
         }
         return lp;
@@ -148,7 +149,7 @@ public class SidePanel extends WXVContainer<ViewGroup> {
         v_container = mView.findViewById(R.id.v_container);
         //
         v_sliding.setOnSwitchListener(isShow -> {
-            if (getDomObject().getEvents().contains(weiuiConstants.Event.SWITCH_LISTENER)) {
+            if (getEvents().contains(weiuiConstants.Event.SWITCH_LISTENER)) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("show", isShow);
                 fireEvent(weiuiConstants.Event.SWITCH_LISTENER, data);
@@ -169,7 +170,7 @@ public class SidePanel extends WXVContainer<ViewGroup> {
     View.OnClickListener menuClick = (view) -> {
         menuHide();
         int position = (int) view.getTag();
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.ITEM_CLICK)
+        if (getEvents().contains(weiuiConstants.Event.ITEM_CLICK)
                 && view instanceof SidePanelMenuView) {
             Map<String, Object> data = new HashMap<>();
             data.put("name", ((SidePanelMenuView) view).getName());
@@ -180,7 +181,7 @@ public class SidePanel extends WXVContainer<ViewGroup> {
 
     View.OnLongClickListener menuLongClick = (view) -> {
         int position = (int) view.getTag();
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.ITEM_LONG_CLICK)
+        if (getEvents().contains(weiuiConstants.Event.ITEM_LONG_CLICK)
                 && view instanceof SidePanelMenuView) {
             Map<String, Object> data = new HashMap<>();
             data.put("name", ((SidePanelMenuView) view).getName());
@@ -262,7 +263,7 @@ public class SidePanel extends WXVContainer<ViewGroup> {
     @JSMethod
     public void setMenuBackgroundColor(String color) {
         if (v_sliding != null) {
-            v_sliding.setLeftBackgroundColor(Color.parseColor(color));
+            v_sliding.setLeftBackgroundColor(weiuiParse.parseColor(color));
         }
     }
 }

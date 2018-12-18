@@ -10,6 +10,7 @@
 #include <UIKit/UIKit.h>
 
 #define SCALE(value) [DeviceUtil scale:value]
+#define SCALEFLOAT(value) [DeviceUtil scaleFloat:value]
 #define FONT(value) [DeviceUtil font:value]
 
 #define ScreeScale [[UIScreen mainScreen]scale]
@@ -17,6 +18,8 @@
 @interface DeviceUtil : NSObject
 
 + (CGFloat)scale:(NSInteger)value;
+
++ (CGFloat)scaleFloat:(float)value;
 
 + (NSInteger)font:(NSInteger)font;
 

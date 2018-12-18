@@ -30,7 +30,10 @@
 - (void)getCacheSizePage:(WXModuleKeepAliveCallback)callback;
 - (void)clearCachePage;
 - (void)closePage:(id)params;
+- (void)closePageTo:(id)params;
 - (void)openWeb:(NSString*)url;
 - (void)goDesktop;
+- (void)removePageData:(NSString*)pageName;
+- (void)setPageData:(NSString*)pageName vc:(WXMainViewController *)vc;
 
 @end

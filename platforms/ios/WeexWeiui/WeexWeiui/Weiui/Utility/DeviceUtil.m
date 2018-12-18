@@ -23,6 +23,12 @@
     return [UIScreen mainScreen].bounds.size.width * 1.0f/750 * value;
 }
 
++ (CGFloat)scaleFloat:(float)value
+{
+    //weex以750宽为设计尺寸
+    return [UIScreen mainScreen].bounds.size.width * 1.0f/750 * value;
+}
+
 //字体尺寸转换
 + (NSInteger)font:(NSInteger)font
 {
@@ -63,6 +69,9 @@
     NSString *host = [URL host];
     NSInteger port = [[URL port] integerValue];
     NSString *path = [URL path];
+    
+    if (scheme == nil) scheme = @"";
+    if (host == nil) host = @"";
     
     NSString *newUrl = [NSString stringWithFormat:@"%@://%@%@", scheme, host, port > 0 && port != 80 ? [NSString stringWithFormat:@":%ld", port] : @""];
     if ([url isAbsolutePath]) {

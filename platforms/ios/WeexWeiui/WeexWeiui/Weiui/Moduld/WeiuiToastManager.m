@@ -31,6 +31,14 @@
         self.longer = NO;
         self.x = 0;
         self.y = 0;
+    } else if ([params isKindOfClass:[NSNumber class]]) {
+        self.message = [NSString stringWithFormat: @"%@", params];
+        self.gravity = @"bottom";
+        self.messageColor = @"#FFFFFF";
+        self.backgroundColor = @"#000000";
+        self.longer = NO;
+        self.x = 0;
+        self.y = 0;
     } else if ([params isKindOfClass:[NSDictionary class]]) {
         self.message = params[@"message"] ? [WXConvert NSString:params[@"message"]] : @"";
         self.gravity = params[@"gravity"] ? [WXConvert NSString:params[@"gravity"]] : @"bottom";

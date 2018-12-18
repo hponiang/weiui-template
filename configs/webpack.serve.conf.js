@@ -161,6 +161,7 @@ webpack(weexConfig, (err, stats) => {
     if (err) {
         console.err('COMPILE ERROR:', err.stack)
     } else {
+        utils.copySrcToDist(false);
         utils.syncFolderEvent(devWebpackConfig.devServer.host, devWebpackConfig.devServer.port, devWebpackConfig.devServer.port + 1);
     }
 });

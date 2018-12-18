@@ -16,6 +16,7 @@ import com.taobao.weex.common.WXModule;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import cc.weiui.framework.BuildConfig;
@@ -38,6 +39,7 @@ import cc.weiui.framework.extend.module.weiuiScreenUtils;
 import cc.weiui.framework.extend.module.weiuiCommon;
 import cc.weiui.framework.extend.module.weiuiShareUtils;
 import cc.weiui.framework.extend.view.loading.LoadingDialog;
+import cc.weiui.framework.ui.weiui;
 
 public class weiuiModule extends WXModule {
 
@@ -185,10 +187,43 @@ public class weiuiModule extends WXModule {
         String pageName = weiuiPage.getPageName(object);
         if (pageName.isEmpty()) {
             BGAKeyboardUtil.closeKeyboard((Activity) mWXSDKInstance.getContext());
-            ((Activity) mWXSDKInstance.getContext()).finish();
+            weiuiPage.closeActivity((Activity) mWXSDKInstance.getContext());
             return;
         }
         weiuiPage.closeWin(pageName);
+    }
+
+
+    /**
+     * 关闭页面至指定页面
+     * @param object
+     */
+    @JSMethod
+    public void closePageTo(String object) {
+        String pageName = weiuiPage.getPageName(object);
+        if (pageName.isEmpty()) {
+            return;
+        }
+        boolean isClose = false;
+        Activity lastActivity = null;
+        LinkedList<Activity> array = weiui.getActivityList();
+        for (int i  = 0; i < array.size(); i++) {
+            if (isClose) {
+                if (i + 1 == array.size()) {
+                    lastActivity = array.get(i);
+                }else{
+                    weiuiPage.closeActivity(array.get(i));
+                }
+            }else {
+                if (array.get(i) instanceof PageActivity) {
+                    String mPageName = ((PageActivity) array.get(i)).getPageInfo().getPageName();
+                    if (pageName.equals(mPageName)) {
+                        isClose = true;
+                    }
+                }
+            }
+        }
+        weiuiPage.closeActivity(lastActivity);
     }
 
     /**
@@ -369,7 +404,7 @@ public class weiuiModule extends WXModule {
             return;
         }
         PageActivity mPageActivity = ((PageActivity) mPageBean.getContext());
-        mPageActivity.onPageStatusListener(weiuiJson.getString(json, "listenerName", object), status, weiuiJson.getString(json, "extra"));
+        mPageActivity.onPageStatusListener(weiuiJson.getString(json, "listenerName", object), status, json.get("extra"));
     }
 
     /**
@@ -543,11 +578,11 @@ public class weiuiModule extends WXModule {
     }
 
     /**
-     * 获取手机的IFA（android没有）
+     * 获取手机的IFA
      */
     @JSMethod(uiThread = false)
     public String getIfa() {
-        return "";
+        return this.getImei();
     }
 
     /**
@@ -574,6 +609,15 @@ public class weiuiModule extends WXModule {
             weiuiCommon.setVariate("__weiuiModule::getSDKVersionName", var);
         }
         return weiuiParse.parseStr(var);
+    }
+
+    /**
+     * 是否IPhoneX系列设配
+     * @return
+     */
+    @JSMethod(uiThread = false)
+    public boolean isIPhoneXType() {
+        return false;
     }
 
     /****************************************************************************************/

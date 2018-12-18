@@ -24,7 +24,7 @@ public class WelcomeActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             PageBean mPageBean = new PageBean();
             mPageBean.setUrl(Base.config.getHome());
-            mPageBean.setPageName(Base.config.getHomeParams("pageName", "FirstPage"));
+            mPageBean.setPageName(Base.config.getHomeParams("pageName", "firstPage"));
             mPageBean.setPageType(Base.config.getHomeParams("pageType", "weex"));
             mPageBean.setParams(Base.config.getHomeParams("params", "{}"));
             mPageBean.setCache(weiuiParse.parseLong(Base.config.getHomeParams("cache", "0")));

@@ -121,9 +121,9 @@
     TZImagePickerController *tzImagePickerVc = (TZImagePickerController *)self.navigationController;
     if (iOS7Later) {
         if (_toolBar.isHidden) {
-            [UIApplication sharedApplication].statusBarHidden = YES;
+            //[UIApplication sharedApplication].statusBarHidden = YES;
         } else if (tzImagePickerVc.needShowStatusBar) {
-            [UIApplication sharedApplication].statusBarHidden = NO;
+            //[UIApplication sharedApplication].statusBarHidden = NO;
         }
     }
 }

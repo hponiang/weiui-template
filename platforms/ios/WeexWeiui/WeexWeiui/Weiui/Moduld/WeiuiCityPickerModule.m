@@ -7,6 +7,7 @@
 //
 
 #import "WeiuiCityPickerModule.h"
+#import "DeviceUtil.h"
 
 @interface WeiuiCityPickerModule () <UIPickerViewDelegate, UIPickerViewDataSource>
 
@@ -32,6 +33,9 @@ WX_EXPORT_METHOD(@selector(select:callback:))
 
 - (void)select:(NSDictionary*)params callback:(WXModuleKeepAliveCallback)callback
 {
+    UIViewController *vc = [DeviceUtil getTopviewControler];
+    [vc.view endEditing:YES];
+    
     self.callback = callback;
 
     [self loadData];
@@ -148,6 +152,10 @@ WX_EXPORT_METHOD(@selector(select:callback:))
         _city = parmars[@"city"];
         _area = parmars[@"area"];
         
+        if (_provience == nil) _provience = _provienceList.firstObject[@"name"];
+        if (_city == nil) _city = _cityList.firstObject[@"name"];
+        if (_area == nil) _area = _areaList.firstObject[@"name"];
+        
         for (int i = 0; i < _provienceList.count; i++) {
             NSDictionary *dic = _provienceList[i];
             if ([dic[@"name"] isEqualToString:_provience]) {
@@ -256,6 +264,8 @@ WX_EXPORT_METHOD(@selector(select:callback:))
         [self reloadAreaData];
         [pickerView reloadComponent:2];
         [pickerView selectRow:0 inComponent:2 animated:YES];
+        
+        [self pickerView:pickerView didSelectRow:0 inComponent:1];
     } else if (component == 1) {
         if (row < _cityList.count) {
             _areaList = [NSMutableArray arrayWithArray:_cityList[row][@"cityList"]];
@@ -264,6 +274,8 @@ WX_EXPORT_METHOD(@selector(select:callback:))
         [self reloadAreaData];
         [pickerView reloadComponent:2];
         [pickerView selectRow:0 inComponent:2 animated:YES];
+        
+        [self pickerView:pickerView didSelectRow:0 inComponent:2];
     } else if (component == 2) {
         if (row < _areaList.count) {
             _area = _areaList[row][@"name"];

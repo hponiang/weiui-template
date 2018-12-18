@@ -8,7 +8,7 @@
 
 #import "WeiuiNewPageManager.h"
 #import "DeviceUtil.h"
-#import "IQKeyboardManager.h"
+//#import "IQKeyboardManager.h"
 #import "WeexSDKManager.h"
 
 @interface WeiuiNewPageManager ()
@@ -55,7 +55,7 @@
     id data = params[@"params"];
     NSInteger cache = params[@"cache"] ? [WXConvert NSInteger:params[@"cache"]] : 0;
     BOOL loading = params[@"loading"] ? [WXConvert BOOL:params[@"loading"]] : YES;
-#warning ssss swipeBack默认改为yes
+    #warning ssss swipeBack默认改为yes
     BOOL swipeBack = params[@"swipeBack"] ? [WXConvert BOOL:params[@"swipeBack"]] : YES;
     NSString *statusBarType = params[@"statusBarType"] ? [WXConvert NSString:params[@"statusBarType"]] : @"normal";
     NSString *statusBarColor = params[@"statusBarColor"] ? [WXConvert NSString:params[@"statusBarColor"]] : @"#3EB4FF";
@@ -68,11 +68,11 @@
     BOOL backPressedClose = params[@"backPressedClose"] ? [WXConvert BOOL:params[@"backPressedClose"]] : YES;
     
     //键盘处理
-    if ([softInputMode isEqualToString:@"pan"]) {
-        [IQKeyboardManager sharedManager].enable = NO;
-    } else {
-        [IQKeyboardManager sharedManager].enable = YES;
-    }
+    //if ([softInputMode isEqualToString:@"pan"]) {
+    //    [IQKeyboardManager sharedManager].enable = NO;
+    //} else {
+    //    [IQKeyboardManager sharedManager].enable = YES;
+    //}
 
     url = [DeviceUtil rewriteUrl:url];
     NSLog(@"NewPage = %@", url);
@@ -107,21 +107,14 @@
     
     if (self.weexInstance.viewController.navigationController) {
         [self.weexInstance.viewController.navigationController pushViewController:mainVC animated:YES];
+    } else if ([[DeviceUtil getTopviewControler] navigationController]) {
+        [[[DeviceUtil getTopviewControler] navigationController] pushViewController:mainVC animated:YES];
     } else {
         [[UIApplication sharedApplication] delegate].window.rootViewController =  [[WXRootViewController alloc] initWithRootViewController:mainVC];
     }
     
-    
     //存储页面数据
-    if (pageName.length > 0) {
-        [self.viewData setObject:mainVC forKey:pageName];
-        
-        if (params) {
-            NSMutableDictionary *res = [NSMutableDictionary dictionaryWithDictionary:params];
-            [res setObject:url forKey:@"url"];//替换url为完整地址
-            [self.pageData setObject:res forKey:pageName];
-        }
-    }
+    [self setPageData:pageName vc:mainVC];
 }
 
 - (NSDictionary*)getPageInfo:(id)params
@@ -185,11 +178,11 @@
         name = [(WXMainViewController*)[DeviceUtil getTopviewControler] pageName];
     }
     
-    if ([modo isEqualToString:@"pan"]) {
-        [IQKeyboardManager sharedManager].enable = NO;
-    } else {
-        [IQKeyboardManager sharedManager].enable = YES;
-    }
+    //if ([modo isEqualToString:@"pan"]) {
+    //    [IQKeyboardManager sharedManager].enable = NO;
+    //} else {
+    //    [IQKeyboardManager sharedManager].enable = YES;
+    //}
 }
 #warning ssss
 - (void)setPageBackPressed:(id)params callback:(WXModuleKeepAliveCallback)callback
@@ -232,11 +225,11 @@
     }
     
 #warning ssss 下拉页面复杂，暂时禁用
-//    vc.refreshHeaderBlock = ^{
-//        if (callback) {
-//            callback(name, YES);
-//        }
-//    };
+    //vc.refreshHeaderBlock = ^{
+    //    if (callback) {
+    //        callback(name, YES);
+    //    }
+    //};
 }
 
 - (void)setRefreshing:(id)params refreshing:(BOOL)refreshing
@@ -337,6 +330,10 @@
     }
     
     [vc clearStatusListener:listener];
+    
+    if ([[self.callData allKeys] containsObject:listener]) {
+        [self.callData removeObjectForKey:listener];
+    }
 }
 
 - (void)onPageStatusListener:(id)params status:(NSString*)status
@@ -414,27 +411,120 @@
     } else {
         name = [(WXMainViewController*)[DeviceUtil getTopviewControler] pageName];
     }
+    if ([name isEqualToString:@""]) {
+        return;
+    }
+    
+    id data = self.viewData[name];
+    if (data == nil) {
+        return;
+    }
     
     UIViewController *vc = nil;
-    id data = self.viewData[name];
     if (data && [data isKindOfClass:[UIViewController class]]) {
         vc = (UIViewController*)data;
     } else {
         vc = [DeviceUtil getTopviewControler];
     }
+    if (vc == nil) {
+        return;
+    }
     
-    NSMutableArray *list = [NSMutableArray arrayWithArray:self.weexInstance.viewController.navigationController.viewControllers];
-    for (int i = 0; i < list.count; i++) {
-        if (list[i] == vc) {
-            if (i + 1 == list.count) {
-                [self.weexInstance.viewController.navigationController popViewControllerAnimated:YES];
+    if ([[self.pageData allKeys] containsObject:name]) {
+        [self.pageData removeObjectForKey:name];
+    }
+    if ([[self.viewData allKeys] containsObject:name]) {
+        [self.viewData removeObjectForKey:name];
+    }
+    
+    NSMutableArray *array = [NSMutableArray arrayWithArray:self.weexInstance.viewController.navigationController.viewControllers];
+    BOOL isDeviceUtil = NO;
+    if (array.count == 0) {
+        array = [NSMutableArray arrayWithArray:[[DeviceUtil getTopviewControler] navigationController].viewControllers];
+        isDeviceUtil = YES;
+    }
+    for (int i = 0; i < array.count; i++) {
+        if (array[i] == vc) {
+            [self removePageData:[(WXMainViewController*)array[i] pageName]];
+            if (i + 1 == array.count) {
+                if (isDeviceUtil) {
+                    [[[DeviceUtil getTopviewControler] navigationController] popViewControllerAnimated:YES];
+                } else {
+                    [self.weexInstance.viewController.navigationController popViewControllerAnimated:YES];
+                }
             } else {
-                [list removeObjectAtIndex:i];
-                self.weexInstance.viewController.navigationController.viewControllers = list;
+                [array removeObjectAtIndex:i];
+                if (isDeviceUtil) {
+                    [[DeviceUtil getTopviewControler] navigationController].viewControllers = array;
+                } else {
+                    self.weexInstance.viewController.navigationController.viewControllers = array;
+                }
             }
-            
             break;
         }
+    }
+}
+
+- (void)closePageTo:(id)params
+{
+    NSString *name = @"";
+    if (params) {
+        if ([params isKindOfClass:[NSString class]]) {
+            name = params;
+        } else if ([params isKindOfClass:[NSDictionary class]]) {
+            name = [WXConvert NSString:params[@"pageName"]];
+        }
+    }
+    if ([name isEqualToString:@""]) {
+        return;
+    }
+    
+    id data = self.viewData[name];
+    if (data == nil) {
+        return;
+    }
+    
+    UIViewController *vc = nil;
+    if (data && [data isKindOfClass:[UIViewController class]]) {
+        vc = (UIViewController*)data;
+    }
+    if (vc == nil) {
+        return;
+    }
+    
+    NSMutableArray *array = [NSMutableArray arrayWithArray:self.weexInstance.viewController.navigationController.viewControllers];
+    BOOL isDeviceUtil = NO;
+    if (array.count == 0) {
+        array = [NSMutableArray arrayWithArray:[[DeviceUtil getTopviewControler] navigationController].viewControllers];
+        isDeviceUtil = YES;
+    }
+    
+    BOOL isClose = NO;
+    BOOL isRemove = NO;
+    for (int i = 0; i < array.count; i++) {
+        if (isClose == YES) {
+            if (i + 1 != array.count) {
+                [self removePageData:[(WXMainViewController*)array[i] pageName]];
+                [array removeObjectAtIndex:i];
+                isRemove = YES;
+            }
+        }else{
+            if (array[i] == vc) {
+                isClose = YES;
+            }
+        }
+    }
+    
+    if (isRemove) {
+        if (isDeviceUtil) {
+            [[DeviceUtil getTopviewControler] navigationController].viewControllers = array;
+        } else {
+            self.weexInstance.viewController.navigationController.viewControllers = array;
+        }
+    }
+    
+    if (isClose) {
+       [self closePage:nil];
     }
 }
 
@@ -447,6 +537,36 @@
 - (void)goDesktop
 {
     [[UIApplication sharedApplication] performSelector:@selector(suspend)];
+}
+
+- (void)removePageData:(NSString*)pageName
+{
+    if ([[self.pageData allKeys] containsObject:pageName]) {
+        [self.pageData removeObjectForKey:pageName];
+    }
+    if ([[self.viewData allKeys] containsObject:pageName]) {
+        [self.viewData removeObjectForKey:pageName];
+    }
+}
+
+- (void)setPageData:(NSString*)pageName vc:(WXMainViewController *)vc
+{
+    if (pageName.length > 0) {
+        [self.viewData setObject:vc forKey:pageName];
+        
+        NSMutableDictionary *res = [NSMutableDictionary dictionaryWithDictionary:@{}];
+        [res setObject:vc.url forKey:@"url"];
+        [res setObject:vc.pageName forKey:@"pageName"];
+        [res setObject:vc.pageType forKey:@"pageType"];
+        [res setObject:vc.params ? vc.params: @{} forKey:@"params"];
+        [res setObject:[NSString stringWithFormat:@"%ld", vc.cache] forKey:@"cache"];
+        [res setObject:vc.loading ? @"true" : @"false" forKey:@"loading"];
+        [res setObject:vc.statusBarType forKey:@"statusBarType"];
+        [res setObject:vc.statusBarColor forKey:@"statusBarColor"];
+        [res setObject:[NSString stringWithFormat:@"%ld", vc.statusBarAlpha] forKey:@"statusBarAlpha"];
+        [res setObject:vc.backgroundColor forKey:@"backgroundColor"];
+        [self.pageData setObject:res forKey:pageName];
+    }
 }
 
 @end

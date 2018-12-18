@@ -12,6 +12,8 @@
 #import "UIButton+WebCache.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "UIImageView+WebCache.h"
+#import "SDWebImageDownloader.h"
+#import "SDImageCache.h"
 
 @implementation WeiuiSaveImageManager
 
@@ -37,8 +39,8 @@
         [self authorizationStatus:newImage];
     } else {//如果本地没有
         //下载图片
-        [[SDWebImageManager sharedManager] downloadImageWithURL:[NSURL URLWithString:imageUrl] options:0 progress:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-            if (image) {//下载完成后
+        [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:imageUrl] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
+            if (image) {
                 [self authorizationStatus:image];
             }
         }];
@@ -102,7 +104,7 @@
                                                                 if ([path hasPrefix:@"file://"]) {
                                                                     path = [path stringByReplacingOccurrencesOfString:@"file://" withString:@""];
                                                                 }
-                                                                [[SDImageCache sharedImageCache] storeImage:image forKey:path];
+                                                                [[SDImageCache sharedImageCache] storeImage:image forKey:path completion:nil];
                                                                 if (self.callback) {
                                                                     self.callback(@{@"status":@"success", @"path":path, @"error":@""}, NO);
                                                                 }

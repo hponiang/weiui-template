@@ -54,6 +54,7 @@
     [WXSDKEngine registerModule:@"weiui_picture" withClass:NSClassFromString(@"WeiuiPictureSelectorModule")];
     [WXSDKEngine registerModule:@"weiui_umeng" withClass:NSClassFromString(@"WeiuiUmengModule")];
     [WXSDKEngine registerModule:@"weiui_rongim" withClass:NSClassFromString(@"WeiuiRongcloudModule")];
+    [WXSDKEngine registerModule:@"weiui_pay" withClass:NSClassFromString(@"WeiuiPayModule")];
 
     //Component
     [WXSDKEngine registerComponent:@"weiui_button"
@@ -65,7 +66,7 @@
     [WXSDKEngine registerComponent:@"weiui_banner"
                          withClass:NSClassFromString(@"WeiuiBannerComponent")];
     [WXSDKEngine registerComponent:@"weiui_icon"
-                                                                                                    withClass:NSClassFromString(@"WeiuiIconComponent")];
+                         withClass:NSClassFromString(@"WeiuiIconComponent")];
     [WXSDKEngine registerComponent:@"weiui_marquee"
                          withClass:NSClassFromString(@"WeiuiMarqueeComponent")];
     [WXSDKEngine registerComponent:@"weiui_scroll_text"
@@ -81,7 +82,7 @@
     [WXSDKEngine registerComponent:@"weiui_side_panel_menu"
                          withClass:NSClassFromString(@"WeiuiSidePanelItemComponent")];
     [WXSDKEngine registerComponent:@"weiui_grid"
-                                                                                                           withClass:NSClassFromString(@"WeiuiGridComponent")];
+                         withClass:NSClassFromString(@"WeiuiGridComponent")];
     [WXSDKEngine registerComponent:@"weiui_recyler"
                          withClass:NSClassFromString(@"WeiuiRecylerComponent")];
     [WXSDKEngine registerComponent:@"weiui_list"

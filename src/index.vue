@@ -26,7 +26,7 @@
                     <text class="list-left-title">{{item.title}}</text>
                 </div>
                 <div class="list-item-right">
-                    <text class="list-right-title">{{item.title_en}}</text>
+                    <text class="list-right-title"><{{item.title_en}}></text>
                     <weiui_icon class="list-right-icon" :weiui="{content: 'ios-arrow-right 70%'}"></weiui_icon>
                 </div>
             </div>
@@ -46,7 +46,7 @@
 
             <text class="list-title">Third Module</text>
 
-            <div class="list-item" v-for="(item, index) in third_module" :key="index" @click="openUrl(item.url)">
+            <div class="list-item" v-for="(item, index) in third_module" :key="index" @click="openThird(item.url)">
                 <div class="list-item-left">
                     <weiui_icon class="list-left-icon" :weiui="{content: item.icon}"></weiui_icon>
                     <text class="list-left-title">{{item.title}}</text>
@@ -211,10 +211,9 @@
 
 <script>
     import {jsonParse, jsonStringify} from "../statics/js/global";
+    import {jshome, openViewCode, openViewUrl} from "../statics/js/app";
 
     const weiui = weex.requireModule('weiui');
-
-    const jshome = 'http://weiui.cc/dist/';
 
     export default {
         data() {
@@ -251,9 +250,9 @@
                     url: jshome + 'component_navbar.js',
                 }, {
                     title: '列表容器',
-                    title_en: 'weiui_recyler',
+                    title_en: 'weiui_list',
                     icon: 'ios-list 90%',
-                    url: jshome + 'component_recyler.js',
+                    url: jshome + 'component_list.js',
                 }, {
                     title: '滚动文字',
                     title_en: 'weiui_scroll_text',
@@ -332,13 +331,6 @@
                     icon: 'social-buffer-outline',
                     url: jshome + 'module_ad_dialog.js',
                 }, {
-                    title: '更多拓展模块',
-                    title_en: 'expandModule',
-                    icon: 'more',
-                    url: jshome + 'index_expand.js',
-                }],
-
-                third_module: [{
                     title: '城市选择器',
                     title_en: 'citypicker',
                     icon: 'android-pin',
@@ -348,6 +340,28 @@
                     title_en: 'pictureSelector',
                     icon: 'ios-camera-outline',
                     url: jshome + 'third_picture.js',
+                }, {
+                    title: '更多拓展模块',
+                    title_en: 'expandModule',
+                    icon: 'more',
+                    url: jshome + 'index_expand.js',
+                }],
+
+                third_module: [{
+                    title: '融云通信模块',
+                    title_en: 'rongcloud',
+                    icon: 'tb-community',
+                    url: 'rongcloud',
+                }, {
+                    title: '友盟推送模块',
+                    title_en: 'umeng',
+                    icon: 'android-send',
+                    url: 'umeng',
+                }, {
+                    title: '第三方支付',
+                    title_en: 'pay',
+                    icon: 'tb-sponsor',
+                    url: 'pay',
                 }],
 
                 about_lists: [{
@@ -428,10 +442,11 @@
             },
 
             openWeb(url) {
-                weiui.openPage({
-                    url: url,
-                    pageType: 'web'
-                });
+                openViewUrl(url);
+            },
+
+            openThird(url) {
+                openViewCode("module/third/" + url);
             },
 
             openAuto(url) {

@@ -73,6 +73,7 @@ WX_EXPORT_METHOD(@selector(focus))
 WX_EXPORT_METHOD(@selector(blur))
 WX_EXPORT_METHOD(@selector(setSelectionRange:selectionEnd:))
 WX_EXPORT_METHOD(@selector(getSelectionRange:))
+WX_EXPORT_METHOD(@selector(setValue:))
 
 - (instancetype)initWithRef:(NSString *)ref type:(NSString *)type styles:(NSDictionary *)styles attributes:(NSDictionary *)attributes events:(NSArray *)events weexInstance:(WXSDKInstance *)weexInstance
 {
@@ -231,6 +232,12 @@ WX_EXPORT_METHOD(@selector(getSelectionRange:))
 -(NSString *)text
 {
     return @"";
+}
+
+- (void)setValue:(NSString *)text
+{
+    NSDictionary *temp = @{@"value":@""};
+    [self updateAttributes:temp];
 }
 
 - (void)setText:(NSString *)text

@@ -2,7 +2,7 @@
 
     <div class="app">
 
-        <weiui_navbar>
+        <weiui_navbar class="navbar">
             <weiui_navbar_item type="back"></weiui_navbar_item>
             <weiui_navbar_item type="title">
                 <text class="title">拓展模块</text>
@@ -10,29 +10,25 @@
         </weiui_navbar>
 
 
-        <weiui_list class="list" :weiui="{ pullTips:false}">
+        <scroller class="list">
 
             <div class="list-title-box">
                 <text class="list-title">Expand Module</text>
                 <text class="list-subtitle">（暂不支持ios）</text>
             </div>
 
-            <weiui_recyler @itemClick="expandModuleClick" >
-
-                <div class="list-item" v-for="item in expand_module">
-                    <div class="list-item-left">
-                        <weiui_icon class="list-left-icon" :weiui="{content: item.icon}"></weiui_icon>
-                        <text class="list-left-title">{{item.title}}</text>
-                    </div>
-                    <div class="list-item-right">
-                        <text class="list-right-title">{{item.title_en}}</text>
-                        <weiui_icon class="list-right-icon" :weiui="{content: 'ios-arrow-right 70%'}"></weiui_icon>
-                    </div>
+            <div class="list-item" v-for="(item, key) in expand_module" :key="key" @click="expandModuleClick(item.url)">
+                <div class="list-item-left">
+                    <weiui_icon class="list-left-icon" :weiui="{content: item.icon}"></weiui_icon>
+                    <text class="list-left-title">{{item.title}}</text>
                 </div>
+                <div class="list-item-right">
+                    <text class="list-right-title">{{item.title_en}}</text>
+                    <weiui_icon class="list-right-icon" :weiui="{content: 'ios-arrow-right 70%'}"></weiui_icon>
+                </div>
+            </div>
 
-            </weiui_recyler>
-
-        </weiui_list>
+        </scroller>
 
     </div>
 
@@ -41,6 +37,11 @@
 <style>
     .app {
         flex: 1;
+    }
+
+    .navbar {
+        width: 750px;
+        height: 100px;
     }
 
     .title {
@@ -199,8 +200,8 @@
 
         methods: {
 
-            expandModuleClick(data) {
-                openViewCode("module/expand/" + this.expand_module[data.position].url);
+            expandModuleClick(url) {
+                openViewCode("module/expand/" + url);
             },
 
         }

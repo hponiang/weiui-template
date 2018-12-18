@@ -11,9 +11,11 @@
             </weiui_navbar_item>
         </weiui_navbar>
 
-        <weiui_list class="content" :weiui="{row:2,  pullTips:false}">
-            <div class="item" v-for="(item, index) in lists" :key="index">
-                <text class="button" @click="loading(item)">样式:{{item}}</text>
+        <weiui_list class="content" :weiui="{ pullTips:false }">
+            <div v-for="list in sliceLists(lists, 2)" class="list">
+                <div class="item" v-for="(item, index) in list" :key="index">
+                    <text class="button" @click="loading(item)">样式:{{item}}</text>
+                </div>
             </div>
         </weiui_list>
 
@@ -48,6 +50,11 @@
         padding-top: 20px;
     }
 
+    .list {
+        width: 750px;
+        flex-direction: row;
+    }
+
     .item {
         width: 375px;
         align-items: center;
@@ -57,7 +64,7 @@
         width: 320px;
         font-size: 24px;
         text-align: center;
-        margin-top: 20px;
+        margin-top: 30px;
         padding-top: 26px;
         padding-bottom: 26px;
         padding-left: 30px;
@@ -69,6 +76,7 @@
 
 <script>
     import {openViewCode} from "../statics/js/app";
+    import {each} from "../statics/js/global";
 
     const weiui = weex.requireModule('weiui');
 
@@ -95,6 +103,13 @@
         methods: {
             viewCode(str) {
                 openViewCode(str);
+            },
+            sliceLists(data, slice) {
+                let lists = [];
+                for (let i = 0, len = data.length; i < len; i += slice) {
+                    lists.push(data.slice(i, i + slice));
+                }
+                return lists;
             },
             loading(style) {
                 weiui.loading({

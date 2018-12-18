@@ -101,6 +101,7 @@ public class PageActivity extends AppCompatActivity {
     private Handler mHandler = new Handler();
 
     private PageBean mPageInfo;
+    private String lifecycleLastStatus;
 
     private OnBackPressed mOnBackPressed;
     public interface OnBackPressed { boolean onBackPressed(); }
@@ -443,7 +444,6 @@ public class PageActivity extends AppCompatActivity {
         if (scan_containter != null) {
             scan_inactivityTimer.shutdown();
         }
-        super.onDestroy();
         if (mWXSDKInstance != null) {
             mWXSDKInstance.onActivityDestroy();
         }
@@ -453,8 +453,9 @@ public class PageActivity extends AppCompatActivity {
         if (mPageInfo != null) {
             weiuiIhttp.cancel(mPageInfo.getPageName());
             weiuiPage.removePageBean(mPageInfo.getPageName());
-            invoke("destroy", null);
         }
+        invoke("destroy", null);
+        super.onDestroy();
     }
 
     @Override
@@ -1063,6 +1064,10 @@ public class PageActivity extends AppCompatActivity {
     }
 
     private void invoke(String status, Map<String, Object> retData) {
+        if (status.equals(lifecycleLastStatus)) {
+            return;
+        }
+        lifecycleLastStatus = status;
         lifecycleListener(status);
         //
         if (mOnPageStatusListeners.size() > 0) {
@@ -1081,6 +1086,10 @@ public class PageActivity extends AppCompatActivity {
     }
 
     private void invokeAndKeepAlive(String status, Map<String, Object> retData) {
+        if (status.equals(lifecycleLastStatus)) {
+            return;
+        }
+        lifecycleLastStatus = status;
         lifecycleListener(status);
         //
         if (mOnPageStatusListeners.size() > 0) {
@@ -1109,7 +1118,7 @@ public class PageActivity extends AppCompatActivity {
 
             case "error":
             case "viewCreated":
-                deBugSocketInit();
+                mHandler.postDelayed(this::deBugSocketInit, 300);
                 break;
         }
     }
@@ -1130,12 +1139,15 @@ public class PageActivity extends AppCompatActivity {
             }
             WXComponent mWXComponent = mWXSDKInstance.getRootComponent();
             if (mWXComponent != null) {
-                WXEvent events = mWXComponent.getDomObject().getEvents();
+                WXEvent events = mWXComponent.getEvents();
                 boolean hasEvent = events.contains(weiuiConstants.Event.LIFECYCLE);
                 if (hasEvent) {
                     Map<String, Object> retData = new HashMap<>();
                     retData.put("status", status);
                     WXBridgeManager.getInstance().fireEventOnNode(mWXSDKInstance.getInstanceId(), mWXComponent.getRef(), weiuiConstants.Event.LIFECYCLE, retData, null);
+                    if (status.equals("ready")) {
+                        lifecycleListener("resume");
+                    }
                 }
             }
         }
@@ -1425,7 +1437,7 @@ public class PageActivity extends AppCompatActivity {
                     case "WiFi真机同步":
                         String host = weiuiCommon.getVariateStr("__deBugSocket:Host");
                         String port = weiuiCommon.getVariateStr("__deBugSocket:Port");
-                        String inputObject = "{title:\"WiFi真机同步配置\",message:\"配置成功后，可实现真机同步实时预览\",buttons:[\"取消\",\"连接\"],inputs:[{type:'text',placeholder:'请输入IP地址',value:'" + host + "'},{type:'number',placeholder:'请输入端口号',value:'" + port + "'}]}";
+                        String inputObject = "{title:\"WiFi真机同步配置\",message:\"配置成功后，可实现真机同步实时预览\",buttons:[\"取消\",\"连接\"],inputs:[{type:'text',placeholder:'请输入IP地址',value:'" + host + "',autoFocus:true},{type:'number',placeholder:'请输入端口号',value:'" + port + "'}]}";
                         weiuiAlertDialog.input(PageActivity.this, inputObject, new JSCallback() {
                             @Override
                             public void invoke(Object data) {
@@ -1558,12 +1570,13 @@ public class PageActivity extends AppCompatActivity {
                     Activity activity = activityList.get(i);
                     if (i == 0) {
                         if (activity instanceof PageActivity) {
+                            PageActivity mActivity = ((PageActivity) activity);
                             String homePage = weiuiCommon.getCachesString(PageActivity.this, "__deBugSocket", "homePage");
                             String mHomePage = text.substring(9);
                             if (!homePage.equals(mHomePage))  {
                                 weiuiCommon.setCachesString(PageActivity.this, "__deBugSocket", "homePage", mHomePage, 2);
-                                ((PageActivity) activity).mPageInfo.setUrl(mHomePage);
-                                ((PageActivity) activity).reload();
+                                mActivity.mPageInfo.setUrl(mHomePage);
+                                mActivity.reload();
                                 BGAKeyboardUtil.closeKeyboard(PageActivity.this);
                             }
                         }
@@ -1575,10 +1588,11 @@ public class PageActivity extends AppCompatActivity {
                 List<Activity> activityList = weiui.getActivityList();
                 Activity activity = activityList.get(0);
                 if (activity instanceof PageActivity) {
+                    PageActivity mActivity = ((PageActivity) activity);
                     String mHomePage = text.substring(13);
                     weiuiCommon.setCachesString(PageActivity.this, "__deBugSocket", "homePage", mHomePage, 2);
-                    ((PageActivity) activity).mPageInfo.setUrl(mHomePage);
-                    ((PageActivity) activity).reload();
+                    mActivity.mPageInfo.setUrl(mHomePage);
+                    mActivity.reload();
                     BGAKeyboardUtil.closeKeyboard(PageActivity.this);
                 }
             }else if (text.equals("RELOADPAGE")) {

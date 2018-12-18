@@ -8,6 +8,8 @@
 
 #import "WeiuiWebviewComponent.h"
 #import "DeviceUtil.h"
+#import "YHWebViewProgress.h"
+#import "YHWebViewProgressView.h"
 
 @interface WeiuiWebView : UIWebView
 
@@ -23,6 +25,10 @@
 @property (nonatomic, strong) NSString *content;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) NSString *title;
+@property (nonatomic, assign) BOOL isShowProgress;
+@property (nonatomic, assign) BOOL isScrollEnabled;
+@property (nonatomic, assign) BOOL isHeightChanged;
+@property (strong, nonatomic) YHWebViewProgress *progressProxy;
 
 @end
 
@@ -30,6 +36,8 @@
 
 WX_EXPORT_METHOD(@selector(setContent:))
 WX_EXPORT_METHOD(@selector(setUrl:))
+WX_EXPORT_METHOD(@selector(setProgressbarVisibility:))
+WX_EXPORT_METHOD(@selector(setScrollEnabled:))
 WX_EXPORT_METHOD(@selector(canGoBack:))
 WX_EXPORT_METHOD(@selector(goBack:))
 WX_EXPORT_METHOD(@selector(canGoForward:))
@@ -42,6 +50,9 @@ WX_EXPORT_METHOD(@selector(goForward:))
         _url = @"";
         _content = @"";
         _title = @"";
+        _isShowProgress = YES;
+        _isScrollEnabled = YES;
+        _isHeightChanged = [events containsObject:@"heightChanged"];
         
         for (NSString *key in styles.allKeys) {
             [self dataKey:key value:styles[key] isUpdate:NO];
@@ -64,10 +75,20 @@ WX_EXPORT_METHOD(@selector(goForward:))
     [super viewDidLoad];
     
     WeiuiWebView *webView = (WeiuiWebView*)self.view;
+    
+    YHWebViewProgressView *progressView = [[YHWebViewProgressView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 2)];
+    progressView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
+    self.progressProxy = [[YHWebViewProgress alloc] init];
+    self.progressProxy.progressView = progressView;
+    self.progressProxy.progressView.hidden = !_isShowProgress;
+    [self.view addSubview:progressView];
+    
+    ((UIScrollView *)[webView.subviews objectAtIndex:0]).scrollEnabled = _isScrollEnabled;
+    
     webView.delegate = self;
     
     if (_url.length > 0) {
-        if (![_url hasPrefix:@"http://"]) {
+        if (![_url hasPrefix:@"http://"] && ![_url hasPrefix:@"https://"]) {
             _url = [NSString stringWithFormat:@"http://%@", _url];
         }
         NSURL *url = [NSURL URLWithString:_url];
@@ -80,6 +101,27 @@ WX_EXPORT_METHOD(@selector(goForward:))
     }
     
     [self fireEvent:@"ready" params:nil];
+    
+    if (_isHeightChanged) {
+        [webView.scrollView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:nil];
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    WeiuiWebView *webView = (WeiuiWebView*)self.view;
+    if ([keyPath isEqualToString:@"contentSize"]) {
+        CGFloat webViewHeight = webView.scrollView.contentSize.height;
+        [self fireEvent:@"heightChanged" params:@{@"height":@(750 * 1.0 / [UIScreen mainScreen].bounds.size.width * webViewHeight)}];
+    }
+}
+
+-(void)viewDidUnload {
+    if (_isHeightChanged) {
+        WeiuiWebView *webView = (WeiuiWebView*)self.view;
+        [webView.scrollView removeObserver:self forKeyPath:@"contentSize" context:nil];
+    }
+    [super viewDidUnload];
 }
 
 - (void)updateStyles:(NSDictionary *)styles
@@ -114,6 +156,16 @@ WX_EXPORT_METHOD(@selector(goForward:))
         if (isUpdate) {
             [self setUrl:_url];
         }
+    } else if ([key isEqualToString:@"progressbarVisibility"]) {
+        _isShowProgress = [WXConvert BOOL:value];
+        if (isUpdate) {
+            [self setProgressbarVisibility:_isShowProgress];
+        }
+    } else if ([key isEqualToString:@"scrollEnabled"]) {
+        _isScrollEnabled = [WXConvert BOOL:value];
+        if (isUpdate) {
+            [self setScrollEnabled:_isScrollEnabled];
+        }
     }
 }
 
@@ -128,12 +180,18 @@ WX_EXPORT_METHOD(@selector(goForward:))
 //开始加载网页
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
+    if (_isShowProgress) {
+        [self.progressProxy startProgress];
+    }
     [self fireEvent:@"stateChanged" params:@{@"status":@"start", @"title":@"", @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
 }
 
 //网页加载完成
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+    if (_isShowProgress) {
+        [self.progressProxy completeProgress];
+    }
     NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     if (![title isEqualToString:_title]) {
         _title = title;
@@ -146,6 +204,9 @@ WX_EXPORT_METHOD(@selector(goForward:))
 //网页加载错误
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
+    if (_isShowProgress) {
+        [self.progressProxy completeProgress];
+    }
     if (error) {
         NSString *code = [NSString stringWithFormat:@"%ld", error.code];
         NSString *msg = [NSString stringWithFormat:@"%@", error.description];
@@ -167,13 +228,31 @@ WX_EXPORT_METHOD(@selector(goForward:))
 {
     WeiuiWebView *webView = (WeiuiWebView*)self.view;
 
-    if (![urlStr hasPrefix:@"http://"]) {
+    if (![urlStr hasPrefix:@"http://"] && ![urlStr hasPrefix:@"https://"]) {
         urlStr = [NSString stringWithFormat:@"http://%@", urlStr];
     }
     _url = urlStr;
     NSURL *url = [NSURL URLWithString:urlStr];
     NSURLRequest *request =[NSURLRequest requestWithURL:url];
     [webView loadRequest:request];
+}
+
+//是否显示进度条
+- (void)setProgressbarVisibility:(BOOL)var
+{
+    _isShowProgress = var;
+    if (_isShowProgress == NO) {
+        [self.progressProxy completeProgress];
+    }
+    self.progressProxy.progressView.hidden = !_isShowProgress;
+}
+
+//设置是否允许滚动
+- (void)setScrollEnabled:(BOOL)var
+{
+    _isScrollEnabled = var;
+    WeiuiWebView *webView = (WeiuiWebView*)self.view;
+    ((UIScrollView *)[webView.subviews objectAtIndex:0]).scrollEnabled = var;
 }
 
 //是否可以后退

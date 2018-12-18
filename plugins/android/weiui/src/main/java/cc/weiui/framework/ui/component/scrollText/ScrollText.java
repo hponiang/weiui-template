@@ -2,7 +2,6 @@ package cc.weiui.framework.ui.component.scrollText;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.TypedValue;
 import android.view.View;
@@ -13,7 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.annotation.JSMethod;
-import com.taobao.weex.dom.WXDomObject;
+import com.taobao.weex.ui.action.BasicComponentData;
 import com.taobao.weex.ui.component.WXVContainer;
 
 import java.util.HashMap;
@@ -43,8 +42,8 @@ public class ScrollText extends WXVContainer<ViewGroup> implements View.OnClickL
 
     private AutoScrollTextView v_autotext;
 
-    public ScrollText(WXSDKInstance instance, WXDomObject node, WXVContainer parent) {
-        super(instance, node, parent);
+    public ScrollText(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
+        super(instance, parent, basicComponentData);
     }
 
     @Override
@@ -53,7 +52,7 @@ public class ScrollText extends WXVContainer<ViewGroup> implements View.OnClickL
         initPagerView();
         appleStyleAfterCreated();
         //
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.READY)) {
+        if (getEvents().contains(weiuiConstants.Event.READY)) {
             fireEvent(weiuiConstants.Event.READY, null);
         }
         //
@@ -115,7 +114,7 @@ public class ScrollText extends WXVContainer<ViewGroup> implements View.OnClickL
         } else {
             startScroll();
         }
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.ITEM_CLICK)) {
+        if (getEvents().contains(weiuiConstants.Event.ITEM_CLICK)) {
             Map<String, Object> data = new HashMap<>();
             data.put("isStarting", isStarting());
             fireEvent(weiuiConstants.Event.ITEM_CLICK, data);
@@ -219,7 +218,7 @@ public class ScrollText extends WXVContainer<ViewGroup> implements View.OnClickL
      */
     @JSMethod
     public void setTextColor(String var) {
-        v_autotext.setTextColor(Color.parseColor(var));
+        v_autotext.setTextColor(weiuiParse.parseColor(var));
     }
 
     /**
@@ -228,6 +227,6 @@ public class ScrollText extends WXVContainer<ViewGroup> implements View.OnClickL
      */
     @JSMethod
     public void setBackgroundColor(String var) {
-        v_body.setBackgroundColor(Color.parseColor(var));
+        v_body.setBackgroundColor(weiuiParse.parseColor(var));
     }
 }

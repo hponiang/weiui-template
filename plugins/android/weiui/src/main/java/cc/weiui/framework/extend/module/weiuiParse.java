@@ -1,5 +1,7 @@
 package cc.weiui.framework.extend.module;
 
+import android.graphics.Color;
+
 /**
  * Created by WDM on 2018/3/17.
  */
@@ -156,4 +158,16 @@ public class weiuiParse {
         return parseLong(var, 0);
     }
 
+    /**
+     * 转颜色int
+     * @param colorString
+     * @return
+     */
+    public static int parseColor(Object colorString) {
+        try{
+            return Color.parseColor(weiuiParse.parseStr(colorString));
+        }catch (Exception e) {
+            return -1;
+        }
+    }
 }

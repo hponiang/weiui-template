@@ -1,5 +1,6 @@
 package com.lljjcoder.weiui.ui.module;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Handler;
 
@@ -15,6 +16,7 @@ import com.taobao.weex.common.WXModule;
 import java.util.HashMap;
 import java.util.Map;
 
+import cc.weiui.framework.extend.integration.swipebacklayout.BGAKeyboardUtil;
 import cc.weiui.framework.extend.module.weiuiJson;
 
 
@@ -43,17 +45,20 @@ public class weiuiCitypickerModule extends WXModule {
         final String area = weiuiJson.getString(json, "area");
         //
         if (cityPicker == null) {
-            cityPicker = new CityPickerView.Builder(mWXSDKInstance.getContext()).textSize(20)
+            cityPicker = new CityPickerView.Builder(mWXSDKInstance.getContext())
+                    .textSize(17)
                     .titleTextColor("#000000")
+                    .confirTextColor("#333333")
+                    .cancelTextColor("#333333")
                     .backgroundPop(0xa0000000)
                     .province(province)
                     .city(city)
                     .district(area)
                     .textColor(Color.parseColor("#000000"))
-                    .provinceCyclic(true)
+                    .provinceCyclic(false)
                     .cityCyclic(false)
                     .districtCyclic(false)
-                    .visibleItemsCount(7)
+                    .visibleItemsCount(8)
                     .itemPadding(10)
                     .build();
         }
@@ -62,7 +67,6 @@ public class weiuiCitypickerModule extends WXModule {
             public void onSelected(ProvinceBean province, CityBean city, DistrictBean district) {
                 if (callback != null) {
                     Map<String, Object> data = new HashMap<>();
-                    data.put("status", "success");
                     data.put("province", province.getName());
                     data.put("city", city.getName());
                     data.put("area", district != null ? district.getName() : "");
@@ -72,19 +76,13 @@ public class weiuiCitypickerModule extends WXModule {
 
             @Override
             public void onCancel() {
-                if (callback != null) {
-                    Map<String, Object> data = new HashMap<>();
-                    data.put("status", "cancel");
-                    data.put("province", province);
-                    data.put("city", city);
-                    data.put("area", area);
-                    callback.invoke(data);
-                }
+
             }
         });
         cityPicker.setProvince(province);
         cityPicker.setCity(city);
         cityPicker.setDistrict(area);
         cityPicker.show();
+        BGAKeyboardUtil.closeKeyboard((Activity) mWXSDKInstance.getContext());
     }
 }

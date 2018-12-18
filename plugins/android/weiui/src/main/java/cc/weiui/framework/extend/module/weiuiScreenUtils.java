@@ -13,32 +13,52 @@ import cc.weiui.framework.extend.module.utilcode.util.ScreenUtils;
 public class weiuiScreenUtils {
 
     public static int weexPx2dp(WXSDKInstance mInstance, Object pxValue, int defaultValue) {
-        float width;
-        if (mInstance == null) {
-            width = WXSDKManager.getInstanceViewPortWidth(null);
-        }else{
-            width = mInstance.getInstanceViewPortWidth();
-        }
-        return (int) (ScreenUtils.getScreenWidth() / width * WXUtils.getNumberInt(removePxString(pxValue), defaultValue));
+        return (int) (weexPx2dpFloat(mInstance, pxValue, defaultValue));
     }
 
     public static int weexPx2dp(WXSDKInstance mInstance, Object pxValue) {
-        return weexPx2dp(mInstance, pxValue, 0);
+        return (int) weexPx2dpFloat(mInstance, pxValue);
     }
 
     public static int weexDp2px(WXSDKInstance mInstance, Object dpValue) {
+        return (int) (weexDp2pxFloat(mInstance, dpValue));
+    }
+
+    /******************************************************************************************/
+    /******************************************************************************************/
+    /******************************************************************************************/
+
+    public static float weexPx2dpFloat(WXSDKInstance mInstance, Object pxValue, float defaultValue) {
         float width;
         if (mInstance == null) {
             width = WXSDKManager.getInstanceViewPortWidth(null);
         }else{
             width = mInstance.getInstanceViewPortWidth();
         }
-        return (int) (width / ScreenUtils.getScreenWidth() * WXUtils.getNumberInt(dpValue, 0));
+        return runTwo(ScreenUtils.getScreenWidth() / width * weiuiParse.parseFloat(removePxString(pxValue), defaultValue));
+    }
+
+    public static float weexPx2dpFloat(WXSDKInstance mInstance, Object pxValue) {
+        return weexPx2dpFloat(mInstance, pxValue, 0);
+    }
+
+    public static float weexDp2pxFloat(WXSDKInstance mInstance, Object dpValue) {
+        float width;
+        if (mInstance == null) {
+            width = WXSDKManager.getInstanceViewPortWidth(null);
+        }else{
+            width = mInstance.getInstanceViewPortWidth();
+        }
+        return runTwo(width / ScreenUtils.getScreenWidth() * weiuiParse.parseFloat(dpValue, 0));
     }
 
     /******************************************************************************************/
     /******************************************************************************************/
     /******************************************************************************************/
+
+    private static float runTwo(float number) {
+        return (float)(Math.round(number * 100) / 100.0);
+    }
 
     private static String removePxString(Object pxValue) {
         String temp = WXUtils.getString(pxValue, null);

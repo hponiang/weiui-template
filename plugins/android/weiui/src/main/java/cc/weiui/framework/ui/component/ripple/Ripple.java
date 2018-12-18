@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.taobao.weex.WXSDKInstance;
-import com.taobao.weex.dom.WXDomObject;
+import com.taobao.weex.ui.action.BasicComponentData;
 import com.taobao.weex.ui.component.WXVContainer;
 
 import cc.weiui.framework.R;
@@ -25,8 +25,8 @@ public class Ripple extends WXVContainer<ViewGroup> {
 
     private FrameLayout v_container;
 
-    public Ripple(WXSDKInstance instance, WXDomObject dom, WXVContainer parent) {
-        super(instance, dom, parent);
+    public Ripple(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
+        super(instance, parent, basicComponentData);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class Ripple extends WXVContainer<ViewGroup> {
         mView = ((Activity) context).getLayoutInflater().inflate(R.layout.layout_weiui_ripple, null);
         initPagerView();
         //
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.READY)) {
+        if (getEvents().contains(weiuiConstants.Event.READY)) {
             fireEvent(weiuiConstants.Event.READY, null);
         }
         //
@@ -55,7 +55,7 @@ public class Ripple extends WXVContainer<ViewGroup> {
 
     private void initPagerView() {
         v_container = mView.findViewById(R.id.v_container);
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.ITEM_CLICK)) {
+        if (getEvents().contains(weiuiConstants.Event.ITEM_CLICK)) {
             v_container.setOnClickListener(v -> fireEvent(weiuiConstants.Event.ITEM_CLICK, null));
         }
     }

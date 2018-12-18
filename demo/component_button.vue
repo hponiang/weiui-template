@@ -48,48 +48,48 @@
             <text class="list-title">自定义样式</text>
 
             <div class="list-input-item">
-                <text class="cell">按钮文字</text>
+                <text class="cell">按钮文字：</text>
                 <input class="input" placeholder="文字" v-model="text"/>
             </div>
 
             <div class="list-input-item">
-                <text class="cell" style="flex:1">是否加载中</text>
+                <text class="cell" style="flex:1">是否加载中：</text>
                 <switch class="switch" :checked="loading" @change="loading = !loading"></switch>
             </div>
 
             <div class="list-input-item">
-                <text class="cell" style="flex:1">是否禁用</text>
+                <text class="cell" style="flex:1">是否禁用：</text>
                 <switch class="switch" :checked="disabled" @change="disabled = !disabled"></switch>
             </div>
 
             <div class="list-input-item">
-                <text class="cell">按钮宽度</text>
+                <text class="cell">按钮宽度：</text>
                 <input class="input" placeholder="自定义样式实现, 默认全屏"
                        v-model="width"/>
             </div>
 
             <div class="list-input-item">
-                <text class="cell">按钮高度</text>
+                <text class="cell">按钮高度：</text>
                 <input class="input" placeholder="自定义样式实现, 默认高度80px" v-model="height"/>
             </div>
 
             <div class="list-input-item">
-                <text class="cell">背景颜色</text>
+                <text class="cell">背景颜色：</text>
                 <input class="input" placeholder="自定义样式实现" v-model="backgroundColor"/>
             </div>
 
             <div class="list-input-item">
-                <text class="cell">边框颜色</text>
+                <text class="cell">边框颜色：</text>
                 <input class="input" placeholder="自定义样式实现" v-model="borderColor"/>
             </div>
 
             <div class="list-input-item">
-                <text class="cell">边框圆角</text>
+                <text class="cell">边框圆角：</text>
                 <input class="input" placeholder="自定义样式实现,默认8px" v-model="borderRadius"/>
             </div>
 
             <div class="demo-item">
-                <weiui_button class="demoButton" :style="demoStyle"></weiui_button>
+                <weiui_button class="demoButton" :weiui="weiuiStyle" :style="demoStyle"></weiui_button>
             </div>
 
         </scroller>
@@ -214,8 +214,8 @@
             });
         },
         computed: {
-            demoStyle() {
-                const { backgroundColor, borderColor, borderRadius, text, color, loading, disabled, width, height } = this;
+            weiuiStyle() {
+                const { backgroundColor, borderColor, borderRadius, text, color, loading, disabled } = this;
                 const customStyle = {};
                 if (backgroundColor) {
                     customStyle.backgroundColor = backgroundColor;
@@ -235,6 +235,12 @@
                 }
                 customStyle.loading = loading;
                 customStyle.disabled = disabled;
+                return customStyle;
+            },
+
+            demoStyle() {
+                const { width, height } = this;
+                const customStyle = {};
                 customStyle.width = width;
                 customStyle.height = height;
                 return customStyle;

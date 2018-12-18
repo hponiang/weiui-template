@@ -2,7 +2,6 @@ package cc.weiui.framework.ui.component.grid;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -12,7 +11,8 @@ import android.widget.FrameLayout;
 import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.annotation.JSMethod;
-import com.taobao.weex.dom.WXDomObject;
+import com.taobao.weex.dom.CSSShorthand;
+import com.taobao.weex.ui.action.BasicComponentData;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXVContainer;
 
@@ -39,8 +39,8 @@ public class Grid extends WXVContainer<ViewGroup> {
 
     private int addIdentify;
 
-    public Grid(WXSDKInstance instance, WXDomObject node, WXVContainer parent) {
-        super(instance, node, parent);
+    public Grid(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
+        super(instance, parent, basicComponentData);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class Grid extends WXVContainer<ViewGroup> {
         mView = ((Activity) context).getLayoutInflater().inflate(R.layout.layout_weiui_grid, null);
         initPagerView();
         //
-        if (getDomObject().getEvents().contains(weiuiConstants.Event.READY)) {
+        if (getEvents().contains(weiuiConstants.Event.READY)) {
             fireEvent(weiuiConstants.Event.READY, null);
         }
         //
@@ -84,7 +84,8 @@ public class Grid extends WXVContainer<ViewGroup> {
             lp.height = height;
         }
         if (lp instanceof ViewGroup.MarginLayoutParams) {
-            top = weiuiScreenUtils.weexPx2dp(getInstance(), child.getDomObject().getStyles().get("marginTop"), 0);
+            top = weiuiScreenUtils.weexDp2px(getInstance(), child.getMargin().get(CSSShorthand.EDGE.TOP));
+            top = weiuiScreenUtils.weexPx2dp(getInstance(), top, 0);
             ((ViewGroup.MarginLayoutParams) lp).setMargins(left, top, right, bottom);
         }
         return lp;
@@ -178,7 +179,7 @@ public class Grid extends WXVContainer<ViewGroup> {
         v_gridPager.setOnPageItemClickListener(new GridPager.OnPageItemClickListener() {
             @Override
             public void onClick(int pos, int position, int index) {
-                if (getDomObject().getEvents().contains(weiuiConstants.Event.ITEM_CLICK)) {
+                if (getEvents().contains(weiuiConstants.Event.ITEM_CLICK)) {
                     Map<String, Object> data = new HashMap<>();
                     data.put("page", pos);
                     data.put("position", position);
@@ -189,7 +190,7 @@ public class Grid extends WXVContainer<ViewGroup> {
 
             @Override
             public void onLongClick(int pos, int position, int index) {
-                if (getDomObject().getEvents().contains(weiuiConstants.Event.ITEM_LONG_CLICK)) {
+                if (getEvents().contains(weiuiConstants.Event.ITEM_LONG_CLICK)) {
                     Map<String, Object> data = new HashMap<>();
                     data.put("page", pos);
                     data.put("position", position);
@@ -240,7 +241,7 @@ public class Grid extends WXVContainer<ViewGroup> {
      */
     @JSMethod
     public void setDividerColor(String var) {
-        v_gridPager.setDividerColor(Color.parseColor(var));
+        v_gridPager.setDividerColor(weiuiParse.parseColor(var));
         notifyDataSetChanged();
     }
 
@@ -308,7 +309,7 @@ public class Grid extends WXVContainer<ViewGroup> {
      */
     @JSMethod
     public void setUnSelectedIndicatorColor(String indicatorUnSelectedColor) {
-        v_gridPager.setUnSelectedIndicatorColor(Color.parseColor(indicatorUnSelectedColor));
+        v_gridPager.setUnSelectedIndicatorColor(weiuiParse.parseColor(indicatorUnSelectedColor));
         notifyDataSetChanged();
     }
 
@@ -318,7 +319,7 @@ public class Grid extends WXVContainer<ViewGroup> {
      */
     @JSMethod
     public void setSelectedIndicatorColor(String indicatorSelectedColor) {
-        v_gridPager.setSelectedIndicatorColor(Color.parseColor(indicatorSelectedColor));
+        v_gridPager.setSelectedIndicatorColor(weiuiParse.parseColor(indicatorSelectedColor));
         notifyDataSetChanged();
     }
 

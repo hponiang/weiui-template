@@ -14,6 +14,7 @@ webpack(weexConfig, (err, stats) => {
             isCreateServer = true;
             utils.createServer(config.dev.contentBase, config.dev.portOnlyDev);
         }
+        utils.copySrcToDist(false);
         utils.syncFolderEvent(config.dev.host, config.dev.portOnlyDev, config.dev.portOnlyDev + 1);
     }
 });

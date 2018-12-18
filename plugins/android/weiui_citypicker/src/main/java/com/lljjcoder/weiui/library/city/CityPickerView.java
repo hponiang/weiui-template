@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -225,10 +227,11 @@ public class CityPickerView implements CanShow, OnWheelChangedListener {
         mTvOK = (TextView) popview.findViewById(R.id.tv_confirm);
         mTvTitle = (TextView) popview.findViewById(R.id.tv_title);
         mTvCancel = (TextView) popview.findViewById(R.id.tv_cancel);
-        
+
         popwindow = new PopupWindow(popview, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         popwindow.setBackgroundDrawable(new ColorDrawable(backgroundPop));
-        popwindow.setAnimationStyle(R.style.AnimBottom);
+        //popwindow.setAnimationStyle(R.style.AnimBottom);
+        popwindow.setAnimationStyle(0);
         popwindow.setTouchable(true);
         popwindow.setOutsideTouchable(false);
         popwindow.setFocusable(true);
@@ -824,6 +827,10 @@ public class CityPickerView implements CanShow, OnWheelChangedListener {
     public void show() {
         if (!isShow()) {
             setUpData();
+            Animation loadAnimation = AnimationUtils.loadAnimation(context, R.anim.push_bottom_in);
+            loadAnimation.setFillAfter(true);
+            loadAnimation.setDuration(180);
+            popview.findViewById(R.id.ll_title_background).startAnimation(loadAnimation);
             popwindow.showAtLocation(popview, Gravity.BOTTOM, 0, 0);
         }
     }
