@@ -1,8 +1,15 @@
 const path = require('path');
 const notifier = require('node-notifier');
-const config = require('./config');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const packageConfig = require('../package.json');
+const fs = require('fs');
+const fsEx = require('fs-extra');
+const helper = require('./helper');
+const weiuiConfig = require('../weiui.config');
+const uuid = require('node-uuid');
+const http = require('http');
+
+let socketAlready = false;
+let socketClients = [];
 
 exports.cssLoaders = function (options) {
     options = options || {};
@@ -36,13 +43,11 @@ exports.cssLoaders = function (options) {
         }
         if (options.useVue) {
             return ['vue-style-loader'].concat(loaders)
-        }
-        else {
+        } else {
             return loaders
         }
     };
 
-    // https://vue-loader.vuejs.org/en/configurations/extract-css.html
     return {
         less: generateLoaders('less'),
         sass: generateLoaders('sass', {indentedSyntax: true}),
@@ -52,7 +57,6 @@ exports.cssLoaders = function (options) {
     }
 };
 
-// Generate loaders for standalone style files (outside of .vue)
 exports.styleLoaders = function (options) {
     const output = [];
     const loaders = exports.cssLoaders(options);
@@ -64,7 +68,6 @@ exports.styleLoaders = function (options) {
             use: loader
         })
     }
-
     return output
 };
 
@@ -84,21 +87,35 @@ exports.createNotifierCallback = () => {
     }
 };
 
-const fs = require('fs');
-const fsEx = require('fs-extra');
-const helper = require('./helper');
-const weiuiConfig = require('../weiui.config');
-const uuid = require('node-uuid');
-const chalk = require('chalk');
-
-let socketAlready = false;
-let socketClients = [];
-
-let getQueryString = (search, name) => {
-    let reg = new RegExp("(^|&|\\?)" + name + "=([^&]*)", "i");
-    let r = search.match(reg);
-    if (r != null) return (r[2]);
-    return "";
+/**
+ * 替换iOS plist文件项目内容
+ * @param path
+ * @param key
+ * @param value
+ */
+exports.replaceDictString = (path, key, value) => {
+    if (!fs.existsSync(path)) {
+        return;
+    }
+    let content = fs.readFileSync(path, 'utf8');
+    let matchs = content.match(/<dict>(.*?)<\/dict>/gs);
+    if (matchs) {
+        matchs.forEach(function (oldText) {
+            if (helper.strExists(oldText, '<string>' + key + '</string>', true)) {
+                let searchValue = helper.getMiddle(oldText, '<array>', '</array>');
+                if (searchValue) {
+                    searchValue = '<array>' + searchValue + '</array>';
+                    let stringValue = '<string>' + helper.getMiddle(searchValue, '<string>', '</string>') + '</string>';
+                    let replaceValue = searchValue.replace(new RegExp(stringValue, "g"), '<string>' + value + '</string>');
+                    let newText = oldText.replace(new RegExp(searchValue, "g"), replaceValue);
+                    let result = fs.readFileSync(path, 'utf8').replace(new RegExp(oldText, "g"), newText);
+                    if (result) {
+                        fs.writeFileSync(path, result, 'utf8');
+                    }
+                }
+            }
+        });
+    }
 };
 
 /**
@@ -143,6 +160,7 @@ exports.syncFolderEvent = (host, port, socketPort) => {
     if (isSocket) {
         jsonData.homePage = 'http://' + host + ':' + port + '/dist/index.js';
     }
+    jsonData.wxpay.appid = helper.getObject(jsonData, 'wxpay.appid');
     //
     let copyJsEvent = (originDir, newDir) => {
         let lists = fs.readdirSync(originDir);
@@ -171,7 +189,7 @@ exports.syncFolderEvent = (host, port, socketPort) => {
                 let assetsPath = path + '/assets/weiui';
                 fs.stat(helper.rootNode(path), (err, stats) => {
                     if (typeof stats === 'object' && stats.isDirectory()) {
-                        fsEx.remove(helper.rootNode(assetsPath), function(err) {
+                        fsEx.remove(helper.rootNode(assetsPath), function (err) {
                             if (!err) {
                                 fsEx.outputFile(helper.rootNode(assetsPath + '/config.json'), JSON.stringify(jsonData));
                                 if (!jsonData.homePage) {
@@ -193,7 +211,7 @@ exports.syncFolderEvent = (host, port, socketPort) => {
                 let bundlejsPath = path + '/bundlejs/weiui';
                 fs.stat(helper.rootNode(path), (err, stats) => {
                     if (typeof stats === 'object' && stats.isDirectory()) {
-                        fsEx.remove(helper.rootNode(bundlejsPath), function(err) {
+                        fsEx.remove(helper.rootNode(bundlejsPath), function (err) {
                             if (!err) {
                                 fsEx.outputFile(helper.rootNode(bundlejsPath + '/config.json'), JSON.stringify(jsonData));
                                 if (!jsonData.homePage) {
@@ -203,6 +221,8 @@ exports.syncFolderEvent = (host, port, socketPort) => {
                         });
                     }
                 });
+                let plistPath = 'platforms/ios/' + item + '/WeexWeiui/Info.plist';
+                this.replaceDictString(helper.rootNode(plistPath), 'weiuiAppWxappid', jsonData.wxpay.appid);
             });
         }
     });
@@ -211,10 +231,10 @@ exports.syncFolderEvent = (host, port, socketPort) => {
         if (socketAlready === false) {
             socketAlready = true;
             let WebSocketServer = require('ws').Server,
-                wss = new WebSocketServer({ port: socketPort });
+                wss = new WebSocketServer({port: socketPort});
             wss.on('connection', (ws, info) => {
                 let deviceId = uuid.v4();
-                socketClients.push({ deviceId, ws });
+                socketClients.push({deviceId, ws});
                 //console.log("[WebSocketServer]", `Your device ${deviceId} had been connected to the socket server.`);
                 ws.on('close', () => {
                     for (let i = 0, len = socketClients.length; i < len; i++) {
@@ -229,7 +249,7 @@ exports.syncFolderEvent = (host, port, socketPort) => {
                     //console.log("[WebSocketServer]", 'Socket error:' + e);
                 });
                 //
-                let mode = getQueryString(info.url, "mode");
+                let mode = helper.getQueryString(info.url, "mode");
                 switch (mode) {
                     case "initialize":
                         ws.send('HOMEPAGE:' + jsonData.homePage);
@@ -250,7 +270,7 @@ exports.syncFolderEvent = (host, port, socketPort) => {
             message: jsonData.socketHost + ':' + jsonData.socketPort,
             contentImage: path.join(__dirname, 'logo.png')
         });
-    }else{
+    } else {
         notifier.notify({
             title: 'Weex Weiui',
             message: "Build successful",
@@ -258,8 +278,6 @@ exports.syncFolderEvent = (host, port, socketPort) => {
         });
     }
 };
-
-const http = require('http');
 
 /**
  * 创建访问服务

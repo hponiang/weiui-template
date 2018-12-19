@@ -9,6 +9,10 @@ module.exports = {
 
     appKey: "3TRWyttKzxRBtmHc004sJMjjyAxOf08l",
 
+    wxpay: {
+        appid: 'wx76cd9902f7e09bf3',
+    },
+
     rongim: {
         ios: {
             enabled: false,
