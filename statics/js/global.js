@@ -246,6 +246,17 @@ let global = {
     },
 
     /**
+     * 是否日期格式
+     * @returns {boolean}
+     */
+    isDate(string) {
+        let reg = /^(\d{4})-(\d{2})-(\d{2})$/;
+        let str = string + "";
+        if (str == "") return false;
+        return !(!reg.test(str) && RegExp.$2 <= 12 && RegExp.$3 <= 31);
+    },
+
+    /**
      * 检测手机号码格式
      * @param str
      * @returns {boolean}
@@ -440,6 +451,22 @@ let global = {
             }
         });
         return text;
+    },
+
+    /**
+     * 字节转换
+     * @param bytes
+     * @returns {string}
+     */
+    bytesToSize(bytes) {
+        if (bytes === 0) return '0 B';
+        let k = 1024;
+        let sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+        let i = Math.floor(Math.log(bytes) / Math.log(k));
+        if (typeof sizes[i] === "undefined") {
+            return '0 B';
+        }
+        return global.runNum((bytes / Math.pow(k, i)), 2) + ' ' + sizes[i];
     },
 };
 
