@@ -2,22 +2,52 @@ package cc.weiui.framework.ui;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.InitConfig.Builder;
 import com.taobao.weex.WXSDKEngine;
+import com.taobao.weex.bridge.JSCallback;
 import com.taobao.weex.common.WXException;
 
+import cc.weiui.framework.BuildConfig;
+import cc.weiui.framework.activity.PageActivity;
 import cc.weiui.framework.extend.adapter.ImageAdapter;
+import cc.weiui.framework.extend.bean.PageBean;
 import cc.weiui.framework.extend.integration.iconify.Iconify;
 import cc.weiui.framework.extend.integration.iconify.fonts.IoniconsModule;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import cc.weiui.framework.extend.integration.iconify.fonts.TbIconfontModule;
+import cc.weiui.framework.extend.integration.swipebacklayout.BGAKeyboardUtil;
 import cc.weiui.framework.extend.integration.swipebacklayout.BGASwipeBackHelper;
+import cc.weiui.framework.extend.module.rxtools.rxtoolsModule;
+import cc.weiui.framework.extend.module.utilcode.util.DeviceUtils;
+import cc.weiui.framework.extend.module.utilcode.util.FileUtils;
+import cc.weiui.framework.extend.module.utilcode.utilcodeModule;
+import cc.weiui.framework.extend.module.weiuiAdDialog;
+import cc.weiui.framework.extend.module.weiuiAjax;
+import cc.weiui.framework.extend.module.weiuiAlertDialog;
+import cc.weiui.framework.extend.module.weiuiCommon;
 import cc.weiui.framework.extend.module.weiuiIhttp;
+import cc.weiui.framework.extend.module.weiuiJson;
+import cc.weiui.framework.extend.module.weiuiOpenApp;
+import cc.weiui.framework.extend.module.weiuiPage;
+import cc.weiui.framework.extend.module.weiuiParse;
+import cc.weiui.framework.extend.module.weiuiScreenUtils;
+import cc.weiui.framework.extend.module.weiuiShareUtils;
+import cc.weiui.framework.extend.view.loading.LoadingDialog;
+import cc.weiui.framework.extend.view.webviewBridge.JsCallback;
 import cc.weiui.framework.ui.component.banner.Banner;
 import cc.weiui.framework.ui.component.button.Button;
 import cc.weiui.framework.ui.component.grid.Grid;
@@ -33,7 +63,7 @@ import cc.weiui.framework.ui.component.sidePanel.SidePanelMenu;
 import cc.weiui.framework.ui.component.tabbar.Tabbar;
 import cc.weiui.framework.ui.component.tabbar.TabbarPage;
 import cc.weiui.framework.ui.component.webView.WebView;
-import cc.weiui.framework.ui.module.weiuiModule;
+import cc.weiui.framework.ui.module.WeexModule;
 
 /**
  * Created by WDM on 2018/3/27.
@@ -108,7 +138,7 @@ public class weiui {
         WXSDKEngine.initialize(application, mBuilder.build());
 
         try {
-            WXSDKEngine.registerModule("weiui", weiuiModule.class);
+            WXSDKEngine.registerModule("weiui", WeexModule.class);
             WXSDKEngine.registerComponent("weiui_banner", Banner.class);
             WXSDKEngine.registerComponent("weiui_button", Button.class);
             WXSDKEngine.registerComponent("weiui_grid", Grid.class);
@@ -167,4 +197,1095 @@ public class weiui {
             mActivityList.remove(activity);
         }
     };
+
+    /***************************************************************************************************/
+    /***************************************************************************************************/
+    /***************************************************************************************************/
+
+    public static Object[] objectGroup(Object... var) {
+        return var;
+    }
+
+    public static JSCallback MCallback(JsCallback callback) {
+        if (callback == null) {
+            return null;
+        }
+        return new JSCallback() {
+            @Override
+            public void invoke(Object data) {
+                try {
+                    callback.apply(data);
+                } catch (JsCallback.JsCallbackException je) {
+                    je.printStackTrace();
+                }
+            }
+
+            @Override
+            public void invokeAndKeepAlive(Object data) {
+                try {
+                    callback.apply(data);
+                } catch (JsCallback.JsCallbackException je) {
+                    je.printStackTrace();
+                }
+            }
+        };
+    }
+
+    public static void HCallback(JsCallback callback, Object... data) {
+        if (callback == null) {
+            return;
+        }
+        try {
+            callback.apply(data);
+        } catch (JsCallback.JsCallbackException je) {
+            je.printStackTrace();
+        }
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 打开页面 或 打开网页（内置浏览器）
+     * @param object
+     * @param callback
+     */
+    public void openPage(Context context, String object, JSCallback callback) {
+        JSONObject json = weiuiJson.parseObject(object);
+        if (json.size() == 0) {
+            json.put("url", object);
+        }
+        if (json.getString("url") == null || json.getString("url").isEmpty()) {
+            return;
+        }
+        PageBean mBean = new PageBean();
+
+        //网址
+        mBean.setUrl(weiuiPage.rewriteUrl(context, json.getString("url")));
+        //名称（默认：随机生成）
+        if (json.getString("pageName") != null) {
+            mBean.setPageName(json.getString("pageName"));
+        }
+        //类型（默认：weex）
+        if (json.getString("pageType") != null) {
+            mBean.setPageType(json.getString("pageType"));
+        }
+        //缓存（默认：0）
+        if (json.getString("cache") != null) {
+            mBean.setCache(json.getIntValue("cache"));
+        }
+        //转递数据（默认：无）
+        if (json.get("params") != null) {
+            mBean.setParams(json.get("params"));
+        }
+        //是否显示等待（默认：true）
+        if (json.getBoolean("loading") != null) {
+            mBean.setLoading(json.getBoolean("loading"));
+        }
+        //是否支持滑动返回（默认：false）
+        if (json.getBoolean("swipeBack") != null) {
+            mBean.setSwipeBack(json.getBoolean("swipeBack"));
+        }
+        //状态栏样式（可选，等于fullscreen|immersion时statusBarType、statusBarAlpha无效）
+        if (json.getString("statusBarType") != null) {
+            mBean.setStatusBarType(json.getString("statusBarType"));
+        }
+        //状态栏颜色值（默认：#3EB4FF）
+        if (json.getString("statusBarColor") != null) {
+            mBean.setStatusBarColor(json.getString("statusBarColor"));
+        }
+        //状态栏透明度（默认：0）
+        if (json.getInteger("statusBarAlpha") != null) {
+            mBean.setStatusBarAlpha(json.getInteger("statusBarAlpha"));
+        }
+        //透明底色窗口（默认：false）
+        if (json.getBoolean("translucent") != null) {
+            mBean.setTranslucent(json.getBoolean("translucent"));
+        }
+        //页面背景颜色（默认：#f4f8f9）
+        if (json.getString("backgroundColor") != null) {
+            mBean.setBackgroundColor(json.getString("backgroundColor"));
+        }
+        //返回键关闭（默认：true）
+        if (json.getBoolean("backPressedClose") != null) {
+            mBean.setBackPressedClose(json.getBoolean("backPressedClose"));
+        }
+
+        //JS回调事件
+        if (callback != null) {
+            mBean.setCallback(callback);
+        }
+
+        weiuiPage.openWin(context, mBean);
+    }
+
+    /**
+     * 获取页面信息
+     * @param object
+     * @return
+     */
+    public Object getPageInfo(Context context, String object) {
+        String pageName = weiuiPage.getPageName(object);
+        if (pageName.isEmpty()) {
+            if (context instanceof PageActivity) {
+                return ((PageActivity) context).getPageInfo().toMap();
+            }
+            return null;
+        }
+        return weiuiPage.getWinInfo(pageName).toMap();
+    }
+
+    /**
+     * 获取页面传递的参数
+     * @param object
+     * @return
+     */
+    public Object getPageParams(Context context, String object) {
+        String pageName = weiuiPage.getPageName(object);
+        if (pageName.isEmpty()) {
+            if (context instanceof PageActivity) {
+                return ((PageActivity) context).getPageInfo().getParams();
+            }
+            return null;
+        }
+        return weiuiPage.getWinInfo(pageName).getParams();
+    }
+
+    /**
+     * 重新加载页面（刷新）
+     * @param object
+     */
+    public void reloadPage(Context context, String object) {
+        String pageName = weiuiPage.getPageName(object);
+        if (pageName.isEmpty()) {
+            if (context instanceof PageActivity) {
+                ((PageActivity) context).reload();
+            }
+            return;
+        }
+        weiuiPage.reloadWin(pageName);
+    }
+
+    /**
+     * 关闭页面 或 关闭网页（内置浏览器）
+     * @param object
+     */
+    public void closePage(Context context, String object) {
+        String pageName = weiuiPage.getPageName(object);
+        if (pageName.isEmpty()) {
+            BGAKeyboardUtil.closeKeyboard((Activity) context);
+            weiuiPage.closeActivity((Activity) context);
+            return;
+        }
+        weiuiPage.closeWin(pageName);
+    }
+
+
+    /**
+     * 关闭页面至指定页面
+     * @param object
+     */
+    public void closePageTo(Context context, String object) {
+        String pageName = weiuiPage.getPageName(object);
+        if (pageName.isEmpty()) {
+            return;
+        }
+        boolean isClose = false;
+        Activity lastActivity = null;
+        LinkedList<Activity> array = weiui.getActivityList();
+        for (int i  = 0; i < array.size(); i++) {
+            if (isClose) {
+                if (i + 1 == array.size()) {
+                    lastActivity = array.get(i);
+                }else{
+                    weiuiPage.closeActivity(array.get(i));
+                }
+            }else {
+                if (array.get(i) instanceof PageActivity) {
+                    String mPageName = ((PageActivity) array.get(i)).getPageInfo().getPageName();
+                    if (pageName.equals(mPageName)) {
+                        isClose = true;
+                    }
+                }
+            }
+        }
+        weiuiPage.closeActivity(lastActivity);
+    }
+
+    /**
+     * 设置键盘弹出方式
+     * @param object
+     * @param mode
+     */
+    public void setSoftInputMode(Context context, String object, String mode) {
+        String pageName = weiuiPage.getPageName(object);
+        if (pageName.isEmpty()) {
+            if (context instanceof PageActivity) {
+                pageName = ((PageActivity) context).getPageInfo().getPageName();
+            }
+        }
+        PageBean mPageBean = weiuiPage.getWinInfo(pageName);
+        if (mPageBean == null) {
+            return;
+        }
+        PageActivity mPageActivity = ((PageActivity) mPageBean.getContext());
+        mPageActivity.setSoftInputMode(mode);
+    }
+
+    /**
+     * 拦截返回按键事件
+     * @param object
+     * @param callback  为null时取消拦截
+     */
+    public void setPageBackPressed(Context context, String object, JSCallback callback) {
+        String pageName = weiuiPage.getPageName(object);
+        if (pageName.isEmpty()) {
+            if (context instanceof PageActivity) {
+                pageName = ((PageActivity) context).getPageInfo().getPageName();
+            }
+        }
+        PageBean mPageBean = weiuiPage.getWinInfo(pageName);
+        if (mPageBean == null) {
+            return;
+        }
+        PageActivity mPageActivity = ((PageActivity) mPageBean.getContext());
+        if (callback == null) {
+            mPageActivity.setOnBackPressed(null);
+        }else{
+            mPageActivity.setOnBackPressed(() -> {
+                callback.invokeAndKeepAlive(null);
+                return true;
+            });
+        }
+    }
+
+    /**
+     * 监听下拉刷新事件
+     * @param object
+     * @param callback  为null时取消监听
+     */
+    public void setOnRefreshListener(Context context, String object, JSCallback callback) {
+        String pageName = weiuiPage.getPageName(object);
+        if (pageName.isEmpty()) {
+            if (context instanceof PageActivity) {
+                pageName = ((PageActivity) context).getPageInfo().getPageName();
+            }
+        }
+        PageBean mPageBean = weiuiPage.getWinInfo(pageName);
+        if (mPageBean == null) {
+            return;
+        }
+        PageActivity mPageActivity = ((PageActivity) mPageBean.getContext());
+        if (callback == null) {
+            mPageActivity.setOnRefreshListener(null);
+        }else{
+            mPageActivity.setOnRefreshListener(callback::invokeAndKeepAlive);
+        }
+    }
+
+    /**
+     * 设置下拉刷新状态
+     * @param object
+     * @param refreshing
+     */
+    public void setRefreshing(Context context, String object, boolean refreshing) {
+        String pageName = weiuiPage.getPageName(object);
+        if (pageName.isEmpty()) {
+            if (context instanceof PageActivity) {
+                pageName = ((PageActivity) context).getPageInfo().getPageName();
+            }
+        }
+        PageBean mPageBean = weiuiPage.getWinInfo(pageName);
+        if (mPageBean == null) {
+            return;
+        }
+        PageActivity mPageActivity = ((PageActivity) mPageBean.getContext());
+        mPageActivity.setRefreshing(refreshing);
+    }
+
+    /**
+     * 监听页面状态变化
+     * @param object
+     * @param callback
+     */
+    public void setPageStatusListener(Context context, String object, JSCallback callback) {
+        if (object == null) {
+            return;
+        }
+        JSONObject json = weiuiJson.parseObject(object);
+        String listenerName = weiuiJson.getString(json, "listenerName", object);
+        if (listenerName.isEmpty()) {
+            return;
+        }
+        String pageName = weiuiJson.getString(json, "pageName");
+        if (pageName.isEmpty()) {
+            if (context instanceof PageActivity) {
+                pageName = ((PageActivity) context).getPageInfo().getPageName();
+            }
+        }
+        PageBean mPageBean = weiuiPage.getWinInfo(pageName);
+        if (mPageBean == null) {
+            return;
+        }
+        PageActivity mPageActivity = ((PageActivity) mPageBean.getContext());
+        mPageActivity.setPageStatusListener(listenerName, callback);
+    }
+
+    /**
+     * 取消监听页面状态变化
+     * @param object
+     */
+    public void clearPageStatusListener(Context context, String object) {
+        if (object == null) {
+            return;
+        }
+        JSONObject json = weiuiJson.parseObject(object);
+        String listenerName = weiuiJson.getString(json, "listenerName", object);
+        if (listenerName.isEmpty()) {
+            return;
+        }
+        String pageName = weiuiJson.getString(json, "pageName");
+        if (pageName.isEmpty()) {
+            if (context instanceof PageActivity) {
+                pageName = ((PageActivity) context).getPageInfo().getPageName();
+            }
+        }
+        PageBean mPageBean = weiuiPage.getWinInfo(pageName);
+        if (mPageBean == null) {
+            return;
+        }
+        PageActivity mPageActivity = ((PageActivity) mPageBean.getContext());
+        mPageActivity.clearPageStatusListener(listenerName);
+    }
+
+    /**
+     * 手动执行(触发)页面状态
+     * @param object
+     * @param status
+     */
+    public void onPageStatusListener(Context context, String object, String status) {
+        if (status == null) {
+            status = object;
+            object = null;
+        }
+        if (status == null) {
+            return;
+        }
+        JSONObject json = weiuiJson.parseObject(object);
+        String pageName = weiuiJson.getString(json, "pageName");
+        if (pageName.isEmpty()) {
+            if (context instanceof PageActivity) {
+                pageName = ((PageActivity) context).getPageInfo().getPageName();
+            }
+        }
+        PageBean mPageBean = weiuiPage.getWinInfo(pageName);
+        if (mPageBean == null) {
+            return;
+        }
+        PageActivity mPageActivity = ((PageActivity) mPageBean.getContext());
+        mPageActivity.onPageStatusListener(weiuiJson.getString(json, "listenerName", object), status, json.get("extra"));
+    }
+
+    /**
+     * 获取页面缓存大小
+     */
+    public void getCacheSizePage(Context context, JSCallback callback) {
+        new weiuiIhttp.getCacheSize("page", callback).start();
+    }
+
+    /**
+     * 清除缓存页面
+     */
+    public void clearCachePage(Context context) {
+        new weiuiIhttp.clearCache("page").start();
+    }
+
+    /**
+     * 打开网页（系统浏览器）
+     * @param url
+     */
+    public void openWeb(Context context, String url) {
+        if (url == null) {
+            return;
+        }
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        context.startActivity(intent);
+    }
+
+    /**
+     * 返回桌面
+     */
+    public void goDesktop(Context context) {
+        Intent home = new Intent(Intent.ACTION_MAIN);
+        home.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        home.addCategory(Intent.CATEGORY_HOME);
+        context.startActivity(home);
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 获取状态栏高度（屏幕像素）
+     */
+    public int getStatusBarHeight(Context context) {
+        Object var = weiuiCommon.getVariate("__weiuiModule::getStatusBarHeight");
+        if (var == null) {
+            var = weiuiCommon.getStatusBarHeight(context);
+            weiuiCommon.setVariate("__weiuiModule::getStatusBarHeight", var);
+        }
+        return weiuiParse.parseInt(var);
+    }
+
+    /**
+     * 获取状态栏高度（weexPX单位）
+     */
+    public int getStatusBarHeightPx(Context context) {
+        Object var = weiuiCommon.getVariate("__weiuiModule::getStatusBarHeightPx");
+        if (var == null) {
+            var = weiuiScreenUtils.weexDp2px(null, weiuiCommon.getStatusBarHeight(context));
+            weiuiCommon.setVariate("__weiuiModule::getStatusBarHeightPx", var);
+        }
+        return weiuiParse.parseInt(var);
+    }
+
+    /**
+     * 获取虚拟键盘高度（屏幕像素）
+     */
+    public int getNavigationBarHeight(Context context) {
+        return weiuiCommon.getNavigationBarHeight(context);
+    }
+
+    /**
+     * 获取虚拟键盘高度（weexPX单位）
+     */
+    public int getNavigationBarHeightPx(Context context) {
+        return weiuiScreenUtils.weexDp2px(null, weiuiCommon.getNavigationBarHeight(context));
+    }
+
+    /**
+     * 获取weiui版本号
+     */
+    public int getVersion(Context context) {
+        Object var = weiuiCommon.getVariate("__weiuiModule::getVersion");
+        if (var == null) {
+            var = BuildConfig.VERSION_CODE;
+            weiuiCommon.setVariate("__weiuiModule::getVersion", var);
+        }
+        return weiuiParse.parseInt(var);
+    }
+
+    /**
+     * 获取weiui版本号名称
+     */
+    public String getVersionName(Context context) {
+        Object var = weiuiCommon.getVariate("__weiuiModule::getVersionName");
+        if (var == null) {
+            var = BuildConfig.VERSION_NAME;
+            weiuiCommon.setVariate("__weiuiModule::getVersionName", var);
+        }
+        return weiuiParse.parseStr(var);
+    }
+
+    /**
+     * 获取本地软件版本号
+     */
+    public int getLocalVersion(Context context) {
+        Object var = weiuiCommon.getVariate("__weiuiModule::getLocalVersion");
+        if (var == null) {
+            var = weiuiCommon.getLocalVersion(context);
+            weiuiCommon.setVariate("__weiuiModule::getLocalVersion", var);
+        }
+        return weiuiParse.parseInt(var);
+    }
+
+    /**
+     * 获取本地软件版本号名称
+     */
+    public String getLocalVersionName(Context context) {
+        Object var = weiuiCommon.getVariate("__weiuiModule::getLocalVersionName");
+        if (var == null) {
+            var = weiuiCommon.getLocalVersionName(context);
+            weiuiCommon.setVariate("__weiuiModule::getLocalVersionName", var);
+        }
+        return weiuiParse.parseStr(var);
+    }
+
+    /**
+     * 比较版本号的大小,前者大则返回一个正数,后者大返回一个负数,相等则返回0
+     * @param version1
+     * @param version2
+     * @return
+     */
+    public int compareVersion(Context context, String version1, String version2) {
+        try {
+            return weiuiCommon.compareVersion(version1, version2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    /**
+     * 获取手机的IMEI
+     */
+    public String getImei(Context context) {
+        Object var = weiuiCommon.getVariate("__weiuiModule::getImei");
+        if (var == null) {
+            var = weiuiCommon.getImei(context);
+            if (!TextUtils.isEmpty(weiuiParse.parseStr(var))) {
+                weiuiCommon.setVariate("__weiuiModule::getImei", var);
+            }
+        }
+        return weiuiParse.parseStr(var);
+    }
+
+    /**
+     * 获取手机的IFA
+     */
+    public String getIfa(Context context) {
+        return this.getImei(context);
+    }
+
+    /**
+     * 获取设备系统版本号
+     */
+    public int getSDKVersionCode(Context context) {
+        Object var = weiuiCommon.getVariate("__weiuiModule::getSDKVersionCode");
+        if (var == null) {
+            var = DeviceUtils.getSDKVersionCode();
+            weiuiCommon.setVariate("__weiuiModule::getSDKVersionCode", var);
+        }
+        return weiuiParse.parseInt(var);
+    }
+
+    /**
+     * 获取设备系统版本名称
+     */
+    public String getSDKVersionName(Context context) {
+        Object var = weiuiCommon.getVariate("__weiuiModule::getSDKVersionName");
+        if (var == null) {
+            var = DeviceUtils.getSDKVersionName();
+            weiuiCommon.setVariate("__weiuiModule::getSDKVersionName", var);
+        }
+        return weiuiParse.parseStr(var);
+    }
+
+    /**
+     * 是否IPhoneX系列设配
+     * @return
+     */
+    public boolean isIPhoneXType(Context context) {
+        return false;
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 保存缓存信息
+     * @param key
+     * @param value
+     * @param expired
+     */
+    public void setCachesString(Context context, String key, String value, Long expired) {
+        if (key == null || value == null) {
+            return;
+        }
+        weiuiCommon.setCachesString(context, "weiuiCaches", key, value, weiuiParse.parseLong(expired));
+    }
+
+    /**
+     * 获取缓存信息
+     * @param key
+     * @param defaultVal
+     */
+    public String getCachesString(Context context, String key, String defaultVal) {
+        if (key == null) {
+            return defaultVal;
+        }
+        return weiuiCommon.getCachesString(context, "weiuiCaches", key, defaultVal);
+    }
+
+    /**
+     * 设置全局变量
+     * @param key
+     * @param value
+     */
+    public void setVariate(Context context, String key, String value) {
+        if (key == null || value == null) {
+            return;
+        }
+        weiuiCommon.setVariate(key, value);
+    }
+
+    /**
+     * 获取全局变量
+     * @param key
+     * @param defaultVal
+     */
+    public String getVariate(Context context, String key, String defaultVal) {
+        if (key == null) {
+            return defaultVal;
+        }
+        return weiuiCommon.getVariateStr(key, defaultVal);
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 获取内部缓存目录大小
+     * @param callback
+     */
+    public void getCacheSizeDir(Context context, JSCallback callback) {
+        if (callback != null) {
+            new Thread(() -> {
+                Map<String, Object> data = new HashMap<>();
+                data.put("size", FileUtils.getDirLength(context.getCacheDir()));
+                callback.invoke(data);
+            }).start();
+        }
+    }
+
+    /**
+     * 清空内部缓存目录
+     */
+    public void clearCacheDir(Context context, JSCallback callback) {
+        new Thread(() -> {
+            JSONObject json = weiuiCommon.deleteAllInDir(context.getCacheDir());
+            if (callback != null) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("success", json.getIntValue("success"));
+                data.put("error", json.getIntValue("error"));
+                callback.invoke(data);
+            }
+        }).start();
+    }
+
+    /**
+     * 获取内部文件目录大小
+     * @param callback
+     */
+    public void getCacheSizeFiles(Context context, JSCallback callback) {
+        if (callback != null) {
+            new Thread(() -> {
+                Map<String, Object> data = new HashMap<>();
+                data.put("size", FileUtils.getDirLength(context.getFilesDir()));
+                callback.invoke(data);
+            }).start();
+        }
+    }
+
+    /**
+     * 清空内部文件目录
+     */
+    public void clearCacheFiles(Context context, JSCallback callback) {
+        new Thread(() -> {
+            JSONObject json = weiuiCommon.deleteAllInDir(context.getFilesDir());
+            if (callback != null) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("success", json.getIntValue("success"));
+                data.put("error", json.getIntValue("error"));
+                callback.invoke(data);
+            }
+        }).start();
+    }
+
+    /**
+     * 获取内部数据库目录大小
+     * @param callback
+     */
+    public void getCacheSizeDbs(Context context, JSCallback callback) {
+        if (callback != null) {
+            new Thread(() -> {
+                Map<String, Object> data = new HashMap<>();
+                data.put("size", FileUtils.getDirLength(new File(context.getFilesDir().getParent(), "databases")));
+                callback.invoke(data);
+            }).start();
+        }
+    }
+
+    /**
+     * 清空内部数据库目录
+     */
+    public void clearCacheDbs(Context context, JSCallback callback) {
+        new Thread(() -> {
+            JSONObject json = weiuiCommon.deleteAllInDir(new File(context.getFilesDir().getParent(), "databases"));
+            if (callback != null) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("success", json.getIntValue("success"));
+                data.put("error", json.getIntValue("error"));
+                callback.invoke(data);
+            }
+        }).start();
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * weex px转dp
+     * @param var
+     */
+    public int weexPx2dp(Context context, String var) {
+        return weiuiScreenUtils.weexPx2dp(null, var);
+    }
+
+    /**
+     * weex dp转px
+     * @param var
+     */
+    public int weexDp2px(Context context, String var) {
+        return weiuiScreenUtils.weexDp2px(null, var);
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * alert 警告框
+     */
+    public void alert(Context context, String object, JSCallback callback) {
+        weiuiAlertDialog.alert(context, object, callback);
+    }
+
+    /**
+     * confirm 确认对话框
+     */
+    public void confirm(Context context, String object, JSCallback callback) {
+        weiuiAlertDialog.confirm(context, object, callback);
+    }
+
+    /**
+     * input 输入对话框
+     */
+    public void input(Context context, String object, JSCallback callback) {
+        weiuiAlertDialog.input(context, object, callback);
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 显示等待图标
+     * @param object        参数
+     * @param callback      返回键或点击空白处取消回调事件
+     * @return
+     */
+    public String loading(Context context, String object, JSCallback callback) {
+        return LoadingDialog.init(context, object, callback);
+    }
+
+    /**
+     * 关闭等待图标
+     */
+    public void loadingClose(Context context, String var) {
+        LoadingDialog.close(var);
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 打开滑动验证码
+     * @param imgUrl
+     * @param callback
+     */
+    public void swipeCaptcha(Context context, String imgUrl, JSCallback callback) {
+        PageActivity.startSwipeCaptcha(context, imgUrl, callback);
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 打开二维码扫描
+     * @param object
+     * @param callback
+     */
+    public void openScaner(Context context, String object, JSCallback callback) {
+        PageActivity.startScanerCode(context, object, callback);
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 跨域异步请求
+     * @param object
+     * @param callback
+     */
+    public void ajax(Context context, String object, JSCallback callback) {
+        JSONObject json = weiuiJson.parseObject(object);
+        if (json.size() == 0) {
+            json.put("url", object);
+        }
+        weiuiAjax.ajax(context, json, callback);
+    }
+
+    /**
+     * 取消跨域异步请求
+     * @param name
+     */
+    public void ajaxCancel(Context context, String name) {
+        weiuiAjax.ajaxCancel(name);
+    }
+
+    /**
+     * 获取异步请求缓存大小
+     */
+    public void getCacheSizeAjax(Context context, JSCallback callback) {
+        new weiuiIhttp.getCacheSize("ajax", callback).start();
+    }
+
+    /**
+     * 清除异步请求缓存
+     */
+    public void clearCacheAjax(Context context) {
+        new weiuiIhttp.clearCache("ajax").start();
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 复制文本到剪贴板
+     * @param var
+     */
+    public void copyText(Context context, String var) {
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipboard != null) {
+            clipboard.setPrimaryClip(ClipData.newPlainText("text", var));
+        }
+    }
+
+    /**
+     * 获取剪贴板的文本
+     * @return
+     */
+    public CharSequence pasteText(Context context) {
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipboard != null) {
+            ClipData clip = clipboard.getPrimaryClip();
+            if (clip != null && clip.getItemCount() > 0) {
+                return clip.getItemAt(0).coerceToText(context);
+            }
+        }
+        return null;
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 吐司(Toast)显示
+     * @param object
+     */
+    public void toast(Context context, String object) {
+        utilcodeModule.Toast(null, object);
+    }
+
+    /**
+     * 吐司(Toast)隐藏
+     */
+    public void toastClose(Context context) {
+        utilcodeModule.ToastClose();
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 图片广告弹窗
+     * @param object
+     * @param callback
+     */
+    public void adDialog(Context context, String object, JSCallback callback) {
+        JSONObject json = weiuiJson.parseObject(object);
+        if (json.size() == 0) {
+            json.put("imgUrl", object);
+        }
+        weiuiAdDialog.create(null, context, json, callback);
+    }
+
+    /**
+     * 手动关闭图片广告弹窗
+     * @param dialogName
+     */
+    public void adDialogClose(Context context, String dialogName) {
+        weiuiAdDialog.close(dialogName);
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 保存图片到本地
+     * @param url
+     */
+    public void saveImage(Context context, String url, JSCallback callback) {
+        weiuiCommon.saveImage(context, url, callback);
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 打开其他APP
+     * @param type
+     */
+    public void openOtherApp(Context context, String type) {
+        if (type == null) {
+            return;
+        }
+        switch (type.toLowerCase()) {
+            case "wx":
+                weiuiOpenApp.openWeChat(context);
+                break;
+
+            case "qq":
+                weiuiOpenApp.openQQ(context);
+                break;
+
+            case "alipay":
+                weiuiOpenApp.openAlipay(context);
+                break;
+
+            case "jd":
+                weiuiOpenApp.openJd(context);
+                break;
+        }
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 分享文字
+     * @param text
+     */
+    public void shareText(Context context, String text) {
+        weiuiShareUtils.shareText(context, text);
+    }
+
+    /**
+     * 分享图片
+     * @param imgUrl
+     */
+    public void shareImage(Context context, String imgUrl) {
+        weiuiShareUtils.shareImage(context, imgUrl);
+    }
+
+    /***************************************************************************************************/
+    /***************************************************************************************************/
+    /***************************************************************************************************/
+
+    /**
+     * App 相关
+     * @param method
+     * @return
+     */
+    public Object appUtils(Context context, String method, Object var0, Object var1) {
+        return utilcodeModule.AppUtils(method, weiui.objectGroup(var0, var1));
+    }
+
+    /**
+     * 设备相关
+     * @param method
+     * @return
+     */
+    public Object deviceUtils(Context context, String method) {
+        return utilcodeModule.DeviceUtils(method);
+    }
+
+    /**
+     * 键盘相关
+     * @param method
+     * @return
+     */
+    public Object keyboardUtils(Context context, String method) {
+        return utilcodeModule.KeyboardUtils((Activity) context, method);
+    }
+
+    /**
+     * 网络相关
+     * @param method
+     * @return
+     */
+    public Object networkUtils(Context context, String method, Object var0, Object var1) {
+        return utilcodeModule.NetworkUtils(method, weiui.objectGroup(var0, var1));
+    }
+
+    /**
+     * 权限相关
+     * @param method
+     * @return
+     */
+    public Object permissionUtils(Context context, String method, Object var0, Object var1) {
+        return utilcodeModule.PermissionUtils(method, weiui.objectGroup(var0, var1));
+    }
+
+    /**
+     * 手机相关
+     * @param method
+     * @return
+     */
+    public Object phoneUtils(Context context, String method, Object var0, Object var1, Object var2) {
+        return utilcodeModule.PhoneUtils(method, weiui.objectGroup(var0, var1, var2));
+    }
+
+    /**
+     * 进程相关
+     * @param method
+     * @return
+     */
+    public Object processUtils(Context context, String method, Object var0, Object var1) {
+        return utilcodeModule.ProcessUtils(method, weiui.objectGroup(var0, var1));
+    }
+
+    /**
+     * 屏幕相关
+     * @param method
+     * @return
+     */
+    public Object screenUtils(Context context, String method, Object var0, Object var1) {
+        return utilcodeModule.ScreenUtils((Activity) context, method, weiui.objectGroup(var0, var1));
+    }
+
+    /**
+     * 时间相关
+     * @param method
+     * @return
+     */
+    public Object timeUtils(Context context, String method, Object var0, Object var1, Object var2) {
+        return utilcodeModule.TimeUtils(method, weiui.objectGroup(var0, var1, var2));
+    }
+
+    /**
+     * 摄像机相关
+     * @param method
+     */
+    public void cameraTool(Context context, String method) {
+        rxtoolsModule.RxCameraTool(method);
+    }
+
+    /**
+     * 定位相关
+     * @param method
+     * @return
+     */
+    public Object locationTool(Context context, String method, Object var0, Object var1, Object var2) {
+        return rxtoolsModule.RxLocationTool(context, method, weiui.objectGroup(var0, var1, var2));
+    }
+
+    /**
+     * 震动相关
+     * @param method
+     */
+    public void vibrateTool(Context context, String method, Object var0, Object var1) {
+        rxtoolsModule.RxVibrateTool(context, method, weiui.objectGroup(var0, var1));
+    }
 }

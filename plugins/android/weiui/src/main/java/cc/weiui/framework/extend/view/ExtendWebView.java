@@ -2,49 +2,90 @@ package cc.weiui.framework.extend.view;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
+import android.webkit.ValueCallback;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.taobao.weex.bridge.JSCallback;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import cc.weiui.framework.R;
+import cc.weiui.framework.activity.PageActivity;
 import cc.weiui.framework.extend.module.weiuiCommon;
-import cc.weiui.framework.extend.module.weiuiCommonWebView;
+import cc.weiui.framework.extend.module.weiuiMap;
+import cc.weiui.framework.extend.module.weiuiParse;
+import cc.weiui.framework.extend.view.webviewBridge.InjectedChromeClient;
+import cc.weiui.framework.ui.module.webView.weiuiBridge;
+import cc.weiui.framework.ui.module.webView.weiuiCitypickerBridge;
+import cc.weiui.framework.ui.module.webView.weiuiPayBridge;
+import cc.weiui.framework.ui.module.webView.weiuiPictureBridge;
+import cc.weiui.framework.ui.module.webView.weiuiWebviewBridge;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
- * 带进度条的WebView
+ * 高级的WebView
  */
 @SuppressWarnings("deprecation")
-public class ProgressWebView extends WebView {
+public class ExtendWebView extends WebView {
 
     private ProgressBar progressbar;
     private TitleCall mTitleCall;
     private StatusCall mStatusCall;
     private boolean progressbarVisibility;
+    private String userAgent;
+
+    private boolean pageListener;
+    private static final int REQUEST_CAMERA = 1;
+    private static final int REQUEST_CHOOSE = 2;
+    private ValueCallback<Uri> mUploadMessage;
+    private ValueCallback<Uri[]> mUploadMessagesAboveL;
+    private Uri cameraUri;
+
+    private WebChromeClient mWebChromeClient;
 
     @SuppressLint("AddJavascriptInterface")
-    public ProgressWebView(Context context, AttributeSet attrs) {
+    public ExtendWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
         progressbar = new ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal);
         progressbar.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, 6, 0, 0));
         progressbar.setVisibility(GONE);
         progressbarVisibility = true;
         //
+        Map<String, Class> classData = new HashMap<>();
+        classData.put("weiui", weiuiBridge.init());
+        classData.put("weiui_citypicker", weiuiCitypickerBridge.init());
+        classData.put("weiui_pay", weiuiPayBridge.init());
+        classData.put("weiui_picture", weiuiPictureBridge.init());
+        classData.put("weiui_webview", weiuiWebviewBridge.init());
+        mWebChromeClient = new WebChromeClient(classData);
+        //
         Drawable drawable = context.getResources().getDrawable(R.drawable.progress_bar_states);
         progressbar.setProgressDrawable(drawable);
         addView(progressbar);
         setWebViewClient(new WebViewClient());
         setDownloadListener(new DownloadListener());
-        setWebChromeClient(new WebChromeClient());
-        addJavascriptApi(new weiuiCommonWebView(context, this), "webApi");
+        setWebChromeClient(mWebChromeClient);
         initSetting();
     }
 
@@ -70,8 +111,8 @@ public class ProgressWebView extends WebView {
         //隐藏原生的缩放控件
         webSettings.setDisplayZoomControls(false);
         //设置UA
-        String ua = webSettings.getUserAgentString();
-        webSettings.setUserAgentString(ua + ";android_kuaifan_weiui/" + weiuiCommon.getLocalVersionName(getContext()));
+        this.userAgent = webSettings.getUserAgentString() + ";android_kuaifan_weiui/" + weiuiCommon.getLocalVersionName(getContext());
+        setUserAgent("");
     }
 
     private class DownloadListener implements android.webkit.DownloadListener {
@@ -115,18 +156,26 @@ public class ProgressWebView extends WebView {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             String url = String.valueOf(request.getUrl());
-            if (url == null || url.isEmpty()) {
+            if (url.isEmpty()) {
                 return true;
             }
             if (!url.startsWith("http") && !url.startsWith("HTTP")) {
                 return true;
+            }
+            if (mStatusCall != null) {
+                mStatusCall.onUrlChanged(view, url);
             }
             view.loadUrl(url);
             return true;
         }
     }
 
-    private class WebChromeClient extends android.webkit.WebChromeClient {
+    private class WebChromeClient extends InjectedChromeClient {
+
+        WebChromeClient(Map<String, Class> data) {
+            super(data);
+        }
+
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             if (progressbarVisibility) {
@@ -141,7 +190,7 @@ public class ProgressWebView extends WebView {
             }
             super.onProgressChanged(view, newProgress);
         }
-        
+
         @Override
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
@@ -152,6 +201,53 @@ public class ProgressWebView extends WebView {
                 mTitleCall.onChanged(view, title);
             }
         }
+
+        /**
+         * 【图片上传部分】For Android 5.0
+         * @param webView
+         * @param filePathCallback
+         * @param fileChooserParams
+         * @return
+         */
+        @Override
+        public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+            if (mUploadMessagesAboveL != null) {
+                mUploadMessagesAboveL.onReceiveValue(null);
+            } else {
+                mUploadMessagesAboveL = filePathCallback;
+                selectImage();
+            }
+            return true;
+        }
+
+        /**
+         * 【图片上传部分】For Android 3.0+
+         * @param uploadMsg
+         * @param acceptType
+         */
+        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
+            if (mUploadMessage != null) return;
+            mUploadMessage = uploadMsg;
+            selectImage();
+        }
+
+        /**
+         * 图片上传部分】For Android < 3.0
+         * @param uploadMsg
+         */
+        public void openFileChooser(ValueCallback<Uri> uploadMsg) {
+            openFileChooser(uploadMsg, "");
+        }
+
+        /**
+         * 【图片上传部分】For Android  > 4.1.1
+         * @param uploadMsg
+         * @param acceptType
+         * @param capture
+         */
+        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+            openFileChooser(uploadMsg, acceptType);
+        }
     }
 
     @Override
@@ -161,6 +257,177 @@ public class ProgressWebView extends WebView {
         lp.y = t;
         progressbar.setLayoutParams(lp);
         super.onScrollChanged(l, t, oldl, oldt);
+    }
+
+    /**
+     * 【图片上传部分】检查SD卡是否挂载
+     * @param context
+     * @return
+     */
+    private boolean checkSDcard(Context context) {
+        boolean flag = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+        if (!flag) {
+            Toast.makeText(context, "请插入手机存储卡再使用本功能", Toast.LENGTH_SHORT).show();
+        }
+        return flag;
+    }
+
+    /**
+     * 【图片上传部分】Dialog监听类
+     */
+    private class ReOnCancelListener implements DialogInterface.OnCancelListener {
+        @Override
+        public void onCancel(DialogInterface dialogInterface) {
+            if (mUploadMessage != null) {
+                mUploadMessage.onReceiveValue(null);
+                mUploadMessage = null;
+            }
+
+            if (mUploadMessagesAboveL != null) {
+                mUploadMessagesAboveL.onReceiveValue(null);
+                mUploadMessagesAboveL = null;
+            }
+        }
+    }
+
+    /**
+     * 【图片上传部分】选择上传方式
+     */
+    private void selectImage() {
+        if (!checkSDcard(getContext())) {
+            return;
+        }
+        if (!(getContext() instanceof PageActivity)) {
+            Toast.makeText(getContext(), "此设备暂不支持", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!pageListener) {
+            pageListener = true;
+            PageActivity mPageActivity = (PageActivity) getContext();
+            mPageActivity.setPageStatusListener("__extendWebView", new JSCallback() {
+                @Override
+                public void invoke(Object data) {
+                    //
+                }
+
+                @Override
+                public void invokeAndKeepAlive(Object data) {
+                    Map<String, Object> retData = weiuiMap.objectToMap(data);
+                    if (weiuiParse.parseStr(retData.get("status")).equals("activityResult")) {
+                        int requestCode = weiuiParse.parseInt(retData.get("requestCode"));
+                        int resultCode = weiuiParse.parseInt(retData.get("resultCode"));
+                        Intent intent = (Intent) retData.get("resultData");
+
+                        if (mUploadMessagesAboveL != null) {
+                            onActivityResultAboveL(requestCode, resultCode, intent);
+                        }
+                        if (mUploadMessage == null) return;
+
+                        Uri uri = null;
+                        if (requestCode == REQUEST_CAMERA && resultCode == RESULT_OK) {
+                            uri = cameraUri;
+                        }
+                        if (requestCode == REQUEST_CHOOSE && resultCode == RESULT_OK) {
+                            uri = afterChosePic(intent);
+                        }
+
+                        mUploadMessage.onReceiveValue(uri);
+                        mUploadMessage = null;
+                    }
+                }
+            });
+        }
+        String[] selectPicTypeStr = {"拍照", "浏览图库"};
+        new AlertDialog.Builder(getContext()).setOnCancelListener(new ReOnCancelListener()).setItems(selectPicTypeStr, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    openCarcme();
+                    break;
+                case 1:
+                    chosePicture();
+                    break;
+            }
+        }).show();
+    }
+
+    /**
+     * 【图片上传部分】打开照相机
+     */
+    private void openCarcme() {
+        String imagePaths = Environment.getExternalStorageDirectory().getPath() + "/BigMoney/Images/" + (System.currentTimeMillis() + ".jpg");
+        // 必须确保文件夹路径存在，否则拍照后无法完成回调
+        File vFile = new File(imagePaths);
+        if (!vFile.exists()) {
+            File vDirPath = vFile.getParentFile();
+            boolean res = vDirPath.mkdirs();
+            if (!res) {
+                return;
+            }
+        } else {
+            if (vFile.exists()) {
+                boolean res = vFile.delete();
+                if (!res) {
+                    return;
+                }
+            }
+        }
+        //
+        cameraUri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".provider", vFile);
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri);
+        ((Activity) getContext()).startActivityForResult(intent, REQUEST_CAMERA);
+    }
+
+    /**
+     * 【图片上传部分】本地相册选择图片
+     */
+    @SuppressLint("IntentReset")
+    private void chosePicture() {
+        Intent innerIntent = new Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        innerIntent.setType("image/*");
+        Intent wrapperIntent = Intent.createChooser(innerIntent, null);
+        ((Activity) getContext()).startActivityForResult(wrapperIntent, REQUEST_CHOOSE);
+    }
+
+    /**
+     * 【图片上传部分】选择照片后结束
+     * @param data
+     */
+    private Uri afterChosePic(Intent data) {
+        if (data != null) {
+            if (data.getData() != null) {
+                final String path = data.getData().getPath();
+                if (path != null && (path.endsWith(".png") || path.endsWith(".PNG") || path.endsWith(".jpg") || path.endsWith(".JPG"))) {
+                    return data.getData();
+                } else {
+                    Toast.makeText(getContext(), "上传的图片仅支持png或jpg格式", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 【图片上传部分】5.0以后机型 返回文件选择
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    private void onActivityResultAboveL(int requestCode, int resultCode, Intent data) {
+        Uri[] results = null;
+        if (requestCode == REQUEST_CAMERA && resultCode == RESULT_OK) {
+            results = new Uri[]{cameraUri};
+        }
+        if (requestCode == REQUEST_CHOOSE && resultCode == RESULT_OK) {
+            if (data != null) {
+                String dataString = data.getDataString();
+                if (dataString != null) {
+                    results = new Uri[]{Uri.parse(dataString)};
+                }
+            }
+        }
+        mUploadMessagesAboveL.onReceiveValue(results);
+        mUploadMessagesAboveL = null;
     }
 
     /**
@@ -186,6 +453,34 @@ public class ProgressWebView extends WebView {
     }
 
     /**
+     * 开启weiui等原生交互模块
+     * @param enable
+     */
+    public void setEnableApi(boolean enable) {
+        if (mWebChromeClient != null) {
+            mWebChromeClient.setEnableApi(enable);
+        }
+    }
+
+    /**
+     * 设置浏览器UA（追加）
+     * @param userAgent
+     */
+    public void setUserAgent(String userAgent) {
+        if (!"".equals(userAgent)) userAgent = "/" + userAgent;
+        this.setCustomUserAgent(this.userAgent + userAgent);
+    }
+
+    /**
+     * 设置浏览器UA（全）
+     * @param customUserAgent
+     */
+    public void setCustomUserAgent(String customUserAgent) {
+        WebSettings webSettings = getSettings();
+        webSettings.setUserAgentString(customUserAgent);
+    }
+
+    /**
      * 监听状态变化
      * @param call
      */
@@ -196,6 +491,7 @@ public class ProgressWebView extends WebView {
     public interface StatusCall {
         void onStatusChanged(WebView view, String status);
         void onTitleChanged(WebView view, String title);
+        void onUrlChanged(WebView view, String url);
         void onErrorChanged(WebView view, int errorCode, String description, String failingUrl);
     }
 
@@ -205,15 +501,6 @@ public class ProgressWebView extends WebView {
      */
     public void setProgressbarVisibility(boolean var) {
         progressbarVisibility = var;
-    }
-
-    /**
-     * 添加JavaScript交互
-     * @param obj
-     */
-    @SuppressLint("JavascriptInterface")
-    public void addJavascriptApi(Object obj, String name) {
-        addJavascriptInterface(obj, name);
     }
 
     /**

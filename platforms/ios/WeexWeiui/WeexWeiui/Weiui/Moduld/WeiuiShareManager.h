@@ -14,6 +14,6 @@
 + (WeiuiShareManager *)sharedIntstance;
 
 - (void)shareText:(NSString*)text;
-- (void)shareImage:(NSString*)imgUrl;
+- (void)shareImage:(id)imgUrl;
 
 @end

@@ -94,16 +94,15 @@ public class weiuiAdDialog {
     /***************************************************************************************************/
     /***************************************************************************************************/
 
-    public static void create(WXSDKInstance mWXSDKInstance, JSONObject json, JSCallback callback) {
-        if (mWXSDKInstance == null || json == null) {
+    public static void create(WXSDKInstance mWXSDKInstance, Context mContext, JSONObject json, JSCallback callback) {
+        if (json == null) {
+            return;
+        }
+        if (mContext == null) {
             return;
         }
         String imgUrl = weiuiParse.parseStr(json.getString("imgUrl"), json.getString("img"));
         if (imgUrl == null || imgUrl.isEmpty()) {
-            return;
-        }
-        Context mContext = mWXSDKInstance.getContext();
-        if (mContext == null) {
             return;
         }
         String dialogName = weiuiParse.parseStr(json.getString("dialogName"), weiuiCommon.randomString(8));

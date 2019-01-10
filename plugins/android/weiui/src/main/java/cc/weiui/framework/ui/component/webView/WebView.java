@@ -23,7 +23,7 @@ import cc.weiui.framework.extend.module.weiuiConstants;
 import cc.weiui.framework.extend.module.weiuiJson;
 import cc.weiui.framework.extend.module.weiuiParse;
 import cc.weiui.framework.extend.module.weiuiScreenUtils;
-import cc.weiui.framework.extend.view.ProgressWebView;
+import cc.weiui.framework.extend.view.ExtendWebView;
 
 /**
  * Created by WDM on 2018/4/13.
@@ -34,7 +34,7 @@ public class WebView extends WXVContainer<ViewGroup> {
 
     private View mView;
 
-    private ProgressWebView v_webview;
+    private ExtendWebView v_webview;
 
     private Timer webTimer;
 
@@ -67,7 +67,7 @@ public class WebView extends WXVContainer<ViewGroup> {
         v_webview = mView.findViewById(R.id.v_webview);
         //
         if (getEvents().contains(weiuiConstants.Event.STATE_CHANGED)) {
-            v_webview.setOnStatusClient(new ProgressWebView.StatusCall() {
+            v_webview.setOnStatusClient(new ExtendWebView.StatusCall() {
                 @Override
                 public void onStatusChanged(android.webkit.WebView view, String status) {
                     Map<String, Object> retData = new HashMap<>();
@@ -90,6 +90,14 @@ public class WebView extends WXVContainer<ViewGroup> {
                     Map<String, Object> retData = new HashMap<>();
                     retData.put("status", "title");
                     retData.put("title", title);
+                    fireEvent(weiuiConstants.Event.STATE_CHANGED, retData);
+                }
+
+                @Override
+                public void onUrlChanged(android.webkit.WebView view, String url) {
+                    Map<String, Object> retData = new HashMap<>();
+                    retData.put("status", "url");
+                    retData.put("url", url);
                     fireEvent(weiuiConstants.Event.STATE_CHANGED, retData);
                 }
             });
@@ -163,6 +171,24 @@ public class WebView extends WXVContainer<ViewGroup> {
                 setScrollEnabled(weiuiParse.parseBool(val, true));
                 return true;
 
+            case "enableApi":
+                if (v_webview != null) {
+                    v_webview.setEnableApi(weiuiParse.parseBool(val, true));
+                }
+                return true;
+
+            case "userAgent":
+                if (v_webview != null) {
+                    v_webview.setUserAgent(weiuiParse.parseStr(val, ""));
+                }
+                return true;
+
+            case "customUserAgent":
+                if (v_webview != null) {
+                    v_webview.setCustomUserAgent(weiuiParse.parseStr(val, ""));
+                }
+                return true;
+
             default:
                 return false;
         }
@@ -202,7 +228,7 @@ public class WebView extends WXVContainer<ViewGroup> {
                     "<header>" +
                     "<meta charset='utf-8'>" +
                     "<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no'>" +
-                    "<style type='text/css'>" + ProgressWebView.commonStyle() + "</style>" +
+                    "<style type='text/css'>" + ExtendWebView.commonStyle() + "</style>" +
                     "</header>" +
                     "<body>" + content + "</body>" +
                     "</html>", "text/html", "utf-8", null);

@@ -415,8 +415,14 @@
 		B262DB2721953EB20022D850 /* SDWebImageWebPCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = B262DB0821953EB20022D850 /* SDWebImageWebPCoder.m */; };
 		B262DB2D21953F020022D850 /* FLAnimatedImage.m in Sources */ = {isa = PBXBuildFile; fileRef = B262DB2921953F020022D850 /* FLAnimatedImage.m */; };
 		B262DB2E21953F020022D850 /* FLAnimatedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = B262DB2A21953F020022D850 /* FLAnimatedImageView.m */; };
+		B2947DCC21E21DAC00907FD8 /* WeiuiCitypickerBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = B2947DCB21E21DAC00907FD8 /* WeiuiCitypickerBridge.m */; };
+		B2947DCF21E21DBF00907FD8 /* WeiuiPayBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = B2947DCE21E21DBF00907FD8 /* WeiuiPayBridge.m */; };
+		B2947DD221E21DCC00907FD8 /* WeiuiPictureBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = B2947DD121E21DCC00907FD8 /* WeiuiPictureBridge.m */; };
+		B2947DD821E2548900907FD8 /* NSObject+performSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = B2947DD621E2548900907FD8 /* NSObject+performSelector.m */; };
 		B2DBB9DB216F3869009F5DAE /* YHWebViewProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = B2DBB9D8216F3869009F5DAE /* YHWebViewProgress.m */; };
 		B2DBB9DC216F3869009F5DAE /* YHWebViewProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = B2DBB9DA216F3869009F5DAE /* YHWebViewProgressView.m */; };
+		B2F0B13321DCA55200706832 /* WeiuiBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = B2F0B13221DCA55200706832 /* WeiuiBridge.m */; };
+		B2F0B14E21E0FA3E00706832 /* JSCallCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = B2F0B14D21E0FA3E00706832 /* JSCallCommon.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1244,11 +1250,23 @@
 		B262DB2A21953F020022D850 /* FLAnimatedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLAnimatedImageView.m; sourceTree = "<group>"; };
 		B262DB2B21953F020022D850 /* FLAnimatedImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLAnimatedImage.h; sourceTree = "<group>"; };
 		B262DB2C21953F020022D850 /* FLAnimatedImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLAnimatedImageView.h; sourceTree = "<group>"; };
+		B2947DCA21E21DAC00907FD8 /* WeiuiCitypickerBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeiuiCitypickerBridge.h; sourceTree = "<group>"; };
+		B2947DCB21E21DAC00907FD8 /* WeiuiCitypickerBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WeiuiCitypickerBridge.m; sourceTree = "<group>"; };
+		B2947DCD21E21DBF00907FD8 /* WeiuiPayBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeiuiPayBridge.h; sourceTree = "<group>"; };
+		B2947DCE21E21DBF00907FD8 /* WeiuiPayBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WeiuiPayBridge.m; sourceTree = "<group>"; };
+		B2947DD021E21DCC00907FD8 /* WeiuiPictureBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeiuiPictureBridge.h; sourceTree = "<group>"; };
+		B2947DD121E21DCC00907FD8 /* WeiuiPictureBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WeiuiPictureBridge.m; sourceTree = "<group>"; };
+		B2947DD621E2548900907FD8 /* NSObject+performSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+performSelector.m"; sourceTree = "<group>"; };
+		B2947DD721E2548900907FD8 /* NSObject+performSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+performSelector.h"; sourceTree = "<group>"; };
 		B2DBB9D6216F3869009F5DAE /* YHWebViewProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YHWebViewProgress.h; sourceTree = "<group>"; };
 		B2DBB9D7216F3869009F5DAE /* YHWebViewProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YHWebViewProgressView.h; sourceTree = "<group>"; };
 		B2DBB9D8216F3869009F5DAE /* YHWebViewProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YHWebViewProgress.m; sourceTree = "<group>"; };
 		B2DBB9D9216F3869009F5DAE /* YHWebViewProgressViewProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YHWebViewProgressViewProtocol.h; sourceTree = "<group>"; };
 		B2DBB9DA216F3869009F5DAE /* YHWebViewProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YHWebViewProgressView.m; sourceTree = "<group>"; };
+		B2F0B13121DCA55200706832 /* WeiuiBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeiuiBridge.h; sourceTree = "<group>"; };
+		B2F0B13221DCA55200706832 /* WeiuiBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WeiuiBridge.m; sourceTree = "<group>"; };
+		B2F0B14C21E0FA3E00706832 /* JSCallCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSCallCommon.h; sourceTree = "<group>"; };
+		B2F0B14D21E0FA3E00706832 /* JSCallCommon.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JSCallCommon.m; sourceTree = "<group>"; };
 		B3954AB0077F67222589658D /* libPods-WeexWeiuiTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WeexWeiuiTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF4738D867E50FB2D943A92A /* libPods-WeexWeiui.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WeexWeiui.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8F4A873379E80A140D7BD31 /* Pods-WeexWeiui.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeexWeiui.release.xcconfig"; path = "Pods/Target Support Files/Pods-WeexWeiui/Pods-WeexWeiui.release.xcconfig"; sourceTree = "<group>"; };
@@ -1412,10 +1430,10 @@
 			isa = PBXGroup;
 			children = (
 				B21356322124045E00EDD991 /* WeexWeiui */,
-				BEB6946D3D54EEE58CEAD551 /* Frameworks */,
 				AE4D0F9343A758F3C54EA5E0 /* Pods */,
 				B21356312124045E00EDD991 /* Products */,
 				B25A71EB21257A0900AA0AB9 /* resource */,
+				BEB6946D3D54EEE58CEAD551 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1435,12 +1453,12 @@
 				B21356332124045E00EDD991 /* AppDelegate.h */,
 				B21356342124045E00EDD991 /* AppDelegate.m */,
 				B213563C2124046000EDD991 /* Assets.xcassets */,
+				B21356412124046000EDD991 /* Info.plist */,
 				B213563E2124046000EDD991 /* LaunchScreen.storyboard */,
 				B21356422124046000EDD991 /* main.m */,
 				B21356392124045E00EDD991 /* Main.storyboard */,
 				B21356362124045E00EDD991 /* ViewController.h */,
 				B21356372124045E00EDD991 /* ViewController.m */,
-				B21356412124046000EDD991 /* Info.plist */,
 				B238CFA7215CC77F00E5D4CB /* Base */,
 				B224299421345147001C951B /* Weiui */,
 			);
@@ -1456,12 +1474,12 @@
 				B22429BF21345147001C951B /* Source */,
 				B22429EC21345147001C951B /* Utility */,
 				B224299821345147001C951B /* AppDelegate+Umeng.h */,
-				B224299921345147001C951B /* WeexSDKManager.m */,
-				B22429C421345147001C951B /* WeiuiVersion.h */,
-				B22429E621345147001C951B /* WXMainViewController.m */,
 				B22429E721345147001C951B /* AppDelegate+Umeng.m */,
 				B22429E821345147001C951B /* WeexSDKManager.h */,
+				B224299921345147001C951B /* WeexSDKManager.m */,
 				B22429EA21345147001C951B /* WXMainViewController.h */,
+				B22429E621345147001C951B /* WXMainViewController.m */,
+				B22429C421345147001C951B /* WeiuiVersion.h */,
 				B22429EB21345147001C951B /* WeiuiVersion.m */,
 			);
 			path = Weiui;
@@ -1479,6 +1497,7 @@
 		B224299A21345147001C951B /* Moduld */ = {
 			isa = PBXGroup;
 			children = (
+				B2F0B12D21DC9E7600706832 /* Webview */,
 				B224299B21345147001C951B /* WeiuiAdDialogManager.h */,
 				B22429B121345147001C951B /* WeiuiAdDialogManager.m */,
 				B22429B521345147001C951B /* WeiuiAjaxManager.h */,
@@ -1524,10 +1543,10 @@
 		B22429BF21345147001C951B /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				B2242DA321345394001C951B /* city.json */,
-				B22429C021345147001C951B /* swipecaptcha_bg@2x.png */,
 				B22429C121345147001C951B /* android-iconify-ionicons.ttf */,
 				B22429C221345147001C951B /* android-iconify-taobao-iconfont.ttf */,
+				B2242DA321345394001C951B /* city.json */,
+				B22429C021345147001C951B /* swipecaptcha_bg@2x.png */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -1578,9 +1597,9 @@
 				B2242BDF21345148001C951B /* CCNScan */,
 				B22429EE21345147001C951B /* DeviceUtil.h */,
 				B2242BDE21345148001C951B /* DeviceUtil.m */,
-				B262DB2821953F020022D850 /* FLAnimatedImage */,
 				B2242A4021345147001C951B /* DGActivityIndicatorView */,
 				B238CF9B215C85E400E5D4CB /* FDFullscreenPopGesture */,
+				B262DB2821953F020022D850 /* FLAnimatedImage */,
 				B2242BD421345148001C951B /* IconFont */,
 				B2242C0321345148001C951B /* IQKeyboardManager */,
 				B262DA5A219461A90022D850 /* KSPhotoBrowser */,
@@ -1591,9 +1610,9 @@
 				B2242C5821345148001C951B /* NSTimer+Weiui.m */,
 				B210032121924767001F2CBA /* Pay */,
 				B2242C5A21345148001C951B /* Rong_Cloud_iOS_IMLib_SDK_v2_9_1_Stable */,
+				B262DACB21953EB20022D850 /* SDWebImage */,
 				B2242A3921345147001C951B /* SKAutoScrollLabel.h */,
 				B2242C3521345148001C951B /* SKAutoScrollLabel.m */,
-				B262DACB21953EB20022D850 /* SDWebImage */,
 				B238CFBC215E29F400E5D4CB /* SSZipArchive */,
 				B22429ED21345147001C951B /* TriangleIndicatorView.h */,
 				B2242BDD21345148001C951B /* TriangleIndicatorView.m */,
@@ -2617,12 +2636,12 @@
 		B238CFA7215CC77F00E5D4CB /* Base */ = {
 			isa = PBXGroup;
 			children = (
+				B238CFB1215CFB4200E5D4CB /* Cloud.h */,
+				B238CFB2215CFB4200E5D4CB /* Cloud.m */,
 				B238CFAB215CC7E100E5D4CB /* Config.h */,
 				B238CFAC215CC7E100E5D4CB /* Config.m */,
 				B238CFAE215CFB3000E5D4CB /* Update.h */,
 				B238CFAF215CFB3000E5D4CB /* Update.m */,
-				B238CFB1215CFB4200E5D4CB /* Cloud.h */,
-				B238CFB2215CFB4200E5D4CB /* Cloud.m */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -2824,6 +2843,25 @@
 				B2DBB9DA216F3869009F5DAE /* YHWebViewProgressView.m */,
 			);
 			path = WebProgressView;
+			sourceTree = "<group>";
+		};
+		B2F0B12D21DC9E7600706832 /* Webview */ = {
+			isa = PBXGroup;
+			children = (
+				B2947DD721E2548900907FD8 /* NSObject+performSelector.h */,
+				B2947DD621E2548900907FD8 /* NSObject+performSelector.m */,
+				B2F0B14C21E0FA3E00706832 /* JSCallCommon.h */,
+				B2F0B14D21E0FA3E00706832 /* JSCallCommon.m */,
+				B2F0B13121DCA55200706832 /* WeiuiBridge.h */,
+				B2F0B13221DCA55200706832 /* WeiuiBridge.m */,
+				B2947DCA21E21DAC00907FD8 /* WeiuiCitypickerBridge.h */,
+				B2947DCB21E21DAC00907FD8 /* WeiuiCitypickerBridge.m */,
+				B2947DCD21E21DBF00907FD8 /* WeiuiPayBridge.h */,
+				B2947DCE21E21DBF00907FD8 /* WeiuiPayBridge.m */,
+				B2947DD021E21DCC00907FD8 /* WeiuiPictureBridge.h */,
+				B2947DD121E21DCC00907FD8 /* WeiuiPictureBridge.m */,
+			);
+			path = Webview;
 			sourceTree = "<group>";
 		};
 		BEB6946D3D54EEE58CEAD551 /* Frameworks */ = {
@@ -3097,6 +3135,7 @@
 				B2242C7721345148001C951B /* WeiuiNavbarItemComponent.m in Sources */,
 				B238CFF0215E29F400E5D4CB /* fileenc.c in Sources */,
 				B2242CDB21345148001C951B /* TZGifPhotoPreviewController.m in Sources */,
+				B2947DD221E21DCC00907FD8 /* WeiuiPictureBridge.m in Sources */,
 				B2242CC021345148001C951B /* DGActivityIndicatorRotatingSandglassAnimation.m in Sources */,
 				B2242CF621345148001C951B /* WXPickerModule.m in Sources */,
 				B262DB1D21953EB20022D850 /* SDWebImageTransition.m in Sources */,
@@ -3170,6 +3209,7 @@
 				B2242D2921345148001C951B /* WXServiceFactory.m in Sources */,
 				B2242CE621345148001C951B /* WXModuleMethod.m in Sources */,
 				B2242D2021345148001C951B /* WXHeaderComponent.m in Sources */,
+				B2F0B13321DCA55200706832 /* WeiuiBridge.m in Sources */,
 				B2242CEF21345148001C951B /* WXStorageModule.m in Sources */,
 				B2242D2C21345148001C951B /* WXComponentFactory.m in Sources */,
 				B2242D7B21345149001C951B /* IQUIView+IQKeyboardToolbar.m in Sources */,
@@ -3188,12 +3228,14 @@
 				B2242D1521345148001C951B /* WXRecyclerUpdateController.m in Sources */,
 				B2242CE121345148001C951B /* WXJSCoreBridge.m in Sources */,
 				B2242C8021345148001C951B /* WeiuiIndicatorComponent.m in Sources */,
+				B2947DD821E2548900907FD8 /* NSObject+performSelector.m in Sources */,
 				B238CFF2215E29F400E5D4CB /* aes_ni.c in Sources */,
 				B2242CCD21345148001C951B /* TZImageCropManager.m in Sources */,
 				B2242CB221345148001C951B /* DGActivityIndicatorRotatingSquaresAnimation.m in Sources */,
 				B238CFF6215E29F400E5D4CB /* SSZipArchive.m in Sources */,
 				B262DB1B21953EB20022D850 /* SDImageCache.m in Sources */,
 				B2242D9C21345149001C951B /* NSTimer+Weiui.m in Sources */,
+				B2947DCF21E21DBF00907FD8 /* WeiuiPayBridge.m in Sources */,
 				B238CFEF215E29F400E5D4CB /* aescrypt.c in Sources */,
 				B2242D4321345148001C951B /* WXInnerLayer.m in Sources */,
 				B2242CB621345148001C951B /* DGActivityIndicatorBallZigZagAnimation.m in Sources */,
@@ -3260,6 +3302,7 @@
 				B2242C6A21345148001C951B /* WeiuiCachesManager.m in Sources */,
 				B2242D4421345148001C951B /* WXRoundedRect.mm in Sources */,
 				B2242CED21345148001C951B /* WXTimerModule.m in Sources */,
+				B2F0B14E21E0FA3E00706832 /* JSCallCommon.m in Sources */,
 				B2242C7B21345148001C951B /* WeiuiIconComponent.m in Sources */,
 				B2242C9321345148001C951B /* MMDrawerController.m in Sources */,
 				B2242D0921345148001C951B /* WXAComponent.m in Sources */,
@@ -3357,6 +3400,7 @@
 				B2242C6321345148001C951B /* WeiuiRongcloudManager.m in Sources */,
 				B2242C7821345148001C951B /* WeiuiRecylerComponent.m in Sources */,
 				B2242C6621345148001C951B /* WeiuiAjaxManager.m in Sources */,
+				B2947DCC21E21DAC00907FD8 /* WeiuiCitypickerBridge.m in Sources */,
 				B2242CD621345148001C951B /* TZImageManager.m in Sources */,
 				B2242CAD21345148001C951B /* DGActivityIndicatorTriangleSkewSpinAnimation.m in Sources */,
 				B2242CE021345148001C951B /* WXMonitor.m in Sources */,
@@ -3556,7 +3600,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = SX46U9JL56;
+				DEVELOPMENT_TEAM = YK5E77Z442;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/WeexWeiui/Weiui/Utility/Umeng/iOS/umcommonlog/umcommonlog_ios_1.0.0",
@@ -3592,7 +3636,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = SX46U9JL56;
+				DEVELOPMENT_TEAM = YK5E77Z442;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/WeexWeiui/Weiui/Utility/Umeng/iOS/umcommonlog/umcommonlog_ios_1.0.0",

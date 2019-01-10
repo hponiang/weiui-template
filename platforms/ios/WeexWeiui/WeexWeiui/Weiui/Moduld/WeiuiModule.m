@@ -17,10 +17,10 @@
 #import "WeiuiShareManager.h"
 #import "WeiuiStorageManager.h"
 #import "WeiuiToastManager.h"
-#import "DeviceUtil.h"
-#import "scanViewController.h"
 #import "WeiuiNewPageManager.h"
 #import "WeiuiVersion.h"
+#import "DeviceUtil.h"
+#import "scanViewController.h"
 #import <UIKit/UIKit.h>
 #import <AdSupport/AdSupport.h>
 

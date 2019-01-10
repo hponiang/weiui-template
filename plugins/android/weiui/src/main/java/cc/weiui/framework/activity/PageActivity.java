@@ -27,6 +27,7 @@ import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -88,7 +89,7 @@ import cc.weiui.framework.extend.module.weiuiMap;
 import cc.weiui.framework.extend.module.weiuiPage;
 import cc.weiui.framework.extend.module.weiuiParse;
 import cc.weiui.framework.extend.view.FloatDragView;
-import cc.weiui.framework.extend.view.ProgressWebView;
+import cc.weiui.framework.extend.view.ExtendWebView;
 import cc.weiui.framework.extend.view.SwipeCaptchaView;
 import cc.weiui.framework.ui.weiui;
 
@@ -119,7 +120,7 @@ public class PageActivity extends AppCompatActivity {
     private FrameLayout mWeexProgress;
     private ImageView mWeexProgressBg;
     private SwipeRefreshLayout mWeexSwipeRefresh;
-    private ProgressWebView mWebView;
+    private ExtendWebView mWebView;
     private WXSDKInstance mWXSDKInstance;
     private BGASwipeBackHelper mSwipeBackHelper;
 
@@ -628,10 +629,16 @@ public class PageActivity extends AppCompatActivity {
             case "web":
                 mWeb = findViewById(R.id.v_web);
                 mWeb.setVisibility(View.VISIBLE);
-                mWebView = findViewById(R.id.v_webview);
-                mWebView.setProgressbarVisibility(mPageInfo.isLoading());
                 //
-                mWebView.setOnStatusClient(new ProgressWebView.StatusCall() {
+                mWebView = new ExtendWebView(this, null);
+                ViewGroup parentViewGroup = (ViewGroup) mWebView.getParent();
+                if (parentViewGroup != null ) {
+                    parentViewGroup.removeView(mWebView);
+                }
+                mWeb.addView(mWebView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+                //
+                mWebView.setProgressbarVisibility(mPageInfo.isLoading());
+                mWebView.setOnStatusClient(new ExtendWebView.StatusCall() {
                     @Override
                     public void onStatusChanged(WebView view, String status) {
                         Map<String, Object> retData = new HashMap<>();
@@ -656,6 +663,14 @@ public class PageActivity extends AppCompatActivity {
                         Map<String, Object> retData = new HashMap<>();
                         retData.put("webStatus", "title");
                         retData.put("title", title);
+                        invokeAndKeepAlive("titleChanged", retData);
+                    }
+
+                    @Override
+                    public void onUrlChanged(WebView view, String url) {
+                        Map<String, Object> retData = new HashMap<>();
+                        retData.put("webStatus", "url");
+                        retData.put("url", url);
                         invokeAndKeepAlive("titleChanged", retData);
                     }
                 });

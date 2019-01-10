@@ -82,7 +82,7 @@ WX_EXPORT_METHOD(@selector(union_alipay:))
 - (void)alipay:(NSString*)payData callback:(WXModuleKeepAliveCallback)callback
 {
     alipayCallback = callback;
-    [[AlipaySDK defaultService] payOrder:payData fromScheme:@"weiuiApp_xxxxxxxx" callback:^(NSDictionary *resultDic) {
+    [[AlipaySDK defaultService] payOrder:payData fromScheme:@"weiuiApp_cn_xuanma_agou" callback:^(NSDictionary *resultDic) {
         [WeiuiPayModule onAlipayResp:resultDic];
     }];
 }

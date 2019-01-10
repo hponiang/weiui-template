@@ -41,31 +41,49 @@
     [[DeviceUtil getTopviewControler] presentViewController:activityVC animated:YES completion:nil];
 }
 
-- (void)shareImage:(NSString*)imgUrl
+- (void)shareImage:(id)data
 {
-    if (imgUrl.length == 0) {
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    if ([data isKindOfClass:[NSString class]]) {
+        [array addObject:[data stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> "].invertedSet]];
+    }else if ([data isKindOfClass:[NSMutableArray class]]) {
+        for (NSString *url in data) {
+            [array addObject:[url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> "].invertedSet]];
+        }
+    }
+    NSInteger __block count = array.count;
+    if (count <= 0) {
         return;
     }
-    //获取图片
-//    NSString * imageUrl = [imgUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString * imageUrl = [imgUrl stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> "].invertedSet];
-
-    UIImage *newImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:imageUrl];//用地址去本地找图片
-    if (newImage != nil) {//如果本地有
-        [self imageShare:newImage];
-    } else {//如果本地没有
-        //下载图片
-        [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:imageUrl] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
-            if (image) {
-                [self imageShare:image];
+    
+    NSMutableArray *images = [[NSMutableArray alloc] init];
+    for (NSString *url in array) {
+        UIImage *newImage = [[SDImageCache sharedImageCache] imageFromDiskCacheForKey:url];
+        if (newImage != nil) {
+            //如果本地有
+            [images addObject:newImage];
+            count--;
+            if (count == 0) {
+                [self imageShare:images];
             }
-        }];
+        } else {
+            //如果本地没有，下载
+            [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:url] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
+                if (image) {
+                    [images addObject:image];
+                }
+                count--;
+                if (count == 0 && images.count > 0) {
+                    [self imageShare:images];
+                }
+            }];
+        }
     }
 }
 
-- (void)imageShare:(UIImage*)image
+- (void)imageShare:(NSArray*) images
 {
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[image] applicationActivities:nil];
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:images applicationActivities:nil];
     activityVC.completionWithItemsHandler = ^(NSString *activityType,BOOL completed,NSArray *returnedItems,NSError *activityError)
     {
         NSLog(@"%@", activityType);

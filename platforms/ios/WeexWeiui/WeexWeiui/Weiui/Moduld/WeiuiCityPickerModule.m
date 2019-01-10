@@ -23,6 +23,8 @@
 @property (nonatomic, strong) UIView *bgView;
 @property (nonatomic, strong) UIPickerView *pickerView;
 
+@property (nonatomic, assign) BOOL areaOther;
+
 @property (nonatomic, copy) WXModuleKeepAliveCallback callback;
 
 @end
@@ -37,6 +39,10 @@ WX_EXPORT_METHOD(@selector(select:callback:))
     [vc.view endEditing:YES];
     
     self.callback = callback;
+    
+    if (params && [params isKindOfClass:[NSDictionary class]]) {
+        _areaOther = [params[@"areaOther"] boolValue];
+    }
 
     [self loadData];
     
@@ -52,6 +58,11 @@ WX_EXPORT_METHOD(@selector(select:callback:))
     NSArray *array = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:path] options:NSJSONReadingMutableLeaves error:nil];
     
     _provienceList = [NSMutableArray arrayWithArray:array];
+    
+    if (_areaOther == YES) {
+        [self addAreaOther];
+    }
+    
     _cityList = [NSMutableArray arrayWithArray:_provienceList.firstObject[@"cityList"]];
     _areaList = [NSMutableArray arrayWithArray:_cityList.firstObject[@"cityList"]];
     
@@ -65,6 +76,25 @@ WX_EXPORT_METHOD(@selector(select:callback:))
     
     if (_area.length == 0) {
         _area = _areaList.firstObject[@"name"];
+    }
+}
+
+- (void)addAreaOther
+{
+    for (int i = 0; i < _provienceList.count; i++)
+    {
+        NSMutableDictionary *cityObject = [NSMutableDictionary dictionaryWithDictionary:_provienceList[i]];
+        NSMutableArray *cityList = [NSMutableArray arrayWithArray:cityObject[@"cityList"]];
+        for (int j = 0; j < cityList.count; j++)
+        {
+            NSMutableDictionary *areaObject = [NSMutableDictionary dictionaryWithDictionary:cityList[j]];
+            NSMutableArray *areaList = [NSMutableArray arrayWithArray:areaObject[@"cityList"]];
+            [areaList addObject:@{@"id":@(-1), @"lat":@(-1), @"lng":@(-1), @"name":@"其它区"}];
+            [areaObject setValue:areaList forKey:@"cityList"];
+            [cityList replaceObjectAtIndex:j withObject:areaObject];
+        }
+        [cityObject setValue:cityList forKey:@"cityList"];
+        [_provienceList replaceObjectAtIndex:i withObject:cityObject];
     }
 }
 

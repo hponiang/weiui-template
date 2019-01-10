@@ -10,9 +10,10 @@
 #import "DeviceUtil.h"
 #import "YHWebViewProgress.h"
 #import "YHWebViewProgressView.h"
+#import "WeiuiStorageManager.h"
+#import "JSCallCommon.h"
 
-@interface WeiuiWebView : UIWebView
-
+@interface WeiuiWebView : WKWebView
 @end
 
 @implementation WeiuiWebView
@@ -20,15 +21,18 @@
 
 @end
 
-@interface WeiuiWebviewComponent() <UIWebViewDelegate>
+@interface WeiuiWebviewComponent() <WKNavigationDelegate, WKUIDelegate>
 
 @property (nonatomic, strong) NSString *content;
 @property (nonatomic, strong) NSString *url;
-@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong) NSString *userAgent;
+@property (nonatomic, strong) NSString *customUserAgent;
 @property (nonatomic, assign) BOOL isShowProgress;
 @property (nonatomic, assign) BOOL isScrollEnabled;
+@property (nonatomic, assign) BOOL isEnableApi;
 @property (nonatomic, assign) BOOL isHeightChanged;
-@property (strong, nonatomic) YHWebViewProgress *progressProxy;
+@property (nonatomic, strong) JSCallCommon* JSCall;
+@property (strong, nonatomic) YHWebViewProgressView *progressView;
 
 @end
 
@@ -49,9 +53,11 @@ WX_EXPORT_METHOD(@selector(goForward:))
     if (self) {
         _url = @"";
         _content = @"";
-        _title = @"";
+        _userAgent = @"";
+        _customUserAgent = @"";
         _isShowProgress = YES;
         _isScrollEnabled = YES;
+        _isEnableApi = YES;
         _isHeightChanged = [events containsObject:@"heightChanged"];
         
         for (NSString *key in styles.allKeys) {
@@ -61,12 +67,32 @@ WX_EXPORT_METHOD(@selector(goForward:))
             [self dataKey:key value:attributes[key] isUpdate:NO];
         }
     }
-    
     return self;
 }
 
-- (UIView*)loadView
+- (WKWebView*)loadView
 {
+    //设置userAgent
+    NSString *originalUserAgent = nil;
+    if (_customUserAgent.length > 0) {
+        originalUserAgent = _customUserAgent;
+    }else{
+        WeiuiStorageManager *storage = [WeiuiStorageManager sharedIntstance];
+        originalUserAgent = [storage getCachesString:@"__::originalUserAgent" defaultVal:@""];
+        if (![originalUserAgent containsString:@";ios_kuaifan_weiui/"]) {
+            UIWebView *webView = [[UIWebView alloc] init];
+            NSString *versionName = (NSString*)[[[NSBundle mainBundle] infoDictionary]  objectForKey:@"CFBundleShortVersionString"];
+            originalUserAgent = [NSString stringWithFormat:@"%@;ios_kuaifan_weiui/%@", [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"], versionName];
+            [storage setCachesString:@"__::originalUserAgent" value:originalUserAgent expired:0];
+            webView =  nil;
+        }
+        if (_userAgent.length > 0) {
+            originalUserAgent = [NSString stringWithFormat:@"%@/%@", originalUserAgent, _userAgent];
+        }
+    }
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:originalUserAgent, @"UserAgent", nil];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
+    //初始化浏览器对象
     return [[WeiuiWebView alloc] init];
 }
 
@@ -76,16 +102,20 @@ WX_EXPORT_METHOD(@selector(goForward:))
     
     WeiuiWebView *webView = (WeiuiWebView*)self.view;
     
-    YHWebViewProgressView *progressView = [[YHWebViewProgressView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 2)];
-    progressView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
-    self.progressProxy = [[YHWebViewProgress alloc] init];
-    self.progressProxy.progressView = progressView;
-    self.progressProxy.progressView.hidden = !_isShowProgress;
-    [self.view addSubview:progressView];
+    self.progressView = [[YHWebViewProgressView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), 2)];
+    self.progressView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleBottomMargin;
+    self.progressView.hidden = !_isShowProgress;
+    [self.progressView useWkWebView:webView];
+    [self.view addSubview:self.progressView];
     
     ((UIScrollView *)[webView.subviews objectAtIndex:0]).scrollEnabled = _isScrollEnabled;
     
-    webView.delegate = self;
+    webView.UIDelegate = self;
+    webView.navigationDelegate  = self;
+    
+    if (self.JSCall == nil) {
+        self.JSCall = [[JSCallCommon alloc] init];
+    }
     
     if (_url.length > 0) {
         if (![_url hasPrefix:@"http://"] && ![_url hasPrefix:@"https://"]) {
@@ -105,6 +135,8 @@ WX_EXPORT_METHOD(@selector(goForward:))
     if (_isHeightChanged) {
         [webView.scrollView addObserver:self forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:nil];
     }
+    [webView addObserver:self forKeyPath:@"URL" options:NSKeyValueObservingOptionNew context:nil];
+    [webView addObserver:self forKeyPath:@"title" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -113,14 +145,23 @@ WX_EXPORT_METHOD(@selector(goForward:))
     if ([keyPath isEqualToString:@"contentSize"]) {
         CGFloat webViewHeight = webView.scrollView.contentSize.height;
         [self fireEvent:@"heightChanged" params:@{@"height":@(750 * 1.0 / [UIScreen mainScreen].bounds.size.width * webViewHeight)}];
+    }else if ([keyPath isEqualToString:@"URL"]) {
+        NSString *url = webView.URL.absoluteString;
+        [self fireEvent:@"stateChanged" params:@{@"status":@"url", @"title":@"", @"url":url, @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
+    }else if ([keyPath isEqualToString:@"title"]) {
+        NSString *title = webView.title;
+        [self fireEvent:@"stateChanged" params:@{@"status":@"title", @"title":title, @"url":@"", @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
     }
 }
 
--(void)viewDidUnload {
+-(void)viewDidUnload
+{
+    WeiuiWebView *webView = (WeiuiWebView*)self.view;
     if (_isHeightChanged) {
-        WeiuiWebView *webView = (WeiuiWebView*)self.view;
         [webView.scrollView removeObserver:self forKeyPath:@"contentSize" context:nil];
     }
+    [webView removeObserver:self forKeyPath:@"URL" context:nil];
+    [webView removeObserver:self forKeyPath:@"title" context:nil];
     [super viewDidUnload];
 }
 
@@ -166,53 +207,92 @@ WX_EXPORT_METHOD(@selector(goForward:))
         if (isUpdate) {
             [self setScrollEnabled:_isScrollEnabled];
         }
+    } else if ([key isEqualToString:@"enableApi"]) {
+        _isEnableApi = [WXConvert BOOL:value];
+    } else if ([key isEqualToString:@"userAgent"]) {
+        _userAgent = [WXConvert NSString:value];
+    } else if ([key isEqualToString:@"customUserAgent"]) {
+        _customUserAgent = [WXConvert NSString:value];
     }
 }
 
 #pragma mark delegate
-//是否允许加载网页，也可获取js要打开的url，通过截取此url可与js交互
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request
- navigationType:(UIWebViewNavigationType)navigationType
-{
-    return YES;
-}
-
 //开始加载网页
-- (void)webViewDidStartLoad:(UIWebView *)webView
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation
 {
-    if (_isShowProgress) {
-        [self.progressProxy startProgress];
-    }
-    [self fireEvent:@"stateChanged" params:@{@"status":@"start", @"title":@"", @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
+    [self fireEvent:@"stateChanged" params:@{@"status":@"start", @"title":@"", @"url":@"", @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
 }
 
 //网页加载完成
-- (void)webViewDidFinishLoad:(UIWebView *)webView
+- (void)webView:(WKWebView *)webView didFinishNavigation:( WKNavigation *)navigation
 {
-    if (_isShowProgress) {
-        [self.progressProxy completeProgress];
+    [self fireEvent:@"stateChanged" params:@{@"status":@"success", @"title":@"", @"url":@"", @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
+    if (self.JSCall != nil) {
+        [self.JSCall setJSCallAll:self webView:webView];
     }
-    NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
-    if (![title isEqualToString:_title]) {
-        _title = title;
-        [self fireEvent:@"stateChanged" params:@{@"status":@"title", @"title":_title, @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
-    }
-
-    [self fireEvent:@"stateChanged" params:@{@"status":@"success", @"title":@"", @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
 }
 
 //网页加载错误
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error
 {
-    if (_isShowProgress) {
-        [self.progressProxy completeProgress];
-    }
     if (error) {
         NSString *code = [NSString stringWithFormat:@"%ld", error.code];
         NSString *msg = [NSString stringWithFormat:@"%@", error.description];
-
-        [self fireEvent:@"stateChanged" params:@{@"status":@"error", @"title":@"", @"errCode":code, @"errMsg":msg, @"errUrl":_url}];
+        [self fireEvent:@"stateChanged" params:@{@"status":@"error", @"title":@"", @"url":@"", @"errCode":code, @"errMsg":msg, @"errUrl":_url}];
     }
+}
+
+// 在收到响应后，决定是否跳转
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)response decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler
+{
+    decisionHandler(WKNavigationResponsePolicyAllow);
+}
+
+// 在发送请求之前，决定是否跳转
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)action decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
+{
+    if (action.navigationType == UIWebViewNavigationTypeLinkClicked) {
+        
+    }
+    decisionHandler(WKNavigationActionPolicyAllow);
+}
+
+// 输入框
+- (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * _Nullable))completionHandler
+{
+    if (_isEnableApi == YES && self.JSCall != nil && [self.JSCall isJSCall:prompt]) {
+        completionHandler([self.JSCall onJSCall:webView JSText:prompt]);
+        return;
+    }
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) { }];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        completionHandler(alertController.textFields.lastObject.text);
+    }]];
+    [[DeviceUtil getTopviewControler] presentViewController:alertController animated:YES completion:nil];
+}
+
+// 确认框
+- (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL))completionHandler
+{
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:message message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        completionHandler(YES);
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        completionHandler(NO);
+    }]];
+    [[DeviceUtil getTopviewControler] presentViewController:alertController animated:YES completion:nil];
+}
+
+// 警告框
+- (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler
+{
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:message message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        completionHandler();
+    }]];
+    [[DeviceUtil getTopviewControler] presentViewController:alertController animated:YES completion:nil];
 }
 
 #pragma mark set
@@ -242,9 +322,9 @@ WX_EXPORT_METHOD(@selector(goForward:))
 {
     _isShowProgress = var;
     if (_isShowProgress == NO) {
-        [self.progressProxy completeProgress];
+        [self.progressView setProgress:1.0f];
     }
-    self.progressProxy.progressView.hidden = !_isShowProgress;
+    self.progressView.hidden = !_isShowProgress;
 }
 
 //设置是否允许滚动

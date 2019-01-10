@@ -53,11 +53,6 @@
         android:layout_height="match_parent"
         android:visibility="gone">
 
-        <cc.weiui.framework.extend.view.ProgressWebView
-            android:id="@+id/v_webview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
     </FrameLayout>
 
     <!-- auto -->

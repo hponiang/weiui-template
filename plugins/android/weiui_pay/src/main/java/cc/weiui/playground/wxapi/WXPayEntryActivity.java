@@ -15,7 +15,7 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import cc.weiui.framework.extend.module.weiuiJson;
 import cc.weiui.pay.library.weixin.PayStatic;
-import cc.weiui.pay.weiui.ui.module.weiuiPayModule;
+import cc.weiui.pay.weiui.ui.weiui_pay;
 
 @SuppressLint("Registered")
 public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
@@ -44,7 +44,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
     @Override
     public void onResp(BaseResp resp) {
         if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
-            weiuiPayModule.onWeixinResp(resp);
+            weiui_pay.onWeixinResp(resp);
             finish();
         }
     }
