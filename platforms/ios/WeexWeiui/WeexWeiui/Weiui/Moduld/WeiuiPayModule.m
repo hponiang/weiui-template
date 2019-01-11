@@ -29,8 +29,18 @@ WX_EXPORT_METHOD(@selector(union_alipay:))
 //支付宝结果回调
 + (void)onAlipayResp:(NSDictionary *)result
 {
+    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+    if (result != nil) {
+        [data setObject:result[@"resultStatus"] forKey:@"status"];
+        [data setObject:result[@"result"] forKey:@"result"];
+        if ([data[@"status"] isEqualToString:@"9000"] && !result[@"memo"]) {
+            [data setObject:@"支付成功" forKey:@"memo"];
+        }else{
+            [data setObject:result[@"memo"] forKey:@"memo"];
+        }
+    }
     if (alipayCallback != nil) {
-        alipayCallback(result, NO);
+        alipayCallback(data, NO);
         alipayCallback = nil;
     }
 }
@@ -82,7 +92,7 @@ WX_EXPORT_METHOD(@selector(union_alipay:))
 - (void)alipay:(NSString*)payData callback:(WXModuleKeepAliveCallback)callback
 {
     alipayCallback = callback;
-    [[AlipaySDK defaultService] payOrder:payData fromScheme:@"weiuiApp_cn_xuanma_agou" callback:^(NSDictionary *resultDic) {
+    [[AlipaySDK defaultService] payOrder:payData fromScheme:@"weiuiApp_xxxxxxxx" callback:^(NSDictionary *resultDic) {
         [WeiuiPayModule onAlipayResp:resultDic];
     }];
 }

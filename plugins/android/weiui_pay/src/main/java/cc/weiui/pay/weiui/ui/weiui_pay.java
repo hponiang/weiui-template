@@ -58,7 +58,7 @@ public class weiui_pay {
                  * 支付宝结果回调
                  */
                 case SDK_PAY_FLAG:
-                    PayResult payResult = new PayResult((Map<String, String>) msg.obj);
+                    PayResult payResult = new PayResult((Map<String, Object>) msg.obj);
                     JSCallback mJSCallback = msgJSCallback.get(payResult.getMsgName());
                     if (mJSCallback != null) {
                         Map<String, Object> data = new HashMap<>();
