@@ -19,15 +19,15 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".PicturePreviewActivity"
-            android:theme="@style/activity.Theme" />
+            android:theme="@style/activity.Theme.Preview" />
         <activity
             android:name=".PictureVideoPlayActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="sensor"
-            android:theme="@style/activity.Theme" />
+            android:theme="@style/activity.Theme.Preview" />
         <activity
             android:name=".PictureExternalPreviewActivity"
-            android:theme="@style/activity.Theme" />
+            android:theme="@style/activity.Theme.Preview" />
         <activity
             android:name="com.yalantis.ucrop.weiui.library.UCropActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
