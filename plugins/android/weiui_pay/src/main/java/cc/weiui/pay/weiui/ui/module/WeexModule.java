@@ -10,10 +10,13 @@ public class WeexModule extends WXModule {
 
     private static final String TAG = "weiuiPayModule";
 
-    private weiui_pay myApp;
+    private weiui_pay __obj;
 
-    WeexModule() {
-        myApp = new weiui_pay();
+    private weiui_pay myApp() {
+        if (__obj == null) {
+            __obj = new weiui_pay();
+        }
+        return __obj;
     }
 
     /***************************************************************************************************/
@@ -28,7 +31,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void weixin(String payData, JSCallback callback) {
-        myApp.weixin(mWXSDKInstance.getContext(), payData, callback);
+        myApp().weixin(mWXSDKInstance.getContext(), payData, callback);
     }
 
     /**
@@ -39,7 +42,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void alipay(String payData, JSCallback callback) {
-        myApp.alipay(mWXSDKInstance.getContext(), payData, callback);
+        myApp().alipay(mWXSDKInstance.getContext(), payData, callback);
     }
 
     /**
@@ -49,7 +52,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void union_weixin(String payData) {
-        myApp.union_weixin(mWXSDKInstance.getContext(), payData);
+        myApp().union_weixin(mWXSDKInstance.getContext(), payData);
     }
 
     /**
@@ -59,7 +62,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void union_alipay(String payData) {
-        myApp.union_alipay(mWXSDKInstance.getContext(), payData);
+        myApp().union_alipay(mWXSDKInstance.getContext(), payData);
     }
 }
 

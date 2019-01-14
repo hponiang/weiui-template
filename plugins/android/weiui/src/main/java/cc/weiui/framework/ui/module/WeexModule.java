@@ -7,12 +7,15 @@ import cc.weiui.framework.ui.weiui;
 
 public class WeexModule extends WXModule {
 
-    private static final String TAG = "weiuiCitypickerModule";
+    private static final String TAG = "weiui";
 
-    private weiui myApp;
+    private weiui __obj;
 
-    WeexModule() {
-        myApp = new weiui();
+    private weiui myApp() {
+        if (__obj == null) {
+            __obj = new weiui();
+        }
+        return __obj;
     }
 
     /***************************************************************************************************/
@@ -26,7 +29,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void openPage(String object, JSCallback callback) {
-        myApp.openPage(mWXSDKInstance.getContext(), object, callback);
+        myApp().openPage(mWXSDKInstance.getContext(), object, callback);
     }
 
     /**
@@ -36,7 +39,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public Object getPageInfo(String object) {
-        return myApp.getPageInfo(mWXSDKInstance.getContext(), object);
+        return myApp().getPageInfo(mWXSDKInstance.getContext(), object);
     }
 
     /**
@@ -46,7 +49,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public Object getPageParams(String object) {
-        return myApp.getPageParams(mWXSDKInstance.getContext(), object);
+        return myApp().getPageParams(mWXSDKInstance.getContext(), object);
     }
 
     /**
@@ -55,7 +58,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void reloadPage(String object) {
-        myApp.reloadPage(mWXSDKInstance.getContext(), object);
+        myApp().reloadPage(mWXSDKInstance.getContext(), object);
     }
 
     /**
@@ -64,7 +67,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void closePage(String object) {
-        myApp.closePage(mWXSDKInstance.getContext(), object);
+        myApp().closePage(mWXSDKInstance.getContext(), object);
     }
 
 
@@ -74,7 +77,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void closePageTo(String object) {
-        myApp.closePageTo(mWXSDKInstance.getContext(), object);
+        myApp().closePageTo(mWXSDKInstance.getContext(), object);
     }
 
     /**
@@ -84,7 +87,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void setSoftInputMode(String object, String mode) {
-        myApp.setSoftInputMode(mWXSDKInstance.getContext(), object, mode);
+        myApp().setSoftInputMode(mWXSDKInstance.getContext(), object, mode);
     }
 
     /**
@@ -94,7 +97,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void setPageBackPressed(String object, JSCallback callback) {
-        myApp.setPageBackPressed(mWXSDKInstance.getContext(), object, callback);
+        myApp().setPageBackPressed(mWXSDKInstance.getContext(), object, callback);
     }
 
     /**
@@ -104,7 +107,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void setOnRefreshListener(String object, JSCallback callback) {
-        myApp.setOnRefreshListener(mWXSDKInstance.getContext(), object, callback);
+        myApp().setOnRefreshListener(mWXSDKInstance.getContext(), object, callback);
     }
 
     /**
@@ -114,7 +117,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void setRefreshing(String object, boolean refreshing) {
-        myApp.setRefreshing(mWXSDKInstance.getContext(), object, refreshing);
+        myApp().setRefreshing(mWXSDKInstance.getContext(), object, refreshing);
     }
 
     /**
@@ -124,7 +127,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void setPageStatusListener(String object, JSCallback callback) {
-        myApp.setPageStatusListener(mWXSDKInstance.getContext(), object, callback);
+        myApp().setPageStatusListener(mWXSDKInstance.getContext(), object, callback);
     }
 
     /**
@@ -133,7 +136,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void clearPageStatusListener(String object) {
-        myApp.clearPageStatusListener(mWXSDKInstance.getContext(), object);
+        myApp().clearPageStatusListener(mWXSDKInstance.getContext(), object);
     }
 
     /**
@@ -143,7 +146,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void onPageStatusListener(String object, String status) {
-        myApp.onPageStatusListener(mWXSDKInstance.getContext(), object, status);
+        myApp().onPageStatusListener(mWXSDKInstance.getContext(), object, status);
     }
 
     /**
@@ -151,7 +154,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void getCacheSizePage(JSCallback callback) {
-        myApp.getCacheSizePage(mWXSDKInstance.getContext(), callback);
+        myApp().getCacheSizePage(mWXSDKInstance.getContext(), callback);
     }
 
     /**
@@ -159,7 +162,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void clearCachePage() {
-        myApp.clearCachePage(mWXSDKInstance.getContext());
+        myApp().clearCachePage(mWXSDKInstance.getContext());
     }
 
     /**
@@ -168,7 +171,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void openWeb(String url) {
-        myApp.openWeb(mWXSDKInstance.getContext(), url);
+        myApp().openWeb(mWXSDKInstance.getContext(), url);
     }
 
     /**
@@ -176,7 +179,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void goDesktop() {
-        myApp.goDesktop(mWXSDKInstance.getContext());
+        myApp().goDesktop(mWXSDKInstance.getContext());
     }
 
     /****************************************************************************************/
@@ -187,7 +190,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public int getStatusBarHeight() {
-        return myApp.getStatusBarHeight(mWXSDKInstance.getContext());
+        return myApp().getStatusBarHeight(mWXSDKInstance.getContext());
     }
 
     /**
@@ -195,7 +198,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public int getStatusBarHeightPx() {
-        return myApp.getStatusBarHeightPx(mWXSDKInstance.getContext());
+        return myApp().getStatusBarHeightPx(mWXSDKInstance.getContext());
     }
 
     /**
@@ -203,7 +206,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public int getNavigationBarHeight() {
-        return myApp.getNavigationBarHeight(mWXSDKInstance.getContext());
+        return myApp().getNavigationBarHeight(mWXSDKInstance.getContext());
     }
 
     /**
@@ -211,7 +214,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public int getNavigationBarHeightPx() {
-        return myApp.getNavigationBarHeightPx(mWXSDKInstance.getContext());
+        return myApp().getNavigationBarHeightPx(mWXSDKInstance.getContext());
     }
 
     /**
@@ -219,7 +222,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public int getVersion() {
-        return myApp.getVersion(mWXSDKInstance.getContext());
+        return myApp().getVersion(mWXSDKInstance.getContext());
     }
 
     /**
@@ -227,7 +230,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public String getVersionName() {
-        return myApp.getVersionName(mWXSDKInstance.getContext());
+        return myApp().getVersionName(mWXSDKInstance.getContext());
     }
 
     /**
@@ -235,7 +238,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public int getLocalVersion() {
-        return myApp.getLocalVersion(mWXSDKInstance.getContext());
+        return myApp().getLocalVersion(mWXSDKInstance.getContext());
     }
 
     /**
@@ -243,7 +246,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public String getLocalVersionName() {
-        return myApp.getLocalVersionName(mWXSDKInstance.getContext());
+        return myApp().getLocalVersionName(mWXSDKInstance.getContext());
     }
 
     /**
@@ -254,7 +257,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public int compareVersion(String version1, String version2) {
-        return myApp.compareVersion(mWXSDKInstance.getContext(), version1, version2);
+        return myApp().compareVersion(mWXSDKInstance.getContext(), version1, version2);
     }
 
     /**
@@ -262,7 +265,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public String getImei() {
-        return myApp.getImei(mWXSDKInstance.getContext());
+        return myApp().getImei(mWXSDKInstance.getContext());
     }
 
     /**
@@ -270,7 +273,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public String getIfa() {
-        return myApp.getIfa(mWXSDKInstance.getContext());
+        return myApp().getIfa(mWXSDKInstance.getContext());
     }
 
     /**
@@ -278,7 +281,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public int getSDKVersionCode() {
-        return myApp.getSDKVersionCode(mWXSDKInstance.getContext());
+        return myApp().getSDKVersionCode(mWXSDKInstance.getContext());
     }
 
     /**
@@ -286,7 +289,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public String getSDKVersionName() {
-        return myApp.getSDKVersionName(mWXSDKInstance.getContext());
+        return myApp().getSDKVersionName(mWXSDKInstance.getContext());
     }
 
     /**
@@ -295,7 +298,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public boolean isIPhoneXType() {
-        return myApp.isIPhoneXType(mWXSDKInstance.getContext());
+        return myApp().isIPhoneXType(mWXSDKInstance.getContext());
     }
 
     /****************************************************************************************/
@@ -309,7 +312,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public void setCachesString(String key, String value, Long expired) {
-        myApp.setCachesString(mWXSDKInstance.getContext(), key, value, expired);
+        myApp().setCachesString(mWXSDKInstance.getContext(), key, value, expired);
     }
 
     /**
@@ -319,7 +322,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public String getCachesString(String key, String defaultVal) {
-        return myApp.getCachesString(mWXSDKInstance.getContext(), key, defaultVal);
+        return myApp().getCachesString(mWXSDKInstance.getContext(), key, defaultVal);
     }
 
     /**
@@ -329,7 +332,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public void setVariate(String key, String value) {
-        myApp.setVariate(mWXSDKInstance.getContext(), key, value);
+        myApp().setVariate(mWXSDKInstance.getContext(), key, value);
     }
 
     /**
@@ -339,7 +342,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public String getVariate(String key, String defaultVal) {
-        return myApp.getVariate(mWXSDKInstance.getContext(), key, defaultVal);
+        return myApp().getVariate(mWXSDKInstance.getContext(), key, defaultVal);
     }
 
     /****************************************************************************************/
@@ -351,7 +354,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void getCacheSizeDir(JSCallback callback) {
-        myApp.getCacheSizeDir(mWXSDKInstance.getContext(), callback);
+        myApp().getCacheSizeDir(mWXSDKInstance.getContext(), callback);
     }
 
     /**
@@ -359,7 +362,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void clearCacheDir(JSCallback callback) {
-        myApp.clearCacheDir(mWXSDKInstance.getContext(), callback);
+        myApp().clearCacheDir(mWXSDKInstance.getContext(), callback);
     }
 
     /**
@@ -368,7 +371,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void getCacheSizeFiles(JSCallback callback) {
-        myApp.getCacheSizeFiles(mWXSDKInstance.getContext(), callback);
+        myApp().getCacheSizeFiles(mWXSDKInstance.getContext(), callback);
     }
 
     /**
@@ -376,7 +379,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void clearCacheFiles(JSCallback callback) {
-        myApp.clearCacheFiles(mWXSDKInstance.getContext(), callback);
+        myApp().clearCacheFiles(mWXSDKInstance.getContext(), callback);
     }
 
     /**
@@ -385,7 +388,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void getCacheSizeDbs(JSCallback callback) {
-        myApp.getCacheSizeDbs(mWXSDKInstance.getContext(), callback);
+        myApp().getCacheSizeDbs(mWXSDKInstance.getContext(), callback);
     }
 
     /**
@@ -393,7 +396,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void clearCacheDbs(JSCallback callback) {
-        myApp.clearCacheDbs(mWXSDKInstance.getContext(), callback);
+        myApp().clearCacheDbs(mWXSDKInstance.getContext(), callback);
     }
 
     /****************************************************************************************/
@@ -405,7 +408,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public int weexPx2dp(String var) {
-        return myApp.weexPx2dp(mWXSDKInstance.getContext(), var);
+        return myApp().weexPx2dp(mWXSDKInstance.getContext(), var);
     }
 
     /**
@@ -414,7 +417,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public int weexDp2px(String var) {
-        return myApp.weexDp2px(mWXSDKInstance.getContext(), var);
+        return myApp().weexDp2px(mWXSDKInstance.getContext(), var);
     }
 
     /****************************************************************************************/
@@ -425,7 +428,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void alert(String object, JSCallback callback) {
-        myApp.alert(mWXSDKInstance.getContext(), object, callback);
+        myApp().alert(mWXSDKInstance.getContext(), object, callback);
     }
 
     /**
@@ -433,7 +436,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void confirm(String object, JSCallback callback) {
-        myApp.confirm(mWXSDKInstance.getContext(), object, callback);
+        myApp().confirm(mWXSDKInstance.getContext(), object, callback);
     }
 
     /**
@@ -441,7 +444,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void input(String object, JSCallback callback) {
-        myApp.input(mWXSDKInstance.getContext(), object, callback);
+        myApp().input(mWXSDKInstance.getContext(), object, callback);
     }
 
     /****************************************************************************************/
@@ -455,7 +458,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public String loading(String object, JSCallback callback) {
-        return myApp.loading(mWXSDKInstance.getContext(), object, callback);
+        return myApp().loading(mWXSDKInstance.getContext(), object, callback);
     }
 
     /**
@@ -463,7 +466,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public void loadingClose(String var) {
-        myApp.loadingClose(mWXSDKInstance.getContext(), var);
+        myApp().loadingClose(mWXSDKInstance.getContext(), var);
     }
 
     /****************************************************************************************/
@@ -476,7 +479,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void swipeCaptcha(String imgUrl, JSCallback callback) {
-        myApp.swipeCaptcha(mWXSDKInstance.getContext(), imgUrl, callback);
+        myApp().swipeCaptcha(mWXSDKInstance.getContext(), imgUrl, callback);
     }
 
     /****************************************************************************************/
@@ -489,7 +492,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void openScaner(String object, JSCallback callback) {
-        myApp.openScaner(mWXSDKInstance.getContext(), object, callback);
+        myApp().openScaner(mWXSDKInstance.getContext(), object, callback);
     }
 
     /****************************************************************************************/
@@ -502,7 +505,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void ajax(String object, JSCallback callback) {
-        myApp.ajax(mWXSDKInstance.getContext(), object, callback);
+        myApp().ajax(mWXSDKInstance.getContext(), object, callback);
     }
 
     /**
@@ -511,7 +514,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void ajaxCancel(String name) {
-        myApp.ajaxCancel(mWXSDKInstance.getContext(), name);
+        myApp().ajaxCancel(mWXSDKInstance.getContext(), name);
     }
 
     /**
@@ -519,7 +522,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void getCacheSizeAjax(JSCallback callback) {
-        myApp.getCacheSizeAjax(mWXSDKInstance.getContext(), callback);
+        myApp().getCacheSizeAjax(mWXSDKInstance.getContext(), callback);
     }
 
     /**
@@ -527,7 +530,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void clearCacheAjax() {
-        myApp.clearCacheAjax(mWXSDKInstance.getContext());
+        myApp().clearCacheAjax(mWXSDKInstance.getContext());
     }
 
     /****************************************************************************************/
@@ -539,7 +542,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void copyText(String var) {
-        myApp.copyText(mWXSDKInstance.getContext(), var);
+        myApp().copyText(mWXSDKInstance.getContext(), var);
     }
 
     /**
@@ -548,7 +551,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public CharSequence pasteText() {
-        return myApp.pasteText(mWXSDKInstance.getContext());
+        return myApp().pasteText(mWXSDKInstance.getContext());
     }
 
     /****************************************************************************************/
@@ -560,7 +563,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void toast(String object) {
-        myApp.toast(mWXSDKInstance.getContext(), object);
+        myApp().toast(mWXSDKInstance.getContext(), object);
     }
 
     /**
@@ -568,7 +571,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void toastClose() {
-        myApp.toastClose(mWXSDKInstance.getContext());
+        myApp().toastClose(mWXSDKInstance.getContext());
     }
 
     /****************************************************************************************/
@@ -581,7 +584,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void adDialog(String object, JSCallback callback) {
-        myApp.adDialog(mWXSDKInstance.getContext(), object, callback);
+        myApp().adDialog(mWXSDKInstance.getContext(), object, callback);
     }
 
     /**
@@ -590,7 +593,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void adDialogClose(String dialogName) {
-        myApp.adDialogClose(mWXSDKInstance.getContext(), dialogName);
+        myApp().adDialogClose(mWXSDKInstance.getContext(), dialogName);
     }
 
     /****************************************************************************************/
@@ -602,7 +605,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void saveImage(String url, JSCallback callback) {
-        myApp.saveImage(mWXSDKInstance.getContext(), url, callback);
+        myApp().saveImage(mWXSDKInstance.getContext(), url, callback);
     }
 
     /****************************************************************************************/
@@ -614,7 +617,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void openOtherApp(String type) {
-        myApp.openOtherApp(mWXSDKInstance.getContext(), type);
+        myApp().openOtherApp(mWXSDKInstance.getContext(), type);
     }
 
     /****************************************************************************************/
@@ -626,7 +629,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void shareText(String text) {
-        myApp.shareText(mWXSDKInstance.getContext(), text);
+        myApp().shareText(mWXSDKInstance.getContext(), text);
     }
 
     /**
@@ -635,7 +638,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void shareImage(String imgUrl) {
-        myApp.shareImage(mWXSDKInstance.getContext(), imgUrl);
+        myApp().shareImage(mWXSDKInstance.getContext(), imgUrl);
     }
 
     /***************************************************************************************************/
@@ -649,7 +652,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public Object appUtils(String method, Object var0, Object var1) {
-        return myApp.appUtils(mWXSDKInstance.getContext(), method, var0, var1);
+        return myApp().appUtils(mWXSDKInstance.getContext(), method, var0, var1);
     }
 
     /**
@@ -659,7 +662,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public Object deviceUtils(String method) {
-        return myApp.deviceUtils(mWXSDKInstance.getContext(), method);
+        return myApp().deviceUtils(mWXSDKInstance.getContext(), method);
     }
 
     /**
@@ -669,7 +672,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public Object keyboardUtils(String method) {
-        return myApp.keyboardUtils(mWXSDKInstance.getContext(), method);
+        return myApp().keyboardUtils(mWXSDKInstance.getContext(), method);
     }
 
     /**
@@ -679,7 +682,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public Object networkUtils(String method, Object var0, Object var1) {
-        return myApp.networkUtils(mWXSDKInstance.getContext(), method, var0, var1);
+        return myApp().networkUtils(mWXSDKInstance.getContext(), method, var0, var1);
     }
 
     /**
@@ -689,7 +692,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public Object permissionUtils(String method, Object var0, Object var1) {
-        return myApp.permissionUtils(mWXSDKInstance.getContext(), method, var0, var1);
+        return myApp().permissionUtils(mWXSDKInstance.getContext(), method, var0, var1);
     }
 
     /**
@@ -699,7 +702,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public Object phoneUtils(String method, Object var0, Object var1, Object var2) {
-        return myApp.phoneUtils(mWXSDKInstance.getContext(), method, var0, var1, var2);
+        return myApp().phoneUtils(mWXSDKInstance.getContext(), method, var0, var1, var2);
     }
 
     /**
@@ -709,7 +712,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public Object processUtils(String method, Object var0, Object var1) {
-        return myApp.processUtils(mWXSDKInstance.getContext(), method, var0, var1);
+        return myApp().processUtils(mWXSDKInstance.getContext(), method, var0, var1);
     }
 
     /**
@@ -719,7 +722,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public Object screenUtils(String method, Object var0, Object var1) {
-        return myApp.screenUtils(mWXSDKInstance.getContext(), method, var0, var1);
+        return myApp().screenUtils(mWXSDKInstance.getContext(), method, var0, var1);
     }
 
     /**
@@ -729,7 +732,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public Object timeUtils(String method, Object var0, Object var1, Object var2) {
-        return myApp.timeUtils(mWXSDKInstance.getContext(), method, var0, var1, var2);
+        return myApp().timeUtils(mWXSDKInstance.getContext(), method, var0, var1, var2);
     }
 
     /**
@@ -738,7 +741,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void cameraTool(String method) {
-        myApp.cameraTool(mWXSDKInstance.getContext(), method);
+        myApp().cameraTool(mWXSDKInstance.getContext(), method);
     }
 
     /**
@@ -748,7 +751,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod(uiThread = false)
     public Object locationTool(String method, Object var0, Object var1, Object var2) {
-        return myApp.locationTool(mWXSDKInstance.getContext(), method, var0, var1, var2);
+        return myApp().locationTool(mWXSDKInstance.getContext(), method, var0, var1, var2);
     }
 
     /**
@@ -757,6 +760,6 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void vibrateTool(String method, Object var0, Object var1) {
-        myApp.vibrateTool(mWXSDKInstance.getContext(), method, var0, var1);
+        myApp().vibrateTool(mWXSDKInstance.getContext(), method, var0, var1);
     }
 }

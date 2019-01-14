@@ -10,10 +10,13 @@ public class WeexModule extends WXModule {
 
     private static final String TAG = "weiuiCitypickerModule";
 
-    private weiui_citypicker myApp;
+    private weiui_citypicker __obj;
 
-    WeexModule() {
-        myApp = new weiui_citypicker();
+    private weiui_citypicker myApp() {
+        if (__obj == null) {
+            __obj = new weiui_citypicker();
+        }
+        return __obj;
     }
 
     /***************************************************************************************************/
@@ -27,6 +30,6 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void select(String object, JSCallback callback) {
-        myApp.select(mWXSDKInstance.getContext(), object, callback);
+        myApp().select(mWXSDKInstance.getContext(), object, callback);
     }
 }

@@ -7,10 +7,13 @@ import com.taobao.weex.common.WXModule;
 
 public class WeexModule extends WXModule {
 
-    private weiui_picture myApp;
+    private weiui_picture __obj;
 
-    WeexModule() {
-        myApp = new weiui_picture();
+    private weiui_picture myApp() {
+        if (__obj == null) {
+            __obj = new weiui_picture();
+        }
+        return __obj;
     }
 
     /***************************************************************************************************/
@@ -24,7 +27,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void create(String object, JSCallback callback) {
-        myApp.create(mWXSDKInstance.getContext(), object, callback);
+        myApp().create(mWXSDKInstance.getContext(), object, callback);
     }
 
     /**
@@ -34,7 +37,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void compressImage(String object, JSCallback callback) {
-        myApp.compressImage(mWXSDKInstance.getContext(), object, callback);
+        myApp().compressImage(mWXSDKInstance.getContext(), object, callback);
     }
 
     /**
@@ -44,7 +47,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void picturePreview(int position, String array, JSCallback callback) {
-        myApp.picturePreview(mWXSDKInstance.getContext(), position, array, callback);
+        myApp().picturePreview(mWXSDKInstance.getContext(), position, array, callback);
     }
 
     /**
@@ -53,7 +56,7 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void videoPreview(String path) {
-        myApp.videoPreview(mWXSDKInstance.getContext(), path);
+        myApp().videoPreview(mWXSDKInstance.getContext(), path);
     }
 
     /**
@@ -61,6 +64,6 @@ public class WeexModule extends WXModule {
      */
     @JSMethod
     public void deleteCache() {
-        myApp.deleteCache(mWXSDKInstance.getContext());
+        myApp().deleteCache(mWXSDKInstance.getContext());
     }
 }
