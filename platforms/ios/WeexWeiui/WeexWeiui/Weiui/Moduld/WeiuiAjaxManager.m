@@ -49,15 +49,6 @@
     NSDictionary *result = @{@"status":@"ready", @"name":name, @"url":url, @"cache":@(NO), @"result":@{}};
     callback(result, YES);
     
-    //处理data，防止参数键值嵌套
-    //for (NSString *key in data.allKeys) {
-    //    if ([data[key] isKindOfClass:[NSDictionary class]]) {
-    //        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data[key] options:NSJSONWritingPrettyPrinted error:nil];
-    //        NSString * str = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    //        [data setValue:str forKey:key];
-    //    }
-    //}
-    
     //网络请求
     NSLog(@"ajax = %@", url);
     
@@ -90,7 +81,7 @@
     if ([method compare:@"get"
                 options:NSCaseInsensitiveSearch] == NSOrderedSame) {
         NSURLSessionDataTask *dataTask = [manager GET:url parameters:data progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSLog(@"%@\n%@", url, responseObject);
+            //NSLog(@"%@\n%@", url, responseObject);
             if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
                 if ([[responseObject objectForKey:@"ret"] integerValue] == 1) {
                     //加入缓存
@@ -107,11 +98,13 @@
             NSDictionary *result2 = @{@"status":@"complete", @"name":name, @"url":url, @"cache":@(NO), @"result":responseObject};
             callback(result2, NO);
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            NSLog(@"%@",error);
-            NSDictionary *res = @{@"status":@"error", @"name":name, @"url":url, @"cache":@(NO), @"result":@{}};
+            //NSLog(@"%@", error);
+            id result = [[error userInfo] objectForKey:NSLocalizedDescriptionKey];
+            
+            NSDictionary *res = @{@"status":@"error", @"name":name, @"url":url, @"cache":@(NO), @"result":result};
             callback(res, YES);
             
-            NSDictionary *result2 = @{@"status":@"complete", @"name":name, @"url":url, @"cache":@(NO), @"result":@{}};
+            NSDictionary *result2 = @{@"status":@"complete", @"name":name, @"url":url, @"cache":@(NO), @"result":result};
             callback(result2, NO);
         }];
         
@@ -122,7 +115,7 @@
     else if ([method compare:@"post"
                      options:NSCaseInsensitiveSearch] == NSOrderedSame && files.count == 0) {
         NSURLSessionDataTask *dataTask = [manager POST:url parameters:data progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSLog(@"%@\n%@", url, responseObject);
+            //NSLog(@"%@\n%@", url, responseObject);
             if (responseObject && [responseObject isKindOfClass:[NSDictionary class]]) {
                 if ([[responseObject objectForKey:@"ret"] integerValue] == 1) {
                     NSDictionary *data = responseObject[@"data"];
@@ -142,11 +135,13 @@
             NSDictionary *result2 = @{@"status":@"complete", @"name":name, @"url":url, @"cache":@(NO), @"result":responseObject};
             callback(result2, NO);
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            NSLog(@"%@",error);
-            NSDictionary *res = @{@"status":@"error", @"name":name, @"url":url, @"cache":@(NO), @"result":@{}};
+            //NSLog(@"%@", error);
+            id result = [[error userInfo] objectForKey:NSLocalizedDescriptionKey];
+            
+            NSDictionary *res = @{@"status":@"error", @"name":name, @"url":url, @"cache":@(NO), @"result":result};
             callback(res, YES);
             
-            NSDictionary *result2 = @{@"status":@"complete", @"name":name, @"url":url, @"cache":@(NO), @"result":@{}};
+            NSDictionary *result2 = @{@"status":@"complete", @"name":name, @"url":url, @"cache":@(NO), @"result":result};
             callback(result2, NO);
         }];
         
@@ -190,18 +185,20 @@
                 }
             }
         } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            NSLog(@"%@", responseObject);
+            //NSLog(@"%@", responseObject);
             NSDictionary *res = @{@"status":@"success", @"name":name, @"url":url, @"cache":@(NO), @"result":responseObject};
             callback(res, YES);
             
             NSDictionary *result2 = @{@"status":@"complete", @"name":name, @"url":url, @"cache":@(NO), @"result":@{}};
             callback(result2, NO);
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            NSLog(@"%@", error);
-            NSDictionary *res = @{@"status":@"error", @"name":name, @"url":url, @"cache":@(NO), @"result":@{}};
+            //NSLog(@"%@", error);
+            id result = [[error userInfo] objectForKey:NSLocalizedDescriptionKey];
+            
+            NSDictionary *res = @{@"status":@"error", @"name":name, @"url":url, @"cache":@(NO), @"result":result};
             callback(res, YES);
             
-            NSDictionary *result2 = @{@"status":@"complete", @"name":name, @"url":url, @"cache":@(NO), @"result":@{}};
+            NSDictionary *result2 = @{@"status":@"complete", @"name":name, @"url":url, @"cache":@(NO), @"result":result};
             callback(result2, NO);
         }];
         

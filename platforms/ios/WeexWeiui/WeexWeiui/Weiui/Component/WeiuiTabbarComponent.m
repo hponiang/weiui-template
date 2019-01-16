@@ -1,4 +1,4 @@
-                                                                                                                                                                                                                  //
+//
 //  WeiuiTabbarComponent.m
 //  WeexTestDemo
 //
@@ -15,6 +15,7 @@
 #import "MJRefresh.h"
 #import "SDWebImageDownloader.h"
 #import "UIButton+WebCache.h"
+#import "SGEasyButton.h"
 
 #define TabItemBtnTag 1000
 #define TabItemMessageTag 2000
@@ -122,7 +123,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
         
         _ktabType = @"bottom";
         _ktabBackgroundColor = @"#FFFFFF";
-//        _indicatorColor = @"#FFFFFF";
+        //        _indicatorColor = @"#FFFFFF";
         _underlineColor = @"#FFFFFF";
         _dividerColor = @"#FFFFFF";
         _textSelectColor = @"#3EB4FF";
@@ -196,7 +197,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
     self.childPageList = [NSMutableArray arrayWithCapacity:5];
     self.childComponentList = [NSMutableArray arrayWithCapacity:5];
     self.lifeTabPages = [NSMutableDictionary dictionaryWithCapacity:5];
-
+    
     self.bodyView = [[UIScrollView alloc] init];
     self.bodyView.pagingEnabled = YES;
     self.bodyView.showsHorizontalScrollIndicator = NO;
@@ -209,13 +210,13 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
         self.bodyView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     }
 #endif
-
+    
     //tab
     self.tabView = [[UIScrollView alloc] init];
     [self.view addSubview:self.tabView];
     
     [self loadTabView];
-
+    
     //indicator
     if (_indicatorStyle == 0) {
         self.indicatorView =  [[UIView alloc] init];
@@ -269,12 +270,12 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
 
 - (void)insertSubview:(WXComponent *)subcomponent atIndex:(NSInteger)index
 {
-//    [super insertSubview:subcomponent atIndex:index];
+    //    [super insertSubview:subcomponent atIndex:index];
     
     if ([subcomponent isKindOfClass:[WeiuiTabbarPageComponent class]]) {
         if (self.subComps.count == 0) {
             [self.subComps addObject:subcomponent];
-//            [self loadComponentView];
+            //            [self loadComponentView];
             [self performSelector:@selector(loadComponentView) withObject:nil afterDelay:0.1];
         } else {
             [self.subComps insertObject:subcomponent atIndex:index];
@@ -395,11 +396,11 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
     if (dataList.count > 0) {
         [self.bodyView setContentSize:CGSizeMake(self.bodyView.frame.size.width * dataList.count, 0)];
         self.tabNameList = [NSMutableArray arrayWithCapacity:5];
-
+        
         for (UIView *oldView in self.tabView.subviews) {
             [oldView removeFromSuperview];
         }
-
+        
         CGFloat allWidth = _tabPadding;
         for (int i = 0; i < dataList.count; i++) {
             id data = dataList[i];
@@ -422,11 +423,11 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                 tabName = data[@"tabName"] ? [WXConvert NSString:data[@"tabName"]] : @"";
                 title = data[@"title"] ? [WXConvert NSString:data[@"title"]] : @"";
                 message = data[@"message"] ? [WXConvert NSInteger:data[@"message"]] : 0;
-                unSelectedIcon = data[@"unSelectedIcon"] ? [WXConvert NSString:data[@"unSelectedIcon"]] : @"home";
-                selectedIcon = data[@"selectedIcon"] ? [WXConvert NSString:data[@"selectedIcon"]] : @"home";
+                unSelectedIcon = data[@"unSelectedIcon"] ? [WXConvert NSString:data[@"unSelectedIcon"]] : @"tb-home-light";
+                selectedIcon = data[@"selectedIcon"] ? [WXConvert NSString:data[@"selectedIcon"]] : @"tb-home-fill-light";
                 dot = data[@"dot"] ? [WXConvert BOOL:data[@"dot"]] : NO;
             }
-           
+            
             NSDictionary *nameData = @{@"tabName":tabName, @"position":@(i)};
             if (self.tabNameList.count == 0) {
                 [self.tabNameList addObject:nameData];
@@ -463,32 +464,43 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             [btn addTarget:self action:@selector(tabbarClick:) forControlEvents:UIControlEventTouchUpInside];
             btn.tag = TabItemBtnTag + i;
             [self.tabView addSubview:btn];
-
+            
             allWidth += tabWidth;
             
             //图片
             if ([unSelectedIcon hasPrefix:@"http"]) {
+                [btn setImage:[self imageResize:nil andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateNormal];
                 [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:unSelectedIcon] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
                     if (image) {
                         WXPerformBlockOnMainThread(^{
-                            [btn setImage:[self imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight)] forState:UIControlStateNormal];
+                            [btn setImage:[self imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateNormal];
+                            if (self->_iconGravity) {
+                                [btn SG_imagePositionStyle:(SGImagePositionStyleTop) spacing:5];
+                            } else {
+                                [btn SG_imagePositionStyle:(SGImagePositionStyleBottom) spacing:5];
+                            }
                         });
                     }
                 }];
             } else {
-                [btn setImage:[self imageResize:[DeviceUtil getIconText:unSelectedIcon font:0 color:@"#242424"] andResizeTo:CGSizeMake(iconWidth, iconHeight)] forState:UIControlStateNormal];
+                [btn setImage:[self imageResize:[DeviceUtil getIconText:unSelectedIcon font:0 color:@"#242424"] andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:unSelectedIcon] forState:UIControlStateNormal];
             }
             
             if ([selectedIcon hasPrefix:@"http"]) {
                 [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:selectedIcon] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
                     if (image) {
                         WXPerformBlockOnMainThread(^{
-                            [btn setImage:[self imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight)] forState:UIControlStateSelected];
+                            [btn setImage:[self imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateSelected];
+                            if (self->_iconGravity) {
+                                [btn SG_imagePositionStyle:(SGImagePositionStyleTop) spacing:5];
+                            } else {
+                                [btn SG_imagePositionStyle:(SGImagePositionStyleBottom) spacing:5];
+                            }
                         });
                     }
                 }];
             } else {
-                [btn setImage:[self imageResize:[DeviceUtil getIconText:selectedIcon font:0 color:_textSelectColor] andResizeTo:CGSizeMake(iconWidth, iconHeight)] forState:UIControlStateSelected];
+                [btn setImage:[self imageResize:[DeviceUtil getIconText:selectedIcon font:0 color:_textSelectColor] andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:selectedIcon] forState:UIControlStateSelected];
             }
             
             //字体加粗
@@ -513,11 +525,9 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             
             //上下图片文字
             if (_iconGravity) {
-                [btn setImageEdgeInsets:UIEdgeInsetsMake(-btn.titleLabel.intrinsicContentSize.height - iconMargin, 0, 0, -btn.titleLabel.intrinsicContentSize.width)];
-                [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, -btn.imageView.frame.size.width ,-btn.imageView.frame.size.height - iconMargin, 0)];
+                [btn SG_imagePositionStyle:(SGImagePositionStyleTop) spacing:5];
             } else {
-                [btn setImageEdgeInsets:UIEdgeInsetsMake(btn.titleLabel.intrinsicContentSize.height + iconMargin, 0, 0, -btn.titleLabel.intrinsicContentSize.width)];
-                [btn setTitleEdgeInsets:UIEdgeInsetsMake(0, -btn.imageView.frame.size.width ,btn.imageView.frame.size.height + iconMargin, 0)];
+                [btn SG_imagePositionStyle:(SGImagePositionStyleBottom) spacing:5];
             }
             
             //分割线
@@ -568,7 +578,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
 - (void)loadIndicatorView
 {
     UIButton *btn = (UIButton*)[self.tabView viewWithTag:TabItemBtnTag + _selectedIndex];
-
+    
     self.indicatorView.frame = CGRectMake( btn.frame.origin.x + (btn.frame.size.width - _indicatorWidth)/2, _ktabHeight - _indicatorHeight, _indicatorWidth, _indicatorHeight);
     
     self.indicatorView.layer.cornerRadius = _indicatorCornerRadius;
@@ -589,7 +599,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
     
 #warning ssss
     [self fireEvent:@"pageScrollStateChanged" params:@{@"state":@""}];
-
+    
     for (int i = 0; i < self.tabPages.count + self.subComps.count; i++) {
         UIButton *btn = [_tabView viewWithTag:TabItemBtnTag + i];
         if (i == _selectedIndex) {
@@ -672,11 +682,15 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
     self.underLineView.backgroundColor = [WXConvert UIColor:_underlineColor];
 }
 
-- (UIImage *)imageResize:(UIImage*)img andResizeTo:(CGSize)newSize
+- (UIImage *)imageResize:(UIImage*)img andResizeTo:(CGSize)newSize icon:(NSString *)icon
 {
     CGFloat scale = [[UIScreen mainScreen]scale];
     UIGraphicsBeginImageContextWithOptions(newSize, NO, scale);
-    [img drawInRect:CGRectMake(-newSize.width*scale/30, 0, newSize.width, newSize.height)];//有偏移，自己加了参数
+    NSInteger x = 0;
+    if ([icon hasPrefix:@"tb-"]) {
+        x = -newSize.width * scale / 30;
+    }
+    [img drawInRect:CGRectMake(x, 0, newSize.width, newSize.height)];//有偏移，自己加了参数
     UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
@@ -712,10 +726,10 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
         vc.isChildSubview = YES;
         vc.pageName = tabName;
         vc.title = title;
-
+        
         [_tabInstance.viewController addChildViewController:vc];
         [scoView addSubview:vc.view];
-                
+        
         CGRect frame = vc.view.frame;
         UIEdgeInsets safeArea = UIEdgeInsetsZero;
 #ifdef __IPHONE_11_0
@@ -725,7 +739,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
 #endif
         if (statusBarColor) {
             frame = CGRectMake(0, safeArea.top, scoView.frame.size.width, scoView.frame.size.height - safeArea.top - safeArea.bottom);
-
+            
             UIView *statusView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, scoView.frame.size.width, safeArea.top)];
             statusView.backgroundColor = [WXConvert UIColor:statusBarColor];
             [scoView addSubview:statusView];
@@ -733,11 +747,11 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             frame = CGRectMake(0, 0, scoView.frame.size.width, scoView.frame.size.height - safeArea.bottom);
         }
         vc.view.frame = frame;
-
+        
         //下拉刷新
         if (_isRefreshListener) {
             scoView.contentSize = CGSizeMake(0, scoView.frame.size.height + 0.1);
-
+            
             __weak typeof(self) ws = self;
             scoView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
                 NSDictionary *data = @{@"tabName":tabName, @"position":@(ws.selectedIndex)};
@@ -766,16 +780,16 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
         UIView *view = com.view;
         CGRect frame = view.frame;
         frame.origin = CGPointMake(0, 0);
-//        frame.size = scoView.frame.size;
+        //        frame.size = scoView.frame.size;
         view.frame = frame;
         [scoView addSubview:view];
-
+        
         scoView.contentSize = CGSizeMake(0, com.calculatedFrame.size.height);
-
+        
         //下拉刷新
         if (_isRefreshListener) {
             scoView.contentSize = CGSizeMake(0, scoView.frame.size.height + 0.1);
-
+            
             __weak typeof(WeiuiTabbarComponent) *ws = self;
             scoView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
                 NSDictionary *data = @{@"tabName":com.tabName, @"position":@(ws.selectedIndex)};
@@ -950,7 +964,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             if ([name isEqualToString:tabName]) {
                 UIView *view = [_tabView viewWithTag:TabItemDotTag + i];
                 UILabel *msgLab = (UILabel*)[_tabView viewWithTag:TabItemMessageTag + i];
-
+                
                 view.hidden = YES;
                 msgLab.hidden = YES;
                 break;

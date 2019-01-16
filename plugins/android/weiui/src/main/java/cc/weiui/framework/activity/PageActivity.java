@@ -33,6 +33,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cc.weiui.framework.extend.integration.actionsheet.ActionItem;
+import cc.weiui.framework.extend.integration.actionsheet.ActionSheet;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import cc.weiui.framework.BuildConfig;
@@ -60,7 +62,6 @@ import cc.weiui.framework.extend.integration.zxing.Result;
 
 import com.rabtman.wsmanager.WsManager;
 import com.rabtman.wsmanager.listener.WsStatusListener;
-import com.skyline.widget.dialog.ActionDialog;
 import com.taobao.weex.IWXRenderListener;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.bridge.JSCallback;
@@ -71,6 +72,7 @@ import com.taobao.weex.dom.WXEvent;
 import com.taobao.weex.ui.component.WXComponent;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1435,127 +1437,131 @@ public class PageActivity extends AppCompatActivity {
      * debug按钮点击事件
      */
     private View.OnClickListener deBugClickListener = v -> {
-        ActionDialog dialog = new ActionDialog(this);
-        dialog.setTitle("开发工具菜单");
-        dialog.addAction(weiuiCommon.getVariateInt("__deBugSocket:Status") == 1 ? "WiFi真机同步 [已连接]" : "WiFi真机同步");
-        dialog.addAction("扫一扫");
-        dialog.addAction("刷新");
-        dialog.addAction("重启APP");
+        List<ActionItem> mActionItem = new ArrayList<>();
+        mActionItem.add(new ActionItem(1, weiuiCommon.getVariateInt("__deBugSocket:Status") == 1 ? "WiFi真机同步 [已连接]" : "WiFi真机同步"));
+        mActionItem.add(new ActionItem(2, "扫一扫"));
+        mActionItem.add(new ActionItem(3, "刷新"));
+        mActionItem.add(new ActionItem(4, "重启APP"));
         if ("true".equals(weiuiCommon.getVariateStr("configDataIsDist"))) {
-            dialog.addAction("清除热更新数据");
+            mActionItem.add(new ActionItem(5, "清除热更新数据"));
+
         }
-        dialog.setEventListener(new ActionDialog.OnEventListener() {
-            @Override
-            public void onActionItemClick(ActionDialog dialog, ActionDialog.ActionItem item, int position) {
-                switch (item.title) {
-                    case "WiFi真机同步 [已连接]":
-                    case "WiFi真机同步":
-                        String host = weiuiCommon.getVariateStr("__deBugSocket:Host");
-                        String port = weiuiCommon.getVariateStr("__deBugSocket:Port");
-                        String inputObject = "{title:\"WiFi真机同步配置\",message:\"配置成功后，可实现真机同步实时预览\",buttons:[\"取消\",\"连接\"],inputs:[{type:'text',placeholder:'请输入IP地址',value:'" + host + "',autoFocus:true},{type:'number',placeholder:'请输入端口号',value:'" + port + "'}]}";
-                        weiuiAlertDialog.input(PageActivity.this, inputObject, new JSCallback() {
-                            @Override
-                            public void invoke(Object data) {
-                                Map<String, Object> retData = weiuiMap.objectToMap(data);
-                                if (weiuiParse.parseStr(retData.get("status")).equals("click") && weiuiParse.parseStr(retData.get("title")).equals("连接")) {
-                                    JSONArray dData = weiuiJson.parseArray(retData.get("data"));
-                                    weiuiCommon.setVariate("__deBugSocket:Host", dData.getString(0));
-                                    weiuiCommon.setVariate("__deBugSocket:Port", dData.getString(1));
-                                    List<Activity> activityList = weiui.getActivityList();
-                                    Activity activity = activityList.get(0);
-                                    if (activity instanceof PageActivity) {
-                                        ((PageActivity) activity).deBugSocketConnect("initialize");
-                                    }
-                                }
-                            }
+        ActionSheet.createBuilder(this, getSupportFragmentManager())
+                .setSubTitle("开发工具菜单")
+                .setCancelActionTitle("取消")
+                .setActionItems(mActionItem)
+                .setCancelableOnTouchOutside(true)
+                .setListener(new ActionSheet.ActionSheetListener() {
+                    @Override
+                    public void onDismiss(ActionSheet actionSheet, boolean isCancel) {
 
-                            @Override
-                            public void invokeAndKeepAlive(Object data) {
-                                //
-                            }
-                        });
-                        break;
+                    }
 
-                    case "扫一扫":
-                        PageActivity.startScanerCode(PageActivity.this, "{}", new JSCallback() {
-                            @Override
-                            public void invoke(Object data) {
-                                //
-                            }
-
-                            @Override
-                            public void invokeAndKeepAlive(Object data) {
-                                Map<String, Object> retData = weiuiMap.objectToMap(data);
-                                if (weiuiParse.parseStr(retData.get("status")).equals("success")) {
-                                    String text = weiuiParse.parseStr(retData.get("text"));
-                                    if (text.startsWith("http")) {
-                                        String url = text, host = "", port = "";
-                                        if (text.contains("?socket=")) {
-                                            url = weiuiCommon.getMiddle(text, null, "?socket=");
-                                            host = weiuiCommon.getMiddle(text, "?socket=", ":");
-                                            port = weiuiCommon.getMiddle(text, "?socket=" + host + ":", "&");
-                                        }
-                                        //
-                                        PageBean mPageBean = new PageBean();
-                                        mPageBean.setUrl(url);
-                                        mPageBean.setPageType("weex");
-                                        weiuiPage.openWin(PageActivity.this, mPageBean);
-                                        //
-                                        if (host.length() > 0 && port.length() > 0) {
-                                            weiuiCommon.setVariate("__deBugSocket:Host", host);
-                                            weiuiCommon.setVariate("__deBugSocket:Port", port);
+                    @Override
+                    public void onActionButtonClick(ActionSheet actionSheet, int index) {
+                        switch (index) {
+                            case 0: {
+                                String host = weiuiCommon.getVariateStr("__deBugSocket:Host");
+                                String port = weiuiCommon.getVariateStr("__deBugSocket:Port");
+                                String inputObject = "{title:\"WiFi真机同步配置\",message:\"配置成功后，可实现真机同步实时预览\",buttons:[\"取消\",\"连接\"],inputs:[{type:'text',placeholder:'请输入IP地址',value:'" + host + "',autoFocus:true},{type:'number',placeholder:'请输入端口号',value:'" + port + "'}]}";
+                                weiuiAlertDialog.input(PageActivity.this, inputObject, new JSCallback() {
+                                    @Override
+                                    public void invoke(Object data) {
+                                        Map<String, Object> retData = weiuiMap.objectToMap(data);
+                                        if (weiuiParse.parseStr(retData.get("status")).equals("click") && weiuiParse.parseStr(retData.get("title")).equals("连接")) {
+                                            JSONArray dData = weiuiJson.parseArray(retData.get("data"));
+                                            weiuiCommon.setVariate("__deBugSocket:Host", dData.getString(0));
+                                            weiuiCommon.setVariate("__deBugSocket:Port", dData.getString(1));
                                             List<Activity> activityList = weiui.getActivityList();
                                             Activity activity = activityList.get(0);
                                             if (activity instanceof PageActivity) {
-                                                ((PageActivity) activity).deBugSocketConnect("back");
+                                                ((PageActivity) activity).deBugSocketConnect("initialize");
                                             }
                                         }
-                                    } else {
-                                        Toast.makeText(PageActivity.this, "识别内容：" + text, LENGTH_SHORT).show();
                                     }
-                                }
+
+                                    @Override
+                                    public void invokeAndKeepAlive(Object data) {
+                                        //
+                                    }
+                                });
+                                break;
                             }
-                        });
-                        break;
+                            case 1: {
+                                PageActivity.startScanerCode(PageActivity.this, "{}", new JSCallback() {
+                                    @Override
+                                    public void invoke(Object data) {
+                                        //
+                                    }
 
-                    case "刷新":
-                        reload();
-                        break;
-
-                    case "重启APP":
-                        JSONObject newJson = new JSONObject();
-                        newJson.put("title", "热重启APP");
-                        newJson.put("message", "确认要关闭所有页面热重启APP吗？");
-                        weiuiAlertDialog.confirm(weiui.getActivityList().getLast(), newJson, new JSCallback() {
-                            @Override
-                            public void invoke(Object data) {
-                                Map<String, Object> retData = weiuiMap.objectToMap(data);
-                                if (weiuiParse.parseStr(retData.get("status")).equals("click") && weiuiParse.parseStr(retData.get("title")).equals("确定")) {
-                                    weiui.reboot();
-                                }
+                                    @Override
+                                    public void invokeAndKeepAlive(Object data) {
+                                        Map<String, Object> retData = weiuiMap.objectToMap(data);
+                                        if (weiuiParse.parseStr(retData.get("status")).equals("success")) {
+                                            String text = weiuiParse.parseStr(retData.get("text"));
+                                            if (text.startsWith("http")) {
+                                                String url = text, host = "", port = "";
+                                                if (text.contains("?socket=")) {
+                                                    url = weiuiCommon.getMiddle(text, null, "?socket=");
+                                                    host = weiuiCommon.getMiddle(text, "?socket=", ":");
+                                                    port = weiuiCommon.getMiddle(text, "?socket=" + host + ":", "&");
+                                                }
+                                                //
+                                                PageBean mPageBean = new PageBean();
+                                                mPageBean.setUrl(url);
+                                                mPageBean.setPageType("weex");
+                                                weiuiPage.openWin(PageActivity.this, mPageBean);
+                                                //
+                                                if (host.length() > 0 && port.length() > 0) {
+                                                    weiuiCommon.setVariate("__deBugSocket:Host", host);
+                                                    weiuiCommon.setVariate("__deBugSocket:Port", port);
+                                                    List<Activity> activityList = weiui.getActivityList();
+                                                    Activity activity = activityList.get(0);
+                                                    if (activity instanceof PageActivity) {
+                                                        ((PageActivity) activity).deBugSocketConnect("back");
+                                                    }
+                                                }
+                                            } else {
+                                                Toast.makeText(PageActivity.this, "识别内容：" + text, LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+                                });
+                                break;
                             }
-
-                            @Override
-                            public void invokeAndKeepAlive(Object data) {
-
+                            case 2: {
+                                reload();
+                                break;
                             }
-                        });
-                        break;
+                            case 3: {
+                                JSONObject newJson = new JSONObject();
+                                newJson.put("title", "热重启APP");
+                                newJson.put("message", "确认要关闭所有页面热重启APP吗？");
+                                weiuiAlertDialog.confirm(weiui.getActivityList().getLast(), newJson, new JSCallback() {
+                                    @Override
+                                    public void invoke(Object data) {
+                                        Map<String, Object> retData = weiuiMap.objectToMap(data);
+                                        if (weiuiParse.parseStr(retData.get("status")).equals("click") && weiuiParse.parseStr(retData.get("title")).equals("确定")) {
+                                            weiui.reboot();
+                                        }
+                                    }
 
-                    case "清除热更新数据":
-                        weiuiCommon.setVariate("configDataIsDist", "clear");
-                        weiuiCommon.setVariate("configDataNoUpdate", "clear");
-                        weiui.reboot();
-                        break;
-                }
-            }
+                                    @Override
+                                    public void invokeAndKeepAlive(Object data) {
 
-            @Override
-            public void onCancelItemClick(ActionDialog dialog) {
-
-            }
-        });
-        dialog.show();
+                                    }
+                                });
+                                break;
+                            }
+                            case 4: {
+                                weiuiCommon.setVariate("configDataIsDist", "clear");
+                                weiuiCommon.setVariate("configDataNoUpdate", "clear");
+                                weiui.reboot();
+                                break;
+                            }
+                        }
+                    }
+                }).show();
     };
 
     /**
@@ -1581,6 +1587,9 @@ public class PageActivity extends AppCompatActivity {
             //
             if (text.startsWith("HOMEPAGE:")) {
                 List<Activity> activityList = weiui.getActivityList();
+                if (activityList.size() >= 2 && activityList.get(0).getClass().getName().endsWith(".WelcomeActivity")) {
+                    activityList.remove(0);
+                }
                 for (int i = activityList.size() - 1; i >= 0; --i) {
                     Activity activity = activityList.get(i);
                     if (i == 0) {

@@ -15,6 +15,8 @@
 #import "WeiuiUmengManager.h"
 #import "scanViewController.h"
 #import "DeviceUtil.h"
+#import "AFNetworking.h"
+#import <CoreTelephony/CTCellularData.h>
 #import <SocketRocket/SRWebSocket.h>
 #import "Config.h"
 #import "Cloud.h"
@@ -24,6 +26,7 @@
 
 @property (nonatomic, strong) SRWebSocket *webSocket;
 @property (nonatomic, assign) BOOL isSocketConnect;
+@property (nonatomic, assign) BOOL isDataRestricted;
 
 @end
 
@@ -39,14 +42,20 @@ NSDictionary *mLaunchOptions;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     mLaunchOptions = launchOptions;
     
-    #if DEBUG
+#if DEBUG
     mController = [[ViewController alloc]init];
     UINavigationController *navi = [[UINavigationController alloc]initWithRootViewController:mController];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = navi;
     [self.window makeKeyAndVisible];
     [self initDebug:0];
-    #endif
+#endif
+    
+    if (__IPHONE_10_0) {
+        [self networkStatus:application didFinishLaunchingWithOptions:launchOptions];
+    }else{
+        [self addReachabilityManager:application didFinishLaunchingWithOptions:launchOptions];
+    }
     
     [Cloud welcome:self.window];
     
@@ -92,6 +101,62 @@ NSDictionary *mLaunchOptions;
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+//获取网络权限状态
+- (void)networkStatus:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    CTCellularData *cellularData = [[CTCellularData alloc] init];
+    cellularData.cellularDataRestrictionDidUpdateNotifier = ^(CTCellularDataRestrictedState state) {
+        switch (state) {
+            case kCTCellularDataRestricted:{
+                //1权限关闭的情况下 再次请求网络数据会弹出设置网络提示
+                NSLog(@"gggggggg::网络权限关闭");
+                [Cloud appData];
+                self.isDataRestricted = YES;
+                break;
+            }
+            case kCTCellularDataNotRestricted:{
+                //2已经开启网络权限 监听网络状态
+                NSLog(@"gggggggg::网络权限开启");
+                [self addReachabilityManager:application didFinishLaunchingWithOptions:launchOptions];
+                if (self.isDataRestricted == YES) {
+                    [self refresh];
+                }
+                self.isDataRestricted = NO;
+                break;
+            }
+            case kCTCellularDataRestrictedStateUnknown:{
+                //3未知情况 （还没有遇到推测是有网络但是连接不正常的情况下）
+                NSLog(@"gggggggg::网络权限未知");
+                [Cloud appData];
+                break;
+            }
+        }
+    };
+}
+
+//监听网络状态（开启网络监视器）
+- (void)addReachabilityManager:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    AFNetworkReachabilityManager *afNetworkReachabilityManager = [AFNetworkReachabilityManager sharedManager];
+    [afNetworkReachabilityManager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        switch (status) {
+            case AFNetworkReachabilityStatusNotReachable:{
+                NSLog(@"gggggggg::网络不通：%@",@(status) );
+                break;
+            }
+            case AFNetworkReachabilityStatusReachableViaWiFi:{
+                NSLog(@"gggggggg::网络通过WIFI连接：%@",@(status));
+                break;
+            }
+            case AFNetworkReachabilityStatusReachableViaWWAN:{
+                NSLog(@"gggggggg::网络通过无线连接：%@",@(status) );
+                break;
+            }
+            default:
+                break;
+        }
+    }];
+    [afNetworkReachabilityManager startMonitoring];
 }
 
 //初始化融云
@@ -217,7 +282,7 @@ NSDictionary *mLaunchOptions;
         socketPort = portFiled.text;
         [self setSocketConnect:@"initialize"];
     }]];
-
+    
     UIWindow *alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     alertWindow.rootViewController = [[UIViewController alloc] init];
     alertWindow.windowLevel = UIWindowLevelAlert + 1;

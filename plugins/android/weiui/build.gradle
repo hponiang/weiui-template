@@ -37,7 +37,6 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:${project.supportLibVersion}"
     implementation "com.android.support:design:${project.supportLibVersion}"
     //
-    implementation "com.skyline.widget:action-dialog:1.0.1"
     implementation "com.rabtman.wsmanager:wsmanager:1.0.2"
     //
     compileOnly "com.alibaba:fastjson:${project.fastjsonLibVersion}"

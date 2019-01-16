@@ -204,7 +204,7 @@ public class GridPager extends RelativeLayout {
         v_pager.setAdapter(new GridPagerAdapter<>(mPagerList));
         //设置底部圆点
         l_dots.removeAllViews();
-        if (pageCount > 1 && indicatorShow) {
+        if (indicatorShow) {
             for (int i = 0; i < pageCount; i++) {
                 ImageView indicator = new ImageView(getContext());
                 indicator.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));

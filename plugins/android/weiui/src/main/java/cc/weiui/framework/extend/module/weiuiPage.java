@@ -75,6 +75,7 @@ public class weiuiPage {
         Intent intent = new Intent();
         intent.setClass(context, mBean.isTranslucent() ? PageActivityTransparent.class : PageActivityNoTransparent.class);
         intent.putExtra("name", mBean.getPageName());
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

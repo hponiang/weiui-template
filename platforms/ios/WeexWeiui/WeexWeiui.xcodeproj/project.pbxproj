@@ -415,6 +415,9 @@
 		B262DB2721953EB20022D850 /* SDWebImageWebPCoder.m in Sources */ = {isa = PBXBuildFile; fileRef = B262DB0821953EB20022D850 /* SDWebImageWebPCoder.m */; };
 		B262DB2D21953F020022D850 /* FLAnimatedImage.m in Sources */ = {isa = PBXBuildFile; fileRef = B262DB2921953F020022D850 /* FLAnimatedImage.m */; };
 		B262DB2E21953F020022D850 /* FLAnimatedImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = B262DB2A21953F020022D850 /* FLAnimatedImageView.m */; };
+		B288487D21EF7E05000FFE41 /* UIButton+SGCountdown.m in Sources */ = {isa = PBXBuildFile; fileRef = B288487621EF7E05000FFE41 /* UIButton+SGCountdown.m */; };
+		B288487E21EF7E05000FFE41 /* UIButton+SGImagePosition.m in Sources */ = {isa = PBXBuildFile; fileRef = B288487821EF7E05000FFE41 /* UIButton+SGImagePosition.m */; };
+		B288487F21EF7E05000FFE41 /* UIButton+SGEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = B288487921EF7E05000FFE41 /* UIButton+SGEvent.m */; };
 		B2947DCC21E21DAC00907FD8 /* WeiuiCitypickerBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = B2947DCB21E21DAC00907FD8 /* WeiuiCitypickerBridge.m */; };
 		B2947DCF21E21DBF00907FD8 /* WeiuiPayBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = B2947DCE21E21DBF00907FD8 /* WeiuiPayBridge.m */; };
 		B2947DD221E21DCC00907FD8 /* WeiuiPictureBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = B2947DD121E21DCC00907FD8 /* WeiuiPictureBridge.m */; };
@@ -1250,6 +1253,13 @@
 		B262DB2A21953F020022D850 /* FLAnimatedImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLAnimatedImageView.m; sourceTree = "<group>"; };
 		B262DB2B21953F020022D850 /* FLAnimatedImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLAnimatedImage.h; sourceTree = "<group>"; };
 		B262DB2C21953F020022D850 /* FLAnimatedImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLAnimatedImageView.h; sourceTree = "<group>"; };
+		B288487621EF7E05000FFE41 /* UIButton+SGCountdown.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+SGCountdown.m"; sourceTree = "<group>"; };
+		B288487721EF7E05000FFE41 /* UIButton+SGEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+SGEvent.h"; sourceTree = "<group>"; };
+		B288487821EF7E05000FFE41 /* UIButton+SGImagePosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+SGImagePosition.m"; sourceTree = "<group>"; };
+		B288487921EF7E05000FFE41 /* UIButton+SGEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+SGEvent.m"; sourceTree = "<group>"; };
+		B288487A21EF7E05000FFE41 /* UIButton+SGCountdown.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+SGCountdown.h"; sourceTree = "<group>"; };
+		B288487B21EF7E05000FFE41 /* UIButton+SGImagePosition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+SGImagePosition.h"; sourceTree = "<group>"; };
+		B288487C21EF7E05000FFE41 /* SGEasyButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SGEasyButton.h; sourceTree = "<group>"; };
 		B2947DCA21E21DAC00907FD8 /* WeiuiCitypickerBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeiuiCitypickerBridge.h; sourceTree = "<group>"; };
 		B2947DCB21E21DAC00907FD8 /* WeiuiCitypickerBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WeiuiCitypickerBridge.m; sourceTree = "<group>"; };
 		B2947DCD21E21DBF00907FD8 /* WeiuiPayBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeiuiPayBridge.h; sourceTree = "<group>"; };
@@ -1611,6 +1621,7 @@
 				B210032121924767001F2CBA /* Pay */,
 				B2242C5A21345148001C951B /* Rong_Cloud_iOS_IMLib_SDK_v2_9_1_Stable */,
 				B262DACB21953EB20022D850 /* SDWebImage */,
+				B288487521EF7E05000FFE41 /* SGEasyButton */,
 				B2242A3921345147001C951B /* SKAutoScrollLabel.h */,
 				B2242C3521345148001C951B /* SKAutoScrollLabel.m */,
 				B238CFBC215E29F400E5D4CB /* SSZipArchive */,
@@ -2833,6 +2844,20 @@
 			path = WeexWeiui/Weiui/Utility/FLAnimatedImage;
 			sourceTree = SOURCE_ROOT;
 		};
+		B288487521EF7E05000FFE41 /* SGEasyButton */ = {
+			isa = PBXGroup;
+			children = (
+				B288487C21EF7E05000FFE41 /* SGEasyButton.h */,
+				B288487A21EF7E05000FFE41 /* UIButton+SGCountdown.h */,
+				B288487621EF7E05000FFE41 /* UIButton+SGCountdown.m */,
+				B288487721EF7E05000FFE41 /* UIButton+SGEvent.h */,
+				B288487921EF7E05000FFE41 /* UIButton+SGEvent.m */,
+				B288487B21EF7E05000FFE41 /* UIButton+SGImagePosition.h */,
+				B288487821EF7E05000FFE41 /* UIButton+SGImagePosition.m */,
+			);
+			path = SGEasyButton;
+			sourceTree = "<group>";
+		};
 		B2DBB9D5216F3869009F5DAE /* WebProgressView */ = {
 			isa = PBXGroup;
 			children = (
@@ -3089,6 +3114,7 @@
 				B238CF9E215C85E500E5D4CB /* UINavigationController+FDFullscreenPopGesture.m in Sources */,
 				B2242C7D21345148001C951B /* WeiuiTabbarComponent.m in Sources */,
 				B2242C9C21345148001C951B /* MJRefreshBackStateFooter.m in Sources */,
+				B288487D21EF7E05000FFE41 /* UIButton+SGCountdown.m in Sources */,
 				B2242D2721345148001C951B /* WXRootViewController.m in Sources */,
 				B2242D7821345149001C951B /* IQToolbar.m in Sources */,
 				B2242D2E21345148001C951B /* WXModuleFactory.m in Sources */,
@@ -3165,6 +3191,7 @@
 				B2242D4F21345148001C951B /* WXThreadSafeMutableArray.m in Sources */,
 				B262DA68219461A90022D850 /* KSPhotoView.m in Sources */,
 				B2242C8721345148001C951B /* WXMainViewController.m in Sources */,
+				B288487F21EF7E05000FFE41 /* UIButton+SGEvent.m in Sources */,
 				B2242CC821345148001C951B /* DGActivityIndicatorBallZigZagDeflectAnimation.m in Sources */,
 				B2242D0421345148001C951B /* WXListComponent.m in Sources */,
 				B2242D6621345149001C951B /* scanViewController.m in Sources */,
@@ -3213,6 +3240,7 @@
 				B2242CEF21345148001C951B /* WXStorageModule.m in Sources */,
 				B2242D2C21345148001C951B /* WXComponentFactory.m in Sources */,
 				B2242D7B21345149001C951B /* IQUIView+IQKeyboardToolbar.m in Sources */,
+				B288487E21EF7E05000FFE41 /* UIButton+SGImagePosition.m in Sources */,
 				B2242D8621345149001C951B /* AFHTTPSessionManager.m in Sources */,
 				B2242D4021345148001C951B /* WXLayer.m in Sources */,
 				B2242D4921345148001C951B /* WXDebugTool.m in Sources */,

@@ -96,9 +96,9 @@ WX_EXPORT_METHOD(@selector(setIconClickColor:))
     }
     //Ionicons
     if ([key hasPrefix:@"tb-"]) {
-        [TBCityIconFont setFontName:@"iconfont"];
+        //[TBCityIconFont setFontName:@"iconfont"];
     } else {
-        [TBCityIconFont setFontName:@"Ionicons"];
+        //[TBCityIconFont setFontName:@"Ionicons"];
     }
     
     key = [IconFontUtil iconFont:key];
