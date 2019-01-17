@@ -17,8 +17,8 @@
     if (self) {
         _tabName = @"";
         _title = @"New Page";
-        _unSelectedIcon = @"home";
-        _selectedIcon = @"home";
+        _unSelectedIcon = @"";
+        _selectedIcon = @"";
         _message = 0;
         _dot = NO;
 
@@ -27,6 +27,20 @@
         }
         for (NSString *key in attributes.allKeys) {
             [self dataKey:key value:attributes[key] isUpdate:NO];
+        }
+        
+        if ([_selectedIcon isEqual: @""]) {
+            if ([_unSelectedIcon isEqual: @""]) {
+                _selectedIcon = @"tb-home-fill-light";
+            }else{
+                _selectedIcon = _unSelectedIcon;
+            }
+        }else if ([_unSelectedIcon isEqual: @""]) {
+            if ([_selectedIcon isEqual: @""]) {
+                _unSelectedIcon = @"tb-home-light";
+            }else{
+                _unSelectedIcon = _selectedIcon;
+            }
         }
     }
     

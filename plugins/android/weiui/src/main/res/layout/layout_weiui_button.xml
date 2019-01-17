@@ -28,7 +28,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:gravity="center"
-                android:text="{ion-load-c spin}"
+                android:text="{tb-loading-c spin}"
                 android:textColor="@color/weiui_white"
                 android:visibility="gone"/>
 

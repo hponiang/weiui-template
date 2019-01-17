@@ -7,7 +7,7 @@ public class IoniconsModule implements IconFontDescriptor {
 
     @Override
     public String ttfFileName() {
-        return "iconify/android-iconify-ionicons.ttf";
+        return "iconify/weiuiicon.ttf";
     }
 
     @Override

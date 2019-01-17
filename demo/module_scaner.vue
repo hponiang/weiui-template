@@ -7,7 +7,7 @@
                 <text class="title">二维码扫描</text>
             </weiui_navbar_item>
             <weiui_navbar_item type="right" @click="viewCode('module/scaner')">
-                <weiui_icon content="code-working" class="iconr"></weiui_icon>
+                <weiui_icon content="md-code-working" class="iconr"></weiui_icon>
             </weiui_navbar_item>
         </weiui_navbar>
 

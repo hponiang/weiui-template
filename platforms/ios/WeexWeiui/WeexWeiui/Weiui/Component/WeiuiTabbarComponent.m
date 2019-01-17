@@ -467,8 +467,22 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             
             allWidth += tabWidth;
             
+            if ([selectedIcon isEqual: @""]) {
+                if ([unSelectedIcon isEqual: @""]) {
+                    selectedIcon = @"tb-home-fill-light";
+                }else{
+                    selectedIcon = unSelectedIcon;
+                }
+            }else if ([unSelectedIcon isEqual: @""]) {
+                if ([selectedIcon isEqual: @""]) {
+                    unSelectedIcon = @"tb-home-light";
+                }else{
+                    unSelectedIcon = selectedIcon;
+                }
+            }
+            
             //图片
-            if ([unSelectedIcon hasPrefix:@"http"]) {
+            if ([unSelectedIcon containsString:@"//"]) {
                 [btn setImage:[self imageResize:nil andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateNormal];
                 [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:unSelectedIcon] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
                     if (image) {
@@ -486,7 +500,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                 [btn setImage:[self imageResize:[DeviceUtil getIconText:unSelectedIcon font:0 color:@"#242424"] andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:unSelectedIcon] forState:UIControlStateNormal];
             }
             
-            if ([selectedIcon hasPrefix:@"http"]) {
+            if ([selectedIcon containsString:@"//"]) {
                 [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:selectedIcon] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
                     if (image) {
                         WXPerformBlockOnMainThread(^{
@@ -687,7 +701,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
     CGFloat scale = [[UIScreen mainScreen]scale];
     UIGraphicsBeginImageContextWithOptions(newSize, NO, scale);
     NSInteger x = 0;
-    if ([icon hasPrefix:@"tb-"]) {
+    if (![icon containsString:@"//"]) {
         x = -newSize.width * scale / 30;
     }
     [img drawInRect:CGRectMake(x, 0, newSize.width, newSize.height)];//有偏移，自己加了参数

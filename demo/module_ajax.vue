@@ -7,7 +7,7 @@
                 <text class="title">跨域异步请求</text>
             </weiui_navbar_item>
             <weiui_navbar_item type="right" @click="viewCode('module/ajax')">
-                <weiui_icon content="code-working" class="iconr"></weiui_icon>
+                <weiui_icon content="md-code-working" class="iconr"></weiui_icon>
             </weiui_navbar_item>
         </weiui_navbar>
 

@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import cc.weiui.framework.extend.integration.iconify.fonts.TbIconfontModule;
 import cc.weiui.framework.extend.integration.swipebacklayout.BGAKeyboardUtil;
 import cc.weiui.framework.extend.integration.swipebacklayout.BGASwipeBackHelper;
 import cc.weiui.framework.extend.module.rxtools.rxtoolsModule;
@@ -129,7 +128,7 @@ public class weiui {
 
         weiuiIhttp.init(application);
 
-        Iconify.with(new IoniconsModule()).with(new TbIconfontModule());
+        Iconify.with(new IoniconsModule());
 
         BGASwipeBackHelper.init(application, null);
 

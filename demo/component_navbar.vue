@@ -7,7 +7,7 @@
                 <text class="title">导航栏</text>
             </weiui_navbar_item>
             <weiui_navbar_item type="right" @click="viewCode('component/weiui_navbar')">
-                <weiui_icon content="code-working" class="iconr"></weiui_icon>
+                <weiui_icon content="md-code-working" class="iconr"></weiui_icon>
             </weiui_navbar_item>
         </weiui_navbar>
 
@@ -43,7 +43,7 @@
             </weiui_navbar_item>
 
             <weiui_navbar_item type="right">
-                <weiui_icon content="refresh" class="icon"></weiui_icon>
+                <weiui_icon content="md-refresh" class="icon"></weiui_icon>
             </weiui_navbar_item>
 
         </weiui_navbar>
@@ -52,7 +52,7 @@
         <weiui_navbar class="navbarc">
 
             <weiui_navbar_item type="left">
-                <weiui_icon content="navicon-round" class="icon"></weiui_icon>
+                <weiui_icon content="md-menu" class="icon"></weiui_icon>
             </weiui_navbar_item>
 
             <weiui_navbar_item type="title">
@@ -60,7 +60,7 @@
             </weiui_navbar_item>
 
             <weiui_navbar_item type="right">
-                <weiui_icon content="refresh" class="icon"></weiui_icon>
+                <weiui_icon content="md-refresh" class="icon"></weiui_icon>
             </weiui_navbar_item>
 
         </weiui_navbar>

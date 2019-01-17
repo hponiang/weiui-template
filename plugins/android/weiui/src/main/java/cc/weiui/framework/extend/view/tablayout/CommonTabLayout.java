@@ -1027,9 +1027,6 @@ public class CommonTabLayout extends FrameLayout implements ValueAnimator.Animat
         }
         if (iconUrl != null) {
             if (isFontIcon(iconUrl)) {
-                if (!iconUrl.startsWith("ion-") && !iconUrl.startsWith("tb-")) {
-                    iconUrl = "ion-" + iconUrl;
-                }
                 if (!iconUrl.contains("#") || !iconUrl.contains("rgb")) {
                     iconUrl += " " + weiuiColorUtils.int2Hex(isCurrent ? mTextSelectColor : mTextUnselectColor);
                 }

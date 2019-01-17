@@ -25,18 +25,10 @@ static NSString *_fontName;
 + (UIFont *)fontWithSize:(CGFloat)size {
     UIFont *font = [UIFont fontWithName:[self fontName] size:size];
     if (font == nil) {
-#warning ssss 此处有修改
-        NSString *fontName = @"";
-        if ([[self fontName] isEqualToString:@"Ionicons"]) {
-            fontName = @"android-iconify-ionicons";
-        } else {
-            fontName = @"android-iconify-taobao-iconfont";
-        }
-        NSURL *fontFileUrl = [[NSBundle mainBundle] URLForResource:fontName withExtension:@"ttf"];
+        NSURL *fontFileUrl = [[NSBundle mainBundle] URLForResource:@"weiuiicon" withExtension:@"ttf"];
         
         [self registerFontWithURL: fontFileUrl];
         font = [UIFont fontWithName:[self fontName] size:size];
-        NSAssert(font, @"UIFont object should not be nil, check if the font file is added to the application bundle and you're using the correct font name.");
     }
     return font;
 }
@@ -47,7 +39,7 @@ static NSString *_fontName;
 
 
 + (NSString *)fontName {
-    return _fontName ? : @"Ionicons";
+    return _fontName ? : @"weiuiicon";
 }
 
 @end

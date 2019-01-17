@@ -10,14 +10,14 @@
                 @refreshListener="refreshListener">
 
             <!--页签①-->
-            <weiui_tabbar_page :weiui="{ tabName: 'name_1', title:'首页', selectedIcon:'home' }">
+            <weiui_tabbar_page :weiui="{ tabName: 'name_1', title:'首页', selectedIcon:'md-home 80%' }">
                 <weiui_navbar class="page-navbar">
                     <weiui_navbar_item type="back"></weiui_navbar_item>
                     <weiui_navbar_item type="title">
                         <text class="page-navbar-title">首页</text>
                     </weiui_navbar_item>
                     <weiui_navbar_item type="right" @click="viewCode('component/weiui_tabbar')">
-                        <weiui_icon content="code-working" class="iconr"></weiui_icon>
+                        <weiui_icon content="md-code-working" class="iconr"></weiui_icon>
                     </weiui_navbar_item>
                 </weiui_navbar>
                 <div class="page-content">
@@ -41,7 +41,7 @@
             </weiui_tabbar_page>
 
             <!--页签③-->
-            <weiui_tabbar_page :weiui="{ tabName: 'name_3', title:'圈子', message:99, selectedIcon:'aperture 26sp' }">
+            <weiui_tabbar_page :weiui="{ tabName: 'name_3', title:'圈子', message:99, selectedIcon:'md-aperture 80%' }">
                 <weiui_navbar class="page-navbar">
                     <weiui_navbar_item type="title">
                         <text class="page-navbar-title">圈子</text>
@@ -53,7 +53,7 @@
             </weiui_tabbar_page>
 
             <!--页签④-->
-            <weiui_tabbar_page :weiui="{ tabName: 'name_4', title:'设置', dot:true, selectedIcon:'gear-a' }">
+            <weiui_tabbar_page :weiui="{ tabName: 'name_4', title:'设置', dot:true, selectedIcon:'md-cog 80%' }">
                 <weiui_navbar class="page-navbar">
                     <weiui_navbar_item type="title">
                         <text class="page-navbar-title">设置</text>

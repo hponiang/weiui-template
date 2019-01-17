@@ -57,17 +57,10 @@ WX_EXPORT_METHOD(@selector(setIconClickColor:))
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    NSString *name = @"";
-    if ([_content hasPrefix:@"tb-"]) {
-        name = @"iconfont";
-    } else {
-        name = @"Ionicons";
-    }
-
+    
     _iconLab = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     _iconLab.text = [self getFontText:_content];
-    _iconLab.font = [UIFont fontWithName:name size: _fontSize];
+    _iconLab.font = [UIFont fontWithName:@"weiuiicon" size: _fontSize];
     _iconLab.textColor = [WXConvert UIColor:_color];
     _iconLab.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:_iconLab];
@@ -94,13 +87,7 @@ WX_EXPORT_METHOD(@selector(setIconClickColor:))
     } else {
         key = text;
     }
-    //Ionicons
-    if ([key hasPrefix:@"tb-"]) {
-        //[TBCityIconFont setFontName:@"iconfont"];
-    } else {
-        //[TBCityIconFont setFontName:@"Ionicons"];
-    }
-    
+    [TBCityIconFont setFontName:@"weiuiicon"];
     key = [IconFontUtil iconFont:key];
     return key;
 }
@@ -167,14 +154,7 @@ WX_EXPORT_METHOD(@selector(setIconClickColor:))
     } else if ([key isEqualToString:@"fontSize"]) {
         _fontSize = FONT([WXConvert NSInteger:value]);
         if (isUpdate) {
-            NSString *name = @"";
-            if ([_content hasPrefix:@"tb-"]) {
-                name = @"iconfont";
-            } else {
-                name = @"Ionicons";
-            }
-            
-            _iconLab.font = [UIFont fontWithName:name size: _fontSize];
+            _iconLab.font = [UIFont fontWithName:@"weiuiicon" size: _fontSize];
         }
     }
 }
@@ -187,14 +167,6 @@ WX_EXPORT_METHOD(@selector(setIconClickColor:))
 {
     if (value) {
         _content = [WXConvert NSString:value];
-        
-        NSString *name = @"";
-        if ([_content hasPrefix:@"tb-"]) {
-            name = @"iconfont";
-        } else {
-            name = @"Ionicons";
-        }
-        
         _iconLab.text = [self getFontText:_content];
     }
 }
@@ -203,14 +175,7 @@ WX_EXPORT_METHOD(@selector(setIconClickColor:))
 {
     if (value) {
         _fontSize = FONT([WXConvert NSInteger:value]);
-        NSString *name = @"";
-        if ([_content hasPrefix:@"tb-"]) {
-            name = @"iconfont";
-        } else {
-            name = @"Ionicons";
-        }
-        
-        _iconLab.font = [UIFont fontWithName:name size: _fontSize];
+        _iconLab.font = [UIFont fontWithName:@"weiuiicon" size: _fontSize];
     }
 }
 

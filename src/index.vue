@@ -12,7 +12,7 @@
             </weiui_navbar_item>
 
             <weiui_navbar_item type="right" @click="refresh">
-                <weiui_icon class="navbar-icon" :weiui="{content: 'refresh'}"></weiui_icon>
+                <weiui_icon class="navbar-icon" :weiui="{content: 'md-refresh'}"></weiui_icon>
             </weiui_navbar_item>
         </weiui_navbar>
 
@@ -27,7 +27,7 @@
                 </div>
                 <div class="list-item-right">
                     <text class="list-right-title"><{{item.title_en}}></text>
-                    <weiui_icon class="list-right-icon" :weiui="{content: 'ios-arrow-right 70%'}"></weiui_icon>
+                    <weiui_icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></weiui_icon>
                 </div>
             </div>
 
@@ -40,7 +40,7 @@
                 </div>
                 <div class="list-item-right">
                     <text class="list-right-title">{{item.title_en}}</text>
-                    <weiui_icon class="list-right-icon" :weiui="{content: 'ios-arrow-right 70%'}"></weiui_icon>
+                    <weiui_icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></weiui_icon>
                 </div>
             </div>
 
@@ -53,7 +53,7 @@
                 </div>
                 <div class="list-item-right">
                     <text class="list-right-title">{{item.title_en}}</text>
-                    <weiui_icon class="list-right-icon" :weiui="{content: 'ios-arrow-right 70%'}"></weiui_icon>
+                    <weiui_icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></weiui_icon>
                 </div>
             </div>
 
@@ -66,7 +66,7 @@
                 </div>
                 <div class="list-item-right">
                     <text class="list-right-title">{{item.title_en}}</text>
-                    <weiui_icon class="list-right-icon" :weiui="{content: 'ios-arrow-right 70%'}"></weiui_icon>
+                    <weiui_icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></weiui_icon>
                 </div>
             </div>
 
@@ -83,7 +83,7 @@
                         <text class="list-left-title-history">{{text}}</text>
                     </div>
                     <div class="list-item-right">
-                        <weiui_icon class="list-right-icon" :weiui="{content: 'ios-arrow-right 70%'}"></weiui_icon>
+                        <weiui_icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></weiui_icon>
                     </div>
                 </div>
 
@@ -221,89 +221,89 @@
                 components: [{
                     title: '轮播控件',
                     title_en: 'weiui_banner',
-                    icon: 'easel',
+                    icon: 'md-easel',
                     url: jshome + 'component_banner.js',
                 }, {
                     title: '常用按钮',
                     title_en: 'weiui_button',
-                    icon: 'android-checkbox-blank',
+                    icon: 'logo-youtube',
                     url: jshome + 'component_button.js',
                 }, {
                     title: '网格容器',
                     title_en: 'weiui_grid',
-                    icon: 'grid',
+                    icon: 'md-grid',
                     url: jshome + 'component_grid.js',
                 }, {
                     title: '字体图标',
                     title_en: 'weiui_icon',
-                    icon: 'ionic',
+                    icon: 'logo-ionic',
                     url: jshome + 'component_icon.js',
                 }, {
                     title: '跑马文字',
                     title_en: 'weiui_marquee',
-                    icon: 'code-working',
+                    icon: 'md-code-working',
                     url: jshome + 'component_marquee.js',
                 }, {
                     title: '导航栏',
                     title_en: 'weiui_navbar',
-                    icon: 'navicon',
+                    icon: 'md-menu',
                     url: jshome + 'component_navbar.js',
                 }, {
                     title: '列表容器',
                     title_en: 'weiui_list',
-                    icon: 'ios-list 90%',
+                    icon: 'md-list',
                     url: jshome + 'component_list.js',
                 }, {
                     title: '滚动文字',
                     title_en: 'weiui_scroll_text',
-                    icon: 'more',
+                    icon: 'ios-more',
                     url: jshome + 'component_scroll_text.js',
                 }, {
                     title: '侧边栏',
                     title_en: 'weiui_side_panel',
-                    icon: 'ios-box',
+                    icon: 'md-albums',
                     url: jshome + 'component_side_panel.js',
                 }, {
                     title: '标签页面',
                     title_en: 'weiui_tabbar',
-                    icon: 'filing',
+                    icon: 'md-filing',
                     url: jshome + 'component_tabbar.js',
                 }],
 
                 module: [{
                     title: '页面功能',
                     title_en: 'newPage',
-                    icon: 'ios-book-outline 96%',
+                    icon: 'md-book',
                     url: jshome + 'module_page.js',
                 }, {
                     title: '系统信息',
                     title_en: 'system',
-                    icon: 'gear-a',
+                    icon: 'ios-cog',
                     url: jshome + 'module_system.js',
                 }, {
                     title: '数据缓存',
                     title_en: 'caches',
-                    icon: 'soup-can-outline',
+                    icon: 'md-beaker',
                     url: jshome + 'module_caches.js',
                 }, {
                     title: '单位转换',
                     title_en: 'weex px',
-                    icon: 'ios-calculator',
+                    icon: 'md-calculator',
                     url: jshome + 'module_weexpx.js',
                 }, {
                     title: '确认对话框',
                     title_en: 'alert',
-                    icon: 'android-alert 90%',
+                    icon: 'md-alert',
                     url: jshome + 'module_alert.js',
                 }, {
                     title: '等待弹窗',
                     title_en: 'loading',
-                    icon: 'load-d',
+                    icon: 'tb-loading',
                     url: jshome + 'module_loading.js',
                 }, {
                     title: '验证弹窗',
                     title_en: 'captcha',
-                    icon: 'ios-checkmark-outline',
+                    icon: 'md-checkmark-circle',
                     url: jshome + 'module_captcha.js',
                 }, {
                     title: '二维码扫描',
@@ -313,37 +313,37 @@
                 }, {
                     title: '跨域异步请求',
                     title_en: 'ajax',
-                    icon: 'pull-request',
+                    icon: 'md-git-pull-request',
                     url: jshome + 'module_ajax.js',
                 }, {
                     title: '剪切板',
                     title_en: 'clipboard',
-                    icon: 'ios-copy-outline',
+                    icon: 'md-copy',
                     url: jshome + 'module_plate.js',
                 }, {
                     title: '提示消息',
                     title_en: 'toast',
-                    icon: 'ios-barcode-outline',
+                    icon: 'md-notifications',
                     url: jshome + 'module_toast.js',
                 }, {
                     title: '广告弹窗',
                     title_en: 'adDialog',
-                    icon: 'social-buffer-outline',
+                    icon: 'logo-buffer',
                     url: jshome + 'module_ad_dialog.js',
                 }, {
                     title: '城市选择器',
                     title_en: 'citypicker',
-                    icon: 'android-pin',
+                    icon: 'md-pin',
                     url: jshome + 'third_citypicker.js',
                 }, {
                     title: '图片选择器',
                     title_en: 'pictureSelector',
-                    icon: 'ios-camera-outline',
+                    icon: 'md-camera',
                     url: jshome + 'third_picture.js',
                 }, {
                     title: '更多拓展模块',
                     title_en: 'expandModule',
-                    icon: 'more',
+                    icon: 'md-more',
                     url: jshome + 'index_expand.js',
                 }],
 
@@ -355,7 +355,7 @@
                 }, {
                     title: '友盟推送模块',
                     title_en: 'umeng',
-                    icon: 'android-send',
+                    icon: 'md-send',
                     url: 'umeng',
                 }, {
                     title: '第三方支付',
@@ -367,22 +367,22 @@
                 about_lists: [{
                     title: '开发文档',
                     title_en: 'document',
-                    icon: 'code-working',
+                    icon: 'md-code-working',
                     url: 'http://weiui.cc',
                 }, {
                     title: '托管平台',
                     title_en: 'github',
-                    icon: 'social-github-outline',
+                    icon: 'logo-github',
                     url: 'https://github.com/kuaifan/weiui',
                 }, {
                     title: '个人博客',
                     title_en: 'http://kuaifan.vip',
-                    icon: 'social-rss-outline',
+                    icon: 'logo-rss',
                     url: 'http://kuaifan.vip',
                 }, {
                     title: 'WEIUI版本',
                     title_en: weiui.getVersionName(),
-                    icon: 'ios-information-outline',
+                    icon: 'md-information-circle',
                     url: 'http://weiui.cc',
                 }],
 

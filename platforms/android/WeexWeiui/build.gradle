@@ -41,8 +41,8 @@ subprojects {
         versionCode = 1
         versionName = "1.0.1"
 
-        weiuiVersionCode = 29
-        weiuiVersionName = "0.0.29"
+        weiuiVersionCode = 30
+        weiuiVersionName = "0.0.30"
 
         compileSdkVersion = 28
         appMinSdkVersion = 16

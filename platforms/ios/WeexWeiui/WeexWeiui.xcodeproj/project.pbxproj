@@ -71,8 +71,7 @@
 		B2242C7221345148001C951B /* WeiuiUmengManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B22429B321345147001C951B /* WeiuiUmengManager.m */; };
 		B2242C7321345148001C951B /* WeiuiAlertManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B22429B421345147001C951B /* WeiuiAlertManager.m */; };
 		B2242C7421345148001C951B /* swipecaptcha_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B22429C021345147001C951B /* swipecaptcha_bg@2x.png */; };
-		B2242C7521345148001C951B /* android-iconify-ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B22429C121345147001C951B /* android-iconify-ionicons.ttf */; };
-		B2242C7621345148001C951B /* android-iconify-taobao-iconfont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B22429C221345147001C951B /* android-iconify-taobao-iconfont.ttf */; };
+		B2242C7621345148001C951B /* weiuiicon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B22429C221345147001C951B /* weiuiicon.ttf */; };
 		B2242C7721345148001C951B /* WeiuiNavbarItemComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = B22429C621345147001C951B /* WeiuiNavbarItemComponent.m */; };
 		B2242C7821345148001C951B /* WeiuiRecylerComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = B22429C721345147001C951B /* WeiuiRecylerComponent.m */; };
 		B2242C7921345148001C951B /* WeiuiWebviewComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = B22429C821345147001C951B /* WeiuiWebviewComponent.m */; };
@@ -353,7 +352,6 @@
 		B2242D9E21345149001C951B /* libopencore-amrnb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B2242C5D21345148001C951B /* libopencore-amrnb.a */; };
 		B2242D9F21345149001C951B /* RCConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = B2242C5E21345148001C951B /* RCConfig.plist */; };
 		B2242DA021345149001C951B /* release_notes_ios.txt in Resources */ = {isa = PBXBuildFile; fileRef = B2242C5F21345148001C951B /* release_notes_ios.txt */; };
-		B2242DA421345394001C951B /* city.json in Resources */ = {isa = PBXBuildFile; fileRef = B2242DA321345394001C951B /* city.json */; };
 		B238CF9E215C85E500E5D4CB /* UINavigationController+FDFullscreenPopGesture.m in Sources */ = {isa = PBXBuildFile; fileRef = B238CF9D215C85E400E5D4CB /* UINavigationController+FDFullscreenPopGesture.m */; };
 		B238CFAD215CC7E100E5D4CB /* Config.m in Sources */ = {isa = PBXBuildFile; fileRef = B238CFAC215CC7E100E5D4CB /* Config.m */; };
 		B238CFB0215CFB3100E5D4CB /* Update.m in Sources */ = {isa = PBXBuildFile; fileRef = B238CFAF215CFB3000E5D4CB /* Update.m */; };
@@ -424,6 +422,7 @@
 		B2947DD821E2548900907FD8 /* NSObject+performSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = B2947DD621E2548900907FD8 /* NSObject+performSelector.m */; };
 		B2DBB9DB216F3869009F5DAE /* YHWebViewProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = B2DBB9D8216F3869009F5DAE /* YHWebViewProgress.m */; };
 		B2DBB9DC216F3869009F5DAE /* YHWebViewProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = B2DBB9DA216F3869009F5DAE /* YHWebViewProgressView.m */; };
+		B2E666FC21F0572300B29FDF /* city.json in Resources */ = {isa = PBXBuildFile; fileRef = B2E666FB21F0572300B29FDF /* city.json */; };
 		B2F0B13321DCA55200706832 /* WeiuiBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = B2F0B13221DCA55200706832 /* WeiuiBridge.m */; };
 		B2F0B14E21E0FA3E00706832 /* JSCallCommon.m in Sources */ = {isa = PBXBuildFile; fileRef = B2F0B14D21E0FA3E00706832 /* JSCallCommon.m */; };
 /* End PBXBuildFile section */
@@ -553,8 +552,7 @@
 		B22429BD21345147001C951B /* WeiuiToastManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeiuiToastManager.h; sourceTree = "<group>"; };
 		B22429BE21345147001C951B /* WeiuiUmengModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeiuiUmengModule.h; sourceTree = "<group>"; };
 		B22429C021345147001C951B /* swipecaptcha_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "swipecaptcha_bg@2x.png"; sourceTree = "<group>"; };
-		B22429C121345147001C951B /* android-iconify-ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "android-iconify-ionicons.ttf"; sourceTree = "<group>"; };
-		B22429C221345147001C951B /* android-iconify-taobao-iconfont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "android-iconify-taobao-iconfont.ttf"; sourceTree = "<group>"; };
+		B22429C221345147001C951B /* weiuiicon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = weiuiicon.ttf; sourceTree = "<group>"; };
 		B22429C421345147001C951B /* WeiuiVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeiuiVersion.h; sourceTree = "<group>"; };
 		B22429C621345147001C951B /* WeiuiNavbarItemComponent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeiuiNavbarItemComponent.m; sourceTree = "<group>"; };
 		B22429C721345147001C951B /* WeiuiRecylerComponent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeiuiRecylerComponent.m; sourceTree = "<group>"; };
@@ -1124,7 +1122,6 @@
 		B2242C5D21345148001C951B /* libopencore-amrnb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libopencore-amrnb.a"; sourceTree = "<group>"; };
 		B2242C5E21345148001C951B /* RCConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = RCConfig.plist; sourceTree = "<group>"; };
 		B2242C5F21345148001C951B /* release_notes_ios.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = release_notes_ios.txt; sourceTree = "<group>"; };
-		B2242DA321345394001C951B /* city.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = city.json; path = ../../../../../../plugins/android/weiui_citypicker/src/main/assets/city.json; sourceTree = "<group>"; };
 		B238CF9C215C85E400E5D4CB /* UINavigationController+FDFullscreenPopGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+FDFullscreenPopGesture.h"; sourceTree = "<group>"; };
 		B238CF9D215C85E400E5D4CB /* UINavigationController+FDFullscreenPopGesture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+FDFullscreenPopGesture.m"; sourceTree = "<group>"; };
 		B238CFAB215CC7E100E5D4CB /* Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Config.h; sourceTree = "<group>"; };
@@ -1273,6 +1270,7 @@
 		B2DBB9D8216F3869009F5DAE /* YHWebViewProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YHWebViewProgress.m; sourceTree = "<group>"; };
 		B2DBB9D9216F3869009F5DAE /* YHWebViewProgressViewProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YHWebViewProgressViewProtocol.h; sourceTree = "<group>"; };
 		B2DBB9DA216F3869009F5DAE /* YHWebViewProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YHWebViewProgressView.m; sourceTree = "<group>"; };
+		B2E666FB21F0572300B29FDF /* city.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = city.json; sourceTree = "<group>"; };
 		B2F0B13121DCA55200706832 /* WeiuiBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeiuiBridge.h; sourceTree = "<group>"; };
 		B2F0B13221DCA55200706832 /* WeiuiBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WeiuiBridge.m; sourceTree = "<group>"; };
 		B2F0B14C21E0FA3E00706832 /* JSCallCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSCallCommon.h; sourceTree = "<group>"; };
@@ -1553,9 +1551,8 @@
 		B22429BF21345147001C951B /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				B22429C121345147001C951B /* android-iconify-ionicons.ttf */,
-				B22429C221345147001C951B /* android-iconify-taobao-iconfont.ttf */,
-				B2242DA321345394001C951B /* city.json */,
+				B2E666FB21F0572300B29FDF /* city.json */,
+				B22429C221345147001C951B /* weiuiicon.ttf */,
 				B22429C021345147001C951B /* swipecaptcha_bg@2x.png */,
 			);
 			path = Source;
@@ -3035,6 +3032,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B2242DA021345149001C951B /* release_notes_ios.txt in Resources */,
+				B2E666FC21F0572300B29FDF /* city.json in Resources */,
 				B25A71EA21257A0500AA0AB9 /* bundlejs in Resources */,
 				B2242D7021345149001C951B /* PlayButtonOverlayLarge@2x.png in Resources */,
 				B2242D6D21345149001C951B /* FM.gif in Resources */,
@@ -3052,14 +3050,12 @@
 				B2242CDC21345148001C951B /* wx_load_error@3x.png in Resources */,
 				B2242D7D21345149001C951B /* IQKeyboardManager.bundle in Resources */,
 				B2242D9F21345149001C951B /* RCConfig.plist in Resources */,
-				B2242DA421345394001C951B /* city.json in Resources */,
 				B2242D6521345149001C951B /* qrcode_Scan_weixin_Line@2x.png in Resources */,
 				B2242D6E21345149001C951B /* UIBarButtonItemArrowRight.png in Resources */,
-				B2242C7521345148001C951B /* android-iconify-ionicons.ttf in Resources */,
 				B210038C21925229001F2CBA /* UMSSecKeyboardLibResource.bundle in Resources */,
 				B210038B21925229001F2CBA /* PosPay_Resource.bundle in Resources */,
 				B213563B2124045E00EDD991 /* Main.storyboard in Resources */,
-				B2242C7621345148001C951B /* android-iconify-taobao-iconfont.ttf in Resources */,
+				B2242C7621345148001C951B /* weiuiicon.ttf in Resources */,
 				B2242CAA21345148001C951B /* .gitkeep in Resources */,
 				B2242C8C21345148001C951B /* UMCommonLog.bundle in Resources */,
 				B2242C9721345148001C951B /* MJRefresh.bundle in Resources */,

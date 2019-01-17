@@ -77,8 +77,7 @@
 	<string>$(PRODUCT_NAME) needs access your photo Album,so that you can save image to your photo library.</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>android-iconify-ionicons.ttf</string>
-		<string>android-iconify-taobao-iconfont.ttf</string>
+		<string>weiuiicon.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

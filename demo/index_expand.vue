@@ -24,7 +24,7 @@
                 </div>
                 <div class="list-item-right">
                     <text class="list-right-title">{{item.title_en}}</text>
-                    <weiui_icon class="list-right-icon" :weiui="{content: 'ios-arrow-right 70%'}"></weiui_icon>
+                    <weiui_icon class="list-right-icon" :weiui="{content: 'tb-right'}"></weiui_icon>
                 </div>
             </div>
 
@@ -120,6 +120,8 @@
 
     .list-right-icon {
         width: 40px;
+        height: 40px;
+        font-size: 22px;
         color: #C9C9CE;
     }
 
@@ -142,57 +144,57 @@
                 expand_module: [{
                     title: 'APP相关',
                     title_en: 'appUtils',
-                    icon: 'ionic',
+                    icon: 'logo-ionic',
                     url: 'appUtils',
                 }, {
                     title: '设备相关',
                     title_en: 'deviceUtils',
-                    icon: 'ionic',
+                    icon: 'logo-ionic',
                     url: 'deviceUtils',
                 }, {
                     title: '网络相关',
                     title_en: 'networkUtils',
-                    icon: 'ionic',
+                    icon: 'logo-ionic',
                     url: 'networkUtils',
                 }, {
                     title: '权限相关',
                     title_en: 'permissionUtils',
-                    icon: 'ionic',
+                    icon: 'logo-ionic',
                     url: 'permissionUtils',
                 }, {
                     title: '手机相关',
                     title_en: 'phoneUtils',
-                    icon: 'ionic',
+                    icon: 'logo-ionic',
                     url: 'phoneUtils',
                 }, {
                     title: '进程相关',
                     title_en: 'processUtils',
-                    icon: 'ionic',
+                    icon: 'logo-ionic',
                     url: 'processUtils',
                 }, {
                     title: '屏幕相关',
                     title_en: 'screenUtils',
-                    icon: 'ionic',
+                    icon: 'logo-ionic',
                     url: 'screenUtils',
                 }, {
                     title: '时间相关',
                     title_en: 'timeUtils',
-                    icon: 'ionic',
+                    icon: 'logo-ionic',
                     url: 'timeUtils',
                 }, {
                     title: '摄像相关',
                     title_en: 'cameraTool',
-                    icon: 'ionic',
+                    icon: 'logo-ionic',
                     url: 'cameraTool',
                 }, {
                     title: '定位相关',
                     title_en: 'locationTool',
-                    icon: 'ionic',
+                    icon: 'logo-ionic',
                     url: 'locationTool',
                 }, {
                     title: '震动相关',
                     title_en: 'vibrateTool',
-                    icon: 'ionic',
+                    icon: 'logo-ionic',
                     url: 'vibrateTool',
                 }],
             }

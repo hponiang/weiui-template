@@ -1,11 +1,13 @@
 package cc.weiui.framework.extend.integration.iconify.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import cc.weiui.framework.extend.integration.iconify.Iconify;
 import cc.weiui.framework.extend.integration.iconify.internal.HasOnViewAttachListener;
 
+@SuppressLint("AppCompatCustomView")
 public class IconTextView extends TextView implements HasOnViewAttachListener {
 
     private HasOnViewAttachListenerDelegate delegate;

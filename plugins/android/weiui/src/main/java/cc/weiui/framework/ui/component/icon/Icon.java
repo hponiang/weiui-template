@@ -97,7 +97,7 @@ public class Icon extends WXComponent<IconView> {
 
     private void appleStyleAfterCreated() {
         mIconView.setGravity(Gravity.CENTER);
-        setIcon("home");
+        setIcon("md-home");
         setIconSize(38);
         setIconColor("#242424");
     }
@@ -121,9 +121,6 @@ public class Icon extends WXComponent<IconView> {
         }
         var = weiuiCommon.trim(var, "'");
         //
-        if (!var.startsWith("ion-") && !var.startsWith("tb-")) {
-            var = "ion-" + var;
-        }
         mIconView.setText("{" + var + "}");
     }
 

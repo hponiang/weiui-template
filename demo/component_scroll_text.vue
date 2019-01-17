@@ -7,7 +7,7 @@
                 <text class="title">滚动文字</text>
             </weiui_navbar_item>
             <weiui_navbar_item type="right" @click="viewCode('component/weiui_scroll_text')">
-                <weiui_icon content="code-working" class="iconr"></weiui_icon>
+                <weiui_icon content="md-code-working" class="iconr"></weiui_icon>
             </weiui_navbar_item>
         </weiui_navbar>
 

@@ -106,13 +106,7 @@
     } else {
         key = text;
     }
-    //Ionicons
-    if ([key hasPrefix:@"tb-"]) {
-        [TBCityIconFont setFontName:@"iconfont"];
-    } else {
-        [TBCityIconFont setFontName:@"Ionicons"];
-    }
-    
+    [TBCityIconFont setFontName:@"weiuiicon"];
     NSString *imgName = [IconFontUtil iconFont:key];
     
     return [UIImage iconWithInfo:TBCityIconInfoMake(imgName, fontSize, [WXConvert UIColor:color])];
