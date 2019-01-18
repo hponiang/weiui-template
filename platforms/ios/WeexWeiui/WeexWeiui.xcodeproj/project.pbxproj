@@ -2450,13 +2450,13 @@
 			isa = PBXGroup;
 			children = (
 				B2242BD521345148001C951B /* IconFontUtil.h */,
-				B2242BD621345148001C951B /* TBCityIconFont.m */,
-				B2242BD721345148001C951B /* TBCityIconInfo.m */,
-				B2242BD821345148001C951B /* UIImage+TBCityIconFont.m */,
 				B2242BD921345148001C951B /* IconFontUtil.m */,
-				B2242BDA21345148001C951B /* TBCityIconInfo.h */,
 				B2242BDB21345148001C951B /* TBCityIconFont.h */,
+				B2242BD621345148001C951B /* TBCityIconFont.m */,
+				B2242BDA21345148001C951B /* TBCityIconInfo.h */,
+				B2242BD721345148001C951B /* TBCityIconInfo.m */,
 				B2242BDC21345148001C951B /* UIImage+TBCityIconFont.h */,
+				B2242BD821345148001C951B /* UIImage+TBCityIconFont.m */,
 			);
 			path = IconFont;
 			sourceTree = "<group>";
