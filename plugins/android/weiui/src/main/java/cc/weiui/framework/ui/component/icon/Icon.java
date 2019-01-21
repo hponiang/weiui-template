@@ -119,7 +119,7 @@ public class Icon extends WXComponent<IconView> {
             mIconView.setText("");
             return;
         }
-        var = weiuiCommon.trim(var, "'");
+        var = weiuiCommon.trim(weiuiCommon.trim(var, "'"), "\"");
         //
         mIconView.setText("{" + var + "}");
     }

@@ -55,7 +55,7 @@
     id data = params[@"params"];
     NSInteger cache = params[@"cache"] ? [WXConvert NSInteger:params[@"cache"]] : 0;
     BOOL loading = params[@"loading"] ? [WXConvert BOOL:params[@"loading"]] : YES;
-    #warning ssss swipeBack默认改为yes
+#warning ssss swipeBack默认改为yes
     BOOL swipeBack = params[@"swipeBack"] ? [WXConvert BOOL:params[@"swipeBack"]] : YES;
     NSString *statusBarType = params[@"statusBarType"] ? [WXConvert NSString:params[@"statusBarType"]] : @"normal";
     NSString *statusBarColor = params[@"statusBarColor"] ? [WXConvert NSString:params[@"statusBarColor"]] : @"#3EB4FF";
@@ -73,7 +73,7 @@
     //} else {
     //    [IQKeyboardManager sharedManager].enable = YES;
     //}
-
+    
     url = [DeviceUtil rewriteUrl:url];
     NSLog(@"NewPage = %@", url);
     
@@ -283,11 +283,11 @@
     [self.callData setObject:callback forKey:listener];
     
     vc.listenerBlock = ^(id obj) {
-
+        
         if (obj && [obj isKindOfClass:[NSDictionary class]]) {
             NSString *listenerName = obj[@"listenerName"];
             WXModuleKeepAliveCallback callBack = self.callData[listenerName];
-
+            
             if (callBack) {
                 NSString *status = @"";
                 id extra = nil;
@@ -350,7 +350,7 @@
         }
     } else {
         status2 = status;
-
+        
         if ([params isKindOfClass:[NSString class]]) {
             listener = params;
         } else if ([params isKindOfClass:[NSDictionary class]]) {
@@ -524,13 +524,14 @@
     }
     
     if (isClose) {
-       [self closePage:nil];
+        [self closePage:nil];
     }
 }
 
 - (void)openWeb:(NSString*)url
 {
-    NSURL *URL = [NSURL URLWithString:url];
+    NSString* newUrl = [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLFragmentAllowedCharacterSet]];
+    NSURL *URL = [NSURL URLWithString:newUrl];
     [[UIApplication sharedApplication] openURL:URL];
 }
 

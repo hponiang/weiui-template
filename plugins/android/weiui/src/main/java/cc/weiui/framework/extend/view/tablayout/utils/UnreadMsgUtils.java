@@ -1,6 +1,7 @@
 package cc.weiui.framework.extend.view.tablayout.utils;
 
 
+import android.annotation.SuppressLint;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -14,6 +15,7 @@ import cc.weiui.framework.extend.view.tablayout.widget.MsgView;
  * 数字超过两位,显示99+
  */
 public class UnreadMsgUtils {
+    @SuppressLint("SetTextI18n")
     public static void show(MsgView msgView, int num) {
         if (msgView == null) {
             return;
@@ -30,16 +32,16 @@ public class UnreadMsgUtils {
             msgView.setLayoutParams(lp);
         } else {
             lp.height = (int) (18 * dm.density);
-            if (num > 0 && num < 10) {//圆
+            if (num < 10) {//圆
                 lp.width = (int) (18 * dm.density);
                 msgView.setText(num + "");
-            } else if (num > 9 && num < 100) {//圆角矩形,圆角是高度的一半,设置默认padding
+            } else if (num < 100) {//圆角矩形,圆角是高度的一半,设置默认padding
                 lp.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
-                msgView.setPadding((int) (6 * dm.density), 0, (int) (6 * dm.density), 0);
+                msgView.setPadding((int) (5 * dm.density), 0, (int) (5 * dm.density), 0);
                 msgView.setText(num + "");
             } else {//数字超过两位,显示99+
                 lp.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
-                msgView.setPadding((int) (6 * dm.density), 0, (int) (6 * dm.density), 0);
+                msgView.setPadding((int) (5 * dm.density), 0, (int) (5 * dm.density), 0);
                 msgView.setText("99+");
             }
             msgView.setLayoutParams(lp);

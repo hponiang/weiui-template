@@ -46,9 +46,9 @@ WX_EXPORT_METHOD(@selector(setIconClickColor:))
         for (NSString *key in attributes.allKeys) {
             [self dataKey:key value:attributes[key] isUpdate:NO];
         }
-                
-       _angle = 0;
-
+        
+        _angle = 0;
+        
     }
     
     return self;
@@ -94,15 +94,15 @@ WX_EXPORT_METHOD(@selector(setIconClickColor:))
 
 - (void)startAnimation
 {
-     CGAffineTransform endAngle = CGAffineTransformMakeRotation(_angle * (M_PI / 180.0f));
+    CGAffineTransform endAngle = CGAffineTransformMakeRotation(_angle * (M_PI / 180.0f));
     
     __weak typeof(self) wself = self;
-     [UIView animateWithDuration:0.01 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
-         wself.view.transform = endAngle;
-     } completion:^(BOOL finished) {
-         wself.angle += 2;
-         [wself startAnimation];
-     }];
+    [UIView animateWithDuration:0.01 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
+        wself.view.transform = endAngle;
+    } completion:^(BOOL finished) {
+        wself.angle += 2;
+        [wself startAnimation];
+    }];
 }
 
 - (void)updateStyles:(NSDictionary *)styles
@@ -131,6 +131,8 @@ WX_EXPORT_METHOD(@selector(setIconClickColor:))
         _content = [WXConvert NSString:value];
         if ([_content hasPrefix:@"'"]) {
             _content = [_content stringByReplacingOccurrencesOfString:@"'" withString:@""];
+        }
+        if ([_content hasPrefix:@"\""]) {
             _content = [_content stringByReplacingOccurrencesOfString:@"\"" withString:@""];
         }
         if (isUpdate) {
@@ -140,6 +142,9 @@ WX_EXPORT_METHOD(@selector(setIconClickColor:))
         _content = [WXConvert NSString:value];
         if ([_content hasPrefix:@"'"]) {
             _content = [_content stringByReplacingOccurrencesOfString:@"'" withString:@""];
+        }
+        if ([_content hasPrefix:@"\""]) {
+            _content = [_content stringByReplacingOccurrencesOfString:@"\"" withString:@""];
         }
         if (isUpdate) {
             [self setIcon:_content];

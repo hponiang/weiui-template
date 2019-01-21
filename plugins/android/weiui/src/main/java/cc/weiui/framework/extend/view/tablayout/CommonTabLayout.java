@@ -842,6 +842,7 @@ public class CommonTabLayout extends FrameLayout implements ValueAnimator.Animat
      * @param position 显示tab位置
      * @param num      num小于等于0显示红点,num大于0显示数字
      */
+    @SuppressLint("RtlHardcoded")
     public void showMsg(int position, int num) {
         if (position >= mTabCount) {
             position = mTabCount - 1;
@@ -862,8 +863,12 @@ public class CommonTabLayout extends FrameLayout implements ValueAnimator.Animat
             if (!mIconVisible) {
                 setMsgMargin(position, 2, 2);
             } else {
-                setMsgMargin(position, 0,
-                        mIconGravity == Gravity.LEFT || mIconGravity == Gravity.RIGHT ? 4 : 0);
+                TextView tv_tab_title = tabView.findViewById(R.id.tv_tab_title);
+                mTextPaint.setTextSize(mTextsize);
+                float diffWidth = mTextPaint.measureText(tv_tab_title.getText().toString()) - mIconWidth;
+                diffWidth = diffWidth > 0 ? diffWidth * -0.5f : 0;
+                tipView.setStrokeColor(Color.TRANSPARENT);
+                setMsgMargin(position, diffWidth - 5, (mIconGravity == Gravity.LEFT || mIconGravity == Gravity.RIGHT) ? 4 : (mIconGravity == Gravity.TOP ? 8 : 0));
             }
 
             mInitSetMap.put(position, true);

@@ -488,7 +488,9 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                     if (image) {
                         WXPerformBlockOnMainThread(^{
                             [btn setImage:[self imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateNormal];
-                            if (self->_iconGravity) {
+                            if (self->_iconVisible == NO) {
+                                [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:5];
+                            } else if (self->_iconGravity) {
                                 [btn SG_imagePositionStyle:(SGImagePositionStyleTop) spacing:5];
                             } else {
                                 [btn SG_imagePositionStyle:(SGImagePositionStyleBottom) spacing:5];
@@ -505,7 +507,9 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                     if (image) {
                         WXPerformBlockOnMainThread(^{
                             [btn setImage:[self imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateSelected];
-                            if (self->_iconGravity) {
+                            if (self->_iconVisible == NO) {
+                                [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:5];
+                            } else if (self->_iconGravity) {
                                 [btn SG_imagePositionStyle:(SGImagePositionStyleTop) spacing:5];
                             } else {
                                 [btn SG_imagePositionStyle:(SGImagePositionStyleBottom) spacing:5];
@@ -538,7 +542,9 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             }
             
             //上下图片文字
-            if (_iconGravity) {
+            if (_iconVisible == NO) {
+                [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:5];
+            } else if (_iconGravity) {
                 [btn SG_imagePositionStyle:(SGImagePositionStyleTop) spacing:5];
             } else {
                 [btn SG_imagePositionStyle:(SGImagePositionStyleBottom) spacing:5];
