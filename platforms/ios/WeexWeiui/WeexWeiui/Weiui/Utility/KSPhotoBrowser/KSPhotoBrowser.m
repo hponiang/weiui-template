@@ -217,7 +217,7 @@ static Class ImageViewClass = nil;
         return;
     }
     NSInteger width = iPhoneXSeries ? 80 : 56;
-    UIImage *deleteImg = [DeviceUtil getIconText:@"android-delete" font:20 color:@"#ffffff"];
+    UIImage *deleteImg = [DeviceUtil getIconText:@"md-trash" font:20 color:@"#ffffff"];
     UIButton *deleteBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     deleteBtn.frame = CGRectMake(self.view.bounds.size.width - width, 0, width, 56);
     [deleteBtn setImage:deleteImg forState:UIControlStateNormal];

@@ -20500,7 +20500,6 @@ var _app = __webpack_require__(16);
 //
 //
 //
-//
 
 var weiui = weex.requireModule('weiui');
 
@@ -20650,8 +20649,12 @@ exports.default = {
                 title: '第三方支付',
                 title_en: 'pay',
                 icon: 'tb-sponsor',
-                url: 'pay'
-            }],
+                url: 'pay' /*, {
+                              title: '视频播放器',
+                              title_en: 'video',
+                              icon: 'tb-video-fill',
+                              url: 'video',
+                           }*/ }],
 
             about_lists: [{
                 title: '开发文档',
@@ -21115,19 +21118,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       attrs: {
         "weex-type": "div"
       }
-    }, [_c('weiui_icon', {
-      staticClass: "list-left-icon",
-      attrs: {
-        "weiui": {
-          content: 'ionic'
-        }
-      }
-    }), _vm._v(" "), _c('p', {
+    }, [_c('p', {
       staticClass: "list-left-title-history weex-el weex-text",
       attrs: {
         "weex-type": "text"
       }
-    }, [_vm._v(_vm._s(text))])], 1), _vm._v(" "), _c('div', {
+    }, [_vm._v(_vm._s(text))])]), _vm._v(" "), _c('div', {
       staticClass: "list-item-right weex-ct weex-div",
       attrs: {
         "weex-type": "div"

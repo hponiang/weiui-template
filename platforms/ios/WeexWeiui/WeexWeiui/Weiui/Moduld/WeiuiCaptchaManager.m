@@ -15,6 +15,7 @@
 @interface WeiuiCaptchaManager ()
 
 @property (nonatomic, assign) BOOL isCanVerify;
+@property (nonatomic, assign) int puzzleY;
 
 @end
 
@@ -69,13 +70,14 @@
     
     CGFloat width = window.bounds.size.width * 0.8;
     CGFloat height = img.size.height / img.size.width * width;
+    _puzzleY = [self getRandomNumber:20 to:60];
     
     _puzzleVerifyView = [[TTGPuzzleVerifyView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
     _puzzleVerifyView.center = bgView.center;
     _puzzleVerifyView.image = img;
     _puzzleVerifyView.puzzleSize = CGSizeMake(60, 60);
-    _puzzleVerifyView.puzzleBlankPosition = CGPointMake(200, 40);
-    _puzzleVerifyView.puzzlePosition = CGPointMake(10, 40);
+    _puzzleVerifyView.puzzleBlankPosition = CGPointMake([self getRandomNumber:60 to:200], _puzzleY);
+    _puzzleVerifyView.puzzlePosition = CGPointMake(10, _puzzleY);
     _puzzleVerifyView.delegate = self;
     [bgView addSubview:_puzzleVerifyView];
     
@@ -101,7 +103,7 @@
     markLab.text = @"请按住滑块，拖动完成上方拼图";
     [bgView addSubview:markLab];
     
-    UIImage *closeImg = [DeviceUtil getIconText:@"close" font:19 color:@"#ffffff"];
+    UIImage *closeImg = [DeviceUtil getIconText:@"tb-close" font:19 color:@"#ffffff"];
     
     UIButton *closeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     closeBtn.frame = CGRectMake((bgView.frame.size.width - 50)/2, bgView.frame.size.height - 70, 50, 50);
@@ -129,6 +131,7 @@
     _puzzleVerifyView.puzzleXPercentage = slider.value;
     
     if (![_puzzleVerifyView isVerified]) {
+        _puzzleVerifyView.puzzleBlankPosition = CGPointMake([self getRandomNumber:60 to:200], _puzzleY);
         _puzzleVerifyView.puzzleXPercentage = 0.1;
         slider.value = 0.1;
     }
@@ -171,6 +174,11 @@
 - (void)puzzleVerifyView:(TTGPuzzleVerifyView *)puzzleVerifyView didChangedPuzzlePosition:(CGPoint)newPosition xPercentage:(CGFloat)xPercentage yPercentage:(CGFloat)yPercentage
 {
     
+}
+
+-(int)getRandomNumber:(int)from to:(int)to
+{
+    return (int)(from + (arc4random() % (to - from + 1)));
 }
 
 @end

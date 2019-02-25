@@ -57,17 +57,10 @@
         
         _subViews = [NSMutableArray arrayWithCapacity:5];
         
-        self.cssNode->style.flex_direction = CSS_FLEX_DIRECTION_ROW;
-
-//        bool isNan = isnan(self.cssNode->style.dimensions[CSS_HEIGHT]);
-//        if (isNan) {
-            self.cssNode->style.dimensions[CSS_HEIGHT] = SCALE(100);
-//        } else {
-//            CGFloat height = self.cssNode->style.dimensions[CSS_HEIGHT];
-//            if (height < SCALE(100)) {
-//                self.cssNode->style.dimensions[CSS_HEIGHT] = SCALE(100);
-//            }
-//        }
+        [self _fillCSSNode:@{
+                             @"flexDirection":@"row",
+                             @"height": @"100px",
+                             @"alignItems": @"center"} isUpdate:YES];
     }
 
     return self;

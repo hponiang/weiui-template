@@ -25,20 +25,9 @@
             [self dataKey:key value:attributes[key] isUpdate:NO];
         }
         
-        self.cssNode->style.justify_content = CSS_JUSTIFY_CENTER;
-        self.cssNode->style.align_items = CSS_ALIGN_CENTER;
-        
-        
-//#warning ssss 没有设置宽度，则在v-if刷新的时候会出现布局失效的bug
-//        bool isNan = isnan(self.cssNode->style.dimensions[CSS_WIDTH]);
-//        if (isNan) {
-//            if ([_barType isEqualToString:@"title"]) {
-//                self.cssNode->style.dimensions[CSS_WIDTH] = SCALE(600);
-//                self.cssNode->style.dimensions[CSS_HEIGHT] = SCALE(100);
-//            } else {
-//                self.cssNode->style.dimensions[CSS_WIDTH] = SCALE(100);
-//            }
-//        }
+        [self _fillCSSNode:@{
+                             @"justifyContent": @"center",
+                             @"alignItems": @"center"} isUpdate:YES];
     }
     
     return self;
@@ -61,9 +50,6 @@
 
 - (void)insertSubview:(WXComponent *)subcomponent atIndex:(NSInteger)index
 {
-#warning ssss 没有设置宽度，则在v-if刷新的时候会出现布局失效的bug
-    self.cssNode->style.dimensions[CSS_WIDTH] =  subcomponent.calculatedFrame.size.width;
-   
     [super insertSubview:subcomponent atIndex:index];
 }
 

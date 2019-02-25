@@ -69,14 +69,6 @@ WX_EXPORT_METHOD(@selector(setLoading:))
                 _color = @"#242424";//背景白色，字体黑色
             }
         }
-        
-        if (self.cssNode->style.dimensions[CSS_HEIGHT] == CSS_UNDEFINED) {
-            self.cssNode->style.dimensions[CSS_HEIGHT] = SCALE(50);
-        }
-        
-        if (self.cssNode->style.dimensions[CSS_WIDTH] == CSS_UNDEFINED) {
-            self.cssNode->style.dimensions[CSS_WIDTH] = SCALE(50);
-        }
     }
     
     return self;

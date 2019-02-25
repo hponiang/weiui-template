@@ -80,7 +80,7 @@
     [bgView addSubview:imgBtn];
     
     
-    UIImage *closeImg = [DeviceUtil getIconText:@"close" font:19 color:@"#ffffff"];
+    UIImage *closeImg = [DeviceUtil getIconText:@"tb-close" font:19 color:@"#ffffff"];
     
     UIButton *closeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     closeBtn.frame = CGRectMake((bgView.frame.size.width - 50)/2, imgBtn.frame.origin.y + height + 20, 50, 50);

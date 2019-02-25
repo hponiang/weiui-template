@@ -79,7 +79,6 @@
 
                 <div class="list-item" v-for="(text, index) in history" :key="index" @click="openAuto(text)">
                     <div class="list-item-left">
-                        <weiui_icon class="list-left-icon" :weiui="{content: 'ionic'}"></weiui_icon>
                         <text class="list-left-title-history">{{text}}</text>
                     </div>
                     <div class="list-item-right">
@@ -362,7 +361,12 @@
                     title_en: 'pay',
                     icon: 'tb-sponsor',
                     url: 'pay',
-                }],
+                }/*, {
+                    title: '视频播放器',
+                    title_en: 'video',
+                    icon: 'tb-video-fill',
+                    url: 'video',
+                }*/],
 
                 about_lists: [{
                     title: '开发文档',
