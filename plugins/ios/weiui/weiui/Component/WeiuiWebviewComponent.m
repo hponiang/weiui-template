@@ -139,9 +139,24 @@ WX_EXPORT_METHOD(@selector(goForward:))
     [webView addObserver:self forKeyPath:@"title" options:NSKeyValueObservingOptionNew context:nil];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+- (void) viewDidUnload
 {
     WeiuiWebView *webView = (WeiuiWebView*)self.view;
+    if (self.JSCall != nil) {
+        [self.JSCall viewDidUnload];
+        self.JSCall = nil;
+    }
+    if (_isHeightChanged) {
+        [webView.scrollView removeObserver:self forKeyPath:@"contentSize" context:nil];
+    }
+    [webView removeObserver:self forKeyPath:@"URL" context:nil];
+    [webView removeObserver:self forKeyPath:@"title" context:nil];
+    [super viewDidUnload];
+}
+
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    WeiuiWebView *webView = (WeiuiWebView*) self.view;
     if ([keyPath isEqualToString:@"contentSize"]) {
         CGFloat webViewHeight = webView.scrollView.contentSize.height;
         [self fireEvent:@"heightChanged" params:@{@"height":@(750 * 1.0 / [UIScreen mainScreen].bounds.size.width * webViewHeight)}];
@@ -152,17 +167,6 @@ WX_EXPORT_METHOD(@selector(goForward:))
         NSString *title = webView.title;
         [self fireEvent:@"stateChanged" params:@{@"status":@"title", @"title":title, @"url":@"", @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
     }
-}
-
--(void)viewDidUnload
-{
-    WeiuiWebView *webView = (WeiuiWebView*)self.view;
-    if (_isHeightChanged) {
-        [webView.scrollView removeObserver:self forKeyPath:@"contentSize" context:nil];
-    }
-    [webView removeObserver:self forKeyPath:@"URL" context:nil];
-    [webView removeObserver:self forKeyPath:@"title" context:nil];
-    [super viewDidUnload];
 }
 
 - (void)updateStyles:(NSDictionary *)styles
@@ -216,7 +220,6 @@ WX_EXPORT_METHOD(@selector(goForward:))
     }
 }
 
-#pragma mark delegate
 //开始加载网页
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation
 {
@@ -229,6 +232,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
     [self fireEvent:@"stateChanged" params:@{@"status":@"success", @"title":@"", @"url":@"", @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
     if (self.JSCall != nil) {
         [self.JSCall setJSCallAll:self webView:webView];
+        [self.JSCall addRequireModule:webView];
     }
 }
 
@@ -295,7 +299,6 @@ WX_EXPORT_METHOD(@selector(goForward:))
     [[DeviceUtil getTopviewControler] presentViewController:alertController animated:YES completion:nil];
 }
 
-#pragma mark set
 //设置浏览器内容
 - (void)setContent:(NSString*)content
 {
@@ -306,14 +309,13 @@ WX_EXPORT_METHOD(@selector(goForward:))
 //设置浏览器地址
 - (void)setUrl:(NSString*)urlStr
 {
-    WeiuiWebView *webView = (WeiuiWebView*)self.view;
-
+    WeiuiWebView *webView = (WeiuiWebView*) self.view;
     if (![urlStr hasPrefix:@"http://"] && ![urlStr hasPrefix:@"https://"]) {
         urlStr = [NSString stringWithFormat:@"http://%@", urlStr];
     }
     _url = urlStr;
     NSURL *url = [NSURL URLWithString:urlStr];
-    NSURLRequest *request =[NSURLRequest requestWithURL:url];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [webView loadRequest:request];
 }
 

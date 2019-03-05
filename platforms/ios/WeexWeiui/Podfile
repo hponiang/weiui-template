@@ -3,6 +3,7 @@ platform :ios, '8.0'
 
 def common
     pod 'WeexSDK', :path => '../../../plugins/ios/WeexSDK'
+    pod 'weiui', :path => '../../../plugins/ios/weiui'
     pod 'SocketRocket', '0.4.2'
 end
 

@@ -101,4 +101,16 @@
     });
 }
 
+//webView JS 接口
++ (void) setJSCallModule:(JSCallCommon *)callCommon webView:(WKWebView*)webView {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        for (Class cls in init_lists) {
+            id car  = [[cls alloc] init];
+            if ([car respondsToSelector:@selector(setJSCallModule:webView:)]) {
+                [car performSelector:(@selector(setJSCallModule:webView:)) withObject:callCommon withObject:webView];
+            }
+        }
+    });
+}
+
 @end

@@ -8,6 +8,6 @@
 
     <string name="page_refresh" translatable="false">刷新</string>
 
-    <string name="load_config" translatable="false">正在加载配置</string>
+    <string name="loading" translatable="false">loading....</string>
 
 </resources>

@@ -641,6 +641,27 @@ public class WeexModule extends WXModule {
         myApp().shareImage(mWXSDKInstance.getContext(), imgUrl);
     }
 
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 动态隐藏软键盘
+     * @return
+     */
+    @JSMethod
+    public void keyboardHide() {
+        myApp().keyboardUtils(mWXSDKInstance.getContext(), "hideSoftInput");
+    }
+
+    /**
+     * 判断软键盘是否可见
+     * @return
+     */
+    @JSMethod(uiThread = false)
+    public Boolean keyboardStatus() {
+        return (Boolean) myApp().keyboardUtils(mWXSDKInstance.getContext(), "isSoftInputVisible");
+    }
+
     /***************************************************************************************************/
     /***************************************************************************************************/
     /***************************************************************************************************/

@@ -15,9 +15,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSMutableDictionary *AllClass;
 @property (nonatomic, strong) NSMutableDictionary *AllInit;
 
+- (void) viewDidUnload;
 - (BOOL) isJSCall:(NSString*)JSText;
 - (id) onJSCall:(WKWebView*)webView JSText:(NSString*)JSText;
 - (void) setJSCallAssign:(WKWebView*)webView name:(NSString*)name bridge:(id)bridge;
+- (void) addRequireModule:(WKWebView*)webView;
 - (void) setJSCallAll:(id)webBridge webView:(WKWebView*)webView;
 
 + (NSString*) dictionaryToJson:(NSDictionary *)dic;

@@ -7,12 +7,11 @@
 
 #import "AppDelegate.h"
 #import "WeexSDKManager.h"
-#import "WeiuiRongcloudManager.h"
+#import "WeexInitManager.h"
 #import "MNAssistiveBtn.h"
 #import "ViewController.h"
 #import "WeiuiStorageManager.h"
 #import "WeiuiNewPageManager.h"
-#import "WeiuiUmengManager.h"
 #import "scanViewController.h"
 #import "DeviceUtil.h"
 #import "AFNetworking.h"
@@ -20,7 +19,6 @@
 #import <SocketRocket/SRWebSocket.h>
 #import "Config.h"
 #import "Cloud.h"
-#import "WeiuiPayModule.h"
 
 @interface AppDelegate ()<SRWebSocketDelegate>
 
@@ -39,17 +37,18 @@ NSString *socketPort;
 NSTimeInterval reconnectionNumber;
 NSDictionary *mLaunchOptions;
 
+//启动成功
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     mLaunchOptions = launchOptions;
     
-#if DEBUG
-    mController = [[ViewController alloc]init];
-    UINavigationController *navi = [[UINavigationController alloc]initWithRootViewController:mController];
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = navi;
-    [self.window makeKeyAndVisible];
-    [self initDebug:0];
-#endif
+    #if DEBUG
+        mController = [[ViewController alloc]init];
+        UINavigationController *navi = [[UINavigationController alloc]initWithRootViewController:mController];
+        self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        self.window.rootViewController = navi;
+        [self.window makeKeyAndVisible];
+        [self initDebug:0];
+    #endif
     
     if (__IPHONE_10_0) {
         [self networkStatus:application didFinishLaunchingWithOptions:launchOptions];
@@ -58,22 +57,43 @@ NSDictionary *mLaunchOptions;
     }
     
     [Cloud welcome:self.window];
-    
-    [self initRongcloud];
-    [self initUmeng];
-    
+    [WeexInitManager didFinishLaunchingWithOptions:launchOptions];
     return YES;
 }
 
+//注册推送成功调用
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    [WeexInitManager didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+}
+
+// 注册推送失败调用
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    [WeexInitManager didFailToRegisterForRemoteNotificationsWithError:error];
+}
+
+//iOS10以下使用这两个方法接收通知，
+-(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    [WeexInitManager didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+}
+
+//iOS10新增：处理前台收到通知的代理方法
+-(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler API_AVAILABLE(ios(10.0)){
+    [WeexInitManager willPresentNotification:notification withCompletionHandler:completionHandler];
+}
+
+
+//iOS10新增：处理后台点击通知的代理方法
+-(void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0)){
+    [WeexInitManager didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
+}
+
+//捕捉回调
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options
 {
-    if ([url.host isEqualToString:@"safepay"]) {
-        // 支付宝处理支付结果
-        [WeiuiPayModule alipayHandleOpenURL:url];
-    }else if ([url.host isEqualToString:@"pay"]) {
-        // 微信支付处理支付结果
-        return [WeiuiPayModule weixinHandleOpenURL:url];
-    }
+    [WeexInitManager openURL:url options:options];
     return YES;
 }
 
@@ -157,33 +177,6 @@ NSDictionary *mLaunchOptions;
         }
     }];
     [afNetworkReachabilityManager startMonitoring];
-}
-
-//初始化融云
-- (void)initRongcloud {
-    NSMutableDictionary *rongim = [[Config getObject:@"rongim"] objectForKey:@"ios"];
-    NSString *enabled = [NSString stringWithFormat:@"%@", rongim[@"enabled"]];
-    //
-    if ([enabled containsString:@"1"] || [enabled containsString:@"true"]) {
-        NSString *appKey = [NSString stringWithFormat:@"%@", rongim[@"appKey"]];
-        NSString *appSecret = [NSString stringWithFormat:@"%@", rongim[@"appSecret"]];
-        [WeexSDKManager sharedIntstance].rongKey = appKey;
-        [WeexSDKManager sharedIntstance].rongSec = appSecret;
-        [[WeiuiRongcloudManager sharedIntstance] init:appKey appSecret:appSecret];
-    }
-}
-
-//初始化友盟
-- (void)initUmeng {
-    NSMutableDictionary *umeng = [[Config getObject:@"umeng"] objectForKey:@"ios"];
-    NSString *enabled = [NSString stringWithFormat:@"%@", umeng[@"enabled"]];
-    //
-    if ([enabled containsString:@"1"] || [enabled containsString:@"true"]) {
-        NSString *appKey = [NSString stringWithFormat:@"%@", umeng[@"appKey"]];
-        NSString *appSecret = [NSString stringWithFormat:@"%@", umeng[@"appSecret"]];
-        NSString *channel = [NSString stringWithFormat:@"%@", umeng[@"channel"]];
-        [[WeiuiUmengManager sharedIntstance] init:appKey secret:appSecret channel:channel launchOptions:mLaunchOptions];
-    }
 }
 
 //初始化DEBUG
@@ -337,13 +330,17 @@ NSDictionary *mLaunchOptions;
                                            preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [Cloud reboot];
+        
+        [Config clear];
+        [[[DeviceUtil getTopviewControler] navigationController] popToRootViewControllerAnimated:NO];
+        [[[ViewController alloc]init] loadUrl:[Config getHome]];
+        
         [Cloud appData];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)([Cloud welcome:self.window] * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [Cloud welcomeClose];
         });
-        [self initRongcloud];
-        [self initUmeng];
+        
+        [WeexInitManager didFinishLaunchingWithOptions:mLaunchOptions];
     }]];
     UIWindow *alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     alertWindow.rootViewController = [[UIViewController alloc] init];

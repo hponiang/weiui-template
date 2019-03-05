@@ -10,7 +10,6 @@
 #import "WeexSDK.h"
 #import "WeexSDKManager.h"
 #import "WXMainViewController.h"
-#import "WeiuiRongcloudManager.h"
 #import "WeiuiNewPageManager.h"
 #import "Config.h"
 #import "Cloud.h"

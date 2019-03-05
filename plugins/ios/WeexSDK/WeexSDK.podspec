@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
 
   s.name         = "WeexSDK"
 
-  s.version      = "0.20.0"
+  s.version      = "0.20.3.0-beta"
 
   s.summary      = "WeexSDK Source."
 
@@ -41,6 +41,7 @@ Pod::Spec.new do |s|
   s.source =  { :path => '.' }
 
   s.source_files = 'ios/sdk/WeexSDK/Sources/**/*.{h,m,mm,c,cpp,cc}',
+                    'ios/Custom/*.{h,m,mm,c,cpp,cc}',
                     'weex_core/Source/base/**/*.{h,hpp,m,mm,c,cpp,cc}',
                     'weex_core/Source/core/**/*.{h,hpp,m,mm,c,cpp,cc}',
                     'weex_core/Source/wson/**/*.{h,hpp,m,mm,c,cpp,cc}',

@@ -8,6 +8,7 @@
 #import "JSCallCommon.h"
 #import "NSObject+performSelector.h"
 #import <objc/runtime.h>
+#import "WeexInitManager.h"
 
 #import "WeiuiBridge.h"
 
@@ -22,7 +23,12 @@
     return self;
 }
 
--(void)dealloc
+- (void) destroy
+{
+    [self viewDidUnload];
+}
+
+- (void) viewDidUnload
 {
     [self.AllClass removeAllObjects];
     [self.AllInit removeAllObjects];
@@ -121,6 +127,7 @@
     if (!webView) {
         return;
     }
+    name = [@"__weiui_js_" stringByAppendingString:name];
     
     unsigned int count = 0;
     NSString *funcString = @"";
@@ -136,7 +143,7 @@
         if (![JSCallCommon isEnglishFirst:fname]) {
             continue;
         }
-        if ([name isEqualToString:@"weiui_webview"]) {
+        if ([name isEqualToString:@"__weiui_js_webview"]) {
             if (!([fname isEqualToString:@"setContent"] ||
                   [fname isEqualToString:@"setUrl"] ||
                   [fname isEqualToString:@"canGoBack"] ||
@@ -169,10 +176,20 @@
     }];
 }
 
+- (void) addRequireModule:(WKWebView*)webView
+{
+    if (!webView) {
+        return;
+    }
+    NSString *javaScript = @";(function(b){console.log('requireModuleJs initialization begin');if(b.__requireModuleJs===true){return}b.__requireModuleJs=true;var a=function(name){var moduleName='__weiui_js_'+name;if(typeof b[moduleName]==='object'&&b[moduleName]!==null){return b[moduleName]}};b.requireModuleJs=a;if(typeof b.weiuiApi==='function'){b.weiuiApi()}else if(typeof weiuiApi==='function'){weiuiApi()}console.log('requireModuleJs initialization end')})(window);";
+    [webView evaluateJavaScript:javaScript completionHandler:nil];
+}
+
 - (void) setJSCallAll:(id)webBridge webView:(WKWebView*)webView
 {
     [self setJSCallAssign:webView name:@"weiui" bridge:[[WeiuiBridge alloc] init]];
-    [self setJSCallAssign:webView name:@"weiui_webview" bridge:webBridge];
+    [self setJSCallAssign:webView name:@"webview" bridge:webBridge];
+    [WeexInitManager setJSCallModule:self webView:(WKWebView*)webView];
 }
 
 + (NSString*) dictionaryToJson:(NSDictionary *)dic

@@ -28,8 +28,15 @@
 #import "WXComponent+PseudoClassManagement.h"
 #import "WXTextInputComponent.h"
 #import "WXComponent+Layout.h"
+#import "CustomWeexSDKManager.h"
+
+//weiui dev
+#define iPhoneXSeries (([[UIApplication sharedApplication] statusBarFrame].size.height == 44.0f) ? (YES):(NO))
 
 @interface WXEditComponent()
+{
+    CGFloat _upriseOffset; // additional space when edit is lifted by keyboard
+}
 
 //@property (nonatomic, strong) WXTextInputView *inputView;
 @property (nonatomic, strong) WXDatePickerManager *datePickerManager;
@@ -108,6 +115,12 @@ WX_EXPORT_METHOD(@selector(setTextFormatter:))
         _disabled = [attributes[@"disabled"] boolValue];
         _value = [WXConvert NSString:attributes[@"value"]]?:@"";
         _placeholderString = [WXConvert NSString:attributes[@"placeholder"]]?:@"";
+        _upriseOffset = 20; // 20 for better appearance
+        
+        if (attributes[@"upriseOffset"]) {
+            _upriseOffset = [WXConvert CGFloat:attributes[@"upriseOffset"]];
+        }
+        
         if(attributes[@"type"]) {
             _inputType = [WXConvert NSString:attributes[@"type"]];
             _attr = attributes;
@@ -460,6 +473,9 @@ WX_EXPORT_METHOD(@selector(setTextFormatter:))
         _rows = 2;
         [self setRows:_rows];
     }
+    if (attributes[@"upriseOffset"]) {
+        _upriseOffset = [WXConvert CGFloat:attributes[@"upriseOffset"]];
+    }
 }
 
 #pragma mark - upate styles
@@ -695,6 +711,7 @@ WX_EXPORT_METHOD(@selector(setTextFormatter:))
     }
 }
 
+//weiui dev
 - (void)setViewMovedUp:(BOOL)movedUp
 {
     UIView *rootView = self.weexInstance.rootView;
@@ -702,7 +719,10 @@ WX_EXPORT_METHOD(@selector(setTextFormatter:))
     CGRect rootViewFrame = rootView.frame;
     CGRect inputFrame = [self.view.superview convertRect:self.view.frame toView:rootView];
     if (movedUp) {
-        CGFloat offset = inputFrame.origin.y-(rootViewFrame.size.height-_keyboardSize.height-inputFrame.size.height) + 20;
+        CGFloat offset = inputFrame.origin.y-(rootViewFrame.size.height-_keyboardSize.height-inputFrame.size.height) + _upriseOffset;
+        if (iPhoneXSeries) {
+            offset-= 34;
+        }
         if (offset > 0) {
             rect = (CGRect){
                 .origin.x = 0.f,
@@ -711,7 +731,13 @@ WX_EXPORT_METHOD(@selector(setTextFormatter:))
             };
         }
     }
-    self.weexInstance.rootView.frame = rect;
+
+    if ([[CustomWeexSDKManager getSoftInputMode] isEqualToString:@"pan"]) {
+        //若键盘盖住输入框，页面不会自动上移
+    }else{
+        //若键盘盖住输入框，页面会自动上移
+        self.weexInstance.rootView.frame = rect;
+    }
 }
 
 #pragma mark textview Delegate

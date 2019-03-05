@@ -56,12 +56,6 @@ android {
     }
 }
 
-repositories {
-    flatDir {
-        dirs project(':weiui_pay').file('libs')
-    }
-}
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:multidex:1.0.3"
@@ -77,13 +71,8 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.5"
     implementation "io.reactivex.rxjava2:rxjava:2.0.5"
     implementation "io.reactivex.rxjava2:rxandroid:2.0.1"
-    implementation "com.tencent.mm.opensdk:wechat-sdk-android-with-mta:5.1.6"
     //
     implementation project(":weiui")
-    implementation project(":weiui_citypicker")
-    implementation project(":weiui_picture")
-    implementation project(":weiui_picture_ucrop")
-    implementation project(":weiui_rongim")
-    implementation project(":weiui_umeng")
-    implementation project(":weiui_pay")
 }
+
+

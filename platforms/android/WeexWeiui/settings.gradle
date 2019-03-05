@@ -2,21 +2,3 @@ include ':app'
 
 include ":weiui"
 project (':weiui').projectDir = new File("../../../plugins/android/weiui")
-
-include ":weiui_picture"
-project (':weiui_picture').projectDir = new File("../../../plugins/android/weiui_picture")
-
-include ":weiui_picture_ucrop"
-project (':weiui_picture_ucrop').projectDir = new File("../../../plugins/android/weiui_picture_ucrop")
-
-include ":weiui_umeng"
-project (':weiui_umeng').projectDir = new File("../../../plugins/android/weiui_umeng")
-
-include ":weiui_rongim"
-project (':weiui_rongim').projectDir = new File("../../../plugins/android/weiui_rongim")
-
-include ":weiui_citypicker"
-project (':weiui_citypicker').projectDir = new File("../../../plugins/android/weiui_citypicker")
-
-include ":weiui_pay"
-project (':weiui_pay').projectDir = new File("../../../plugins/android/weiui_pay")

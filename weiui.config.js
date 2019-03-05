@@ -15,29 +15,29 @@ module.exports = {
 
     rongim: {
         ios: {
-            enabled: false,
-            appKey: "",
-            appSecret: "",
+            enabled: true,
+            appKey: "vnroth0kv8o7o",
+            appSecret: "5mILjdXtXid7iM",
         },
         android: {
-            enabled: false,
-            appKey: "",
-            appSecret: "",
+            enabled: true,
+            appKey: "vnroth0kv8o7o",
+            appSecret: "5mILjdXtXid7iM",
         },
     },
 
     umeng: {
         ios: {
-            enabled: false,
-            appKey: "",
+            enabled: true,
+            appKey: "5c79d535203657751400106e",
             appSecret: "",
-            channel: "",
+            channel: "weiuidemo",
         },
         android: {
-            enabled: false,
-            appKey: "",
-            appSecret: "",
-            channel: "",
+            enabled: true,
+            appKey: "5ab9d815f29d980730000365",
+            appSecret: "0f6e074e1443674fc7ba4327bf93939a",
+            channel: "weiuidemo",
         }
     },
 

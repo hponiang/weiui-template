@@ -575,6 +575,25 @@ public class WebModule {
         myApp.shareImage(webView.getContext(), imgUrl);
     }
 
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 动态隐藏软键盘
+     * @return
+     */
+    public static void keyboardHide(ExtendWebView webView) {
+        myApp.keyboardUtils(webView.getContext(), "hideSoftInput");
+    }
+
+    /**
+     * 判断软键盘是否可见
+     * @return
+     */
+    public static Boolean keyboardStatus(ExtendWebView webView) {
+        return (Boolean) myApp.keyboardUtils(webView.getContext(), "isSoftInputVisible");
+    }
+
     /***************************************************************************************************/
     /***************************************************************************************************/
     /***************************************************************************************************/

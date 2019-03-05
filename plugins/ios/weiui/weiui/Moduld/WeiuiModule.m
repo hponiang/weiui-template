@@ -539,12 +539,14 @@ WX_EXPORT_METHOD_SYNC(@selector(keyboardUtils:))
 
 WX_EXPORT_METHOD(@selector(keyboardHide))
 WX_EXPORT_METHOD_SYNC(@selector(keyboardStatus))
+//动态隐藏软键盘
 - (void) keyboardHide
 {
     UIViewController *vc = [DeviceUtil getTopviewControler];
     [vc.view endEditing:YES];
 }
 
+//判断软键盘是否可见
 - (BOOL) keyboardStatus
 {
     return [CustomWeexSDKManager getKeyBoardlsVisible];

@@ -451,18 +451,26 @@
 }
 
 #pragma mark 键盘
-- (id) keyboardUtils:(NSString*)key
+- (void) keyboardUtils:(NSString*)key
 {
     //动态隐藏软键盘
     if ([key isEqualToString:@"hideSoftInput"]) {
         UIViewController *vc = [DeviceUtil getTopviewControler];
         [vc.view endEditing:YES];
     }
-    //判断软键盘是否可见
-    else if ([key isEqualToString:@"isSoftInputVisible"]) {
-        return @{@"status": @([CustomWeexSDKManager getKeyBoardlsVisible])};
-    }
-    return @"";
+}
+
+//动态隐藏软键盘
+- (void) keyboardHide
+{
+    UIViewController *vc = [DeviceUtil getTopviewControler];
+    [vc.view endEditing:YES];
+}
+
+//判断软键盘是否可见
+- (BOOL) keyboardStatus
+{
+    return [CustomWeexSDKManager getKeyBoardlsVisible];
 }
 
 @end

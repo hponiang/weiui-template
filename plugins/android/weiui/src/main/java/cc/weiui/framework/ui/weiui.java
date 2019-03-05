@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.InitConfig.Builder;
@@ -19,13 +20,19 @@ import com.taobao.weex.common.WXException;
 import cc.weiui.framework.BuildConfig;
 import cc.weiui.framework.activity.PageActivity;
 import cc.weiui.framework.extend.adapter.ImageAdapter;
+import cc.weiui.framework.extend.annotation.ModuleEntry;
 import cc.weiui.framework.extend.bean.PageBean;
 import cc.weiui.framework.extend.integration.iconify.Iconify;
 import cc.weiui.framework.extend.integration.iconify.fonts.IoniconsModule;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import cc.weiui.framework.extend.integration.swipebacklayout.BGAKeyboardUtil;
@@ -63,12 +70,17 @@ import cc.weiui.framework.ui.component.tabbar.Tabbar;
 import cc.weiui.framework.ui.component.tabbar.TabbarPage;
 import cc.weiui.framework.ui.component.webView.WebView;
 import cc.weiui.framework.ui.module.WeexModule;
+import dalvik.system.BaseDexClassLoader;
+import dalvik.system.DexFile;
+import dalvik.system.PathClassLoader;
 
 /**
  * Created by WDM on 2018/3/27.
  */
 
 public class weiui {
+
+    private static final String TAG = "weiui";
 
     public static boolean debug = true;
 
@@ -158,6 +170,12 @@ public class weiui {
         } catch (WXException e) {
             e.printStackTrace();
         }
+
+        try {
+            weiuiPluginManager.init(application);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static Application.ActivityLifecycleCallbacks mCallbacks = new Application.ActivityLifecycleCallbacks() {
@@ -196,6 +214,123 @@ public class weiui {
             mActivityList.remove(activity);
         }
     };
+
+    /***************************************************************************************************/
+    /***************************************************************************************************/
+    /***************************************************************************************************/
+
+    @SuppressWarnings("unchecked")
+    static class weiuiPluginManager {
+        static Field getField(String name, Class c) {
+            try {
+                return c.getDeclaredField(name);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        static ClassLoader getClassLoader() {
+            return Thread.currentThread().getContextClassLoader();
+        }
+
+        static Class<?> getClassByAddressName(String classAddressName) {
+            Class mClass = null;
+            try {
+                mClass = Class.forName(classAddressName);
+            } catch (Exception ignored) {
+            }
+            return mClass;
+        }
+
+        static <T> T getObjectFromField(Field field, Object arg) {
+            try {
+                field.setAccessible(true);
+                return (T) field.get(arg);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        static ArrayList<DexFile> getMultiDex() {
+            BaseDexClassLoader dexLoader = (BaseDexClassLoader) getClassLoader();
+            Field f = getField("pathList", getClassByAddressName("dalvik.system.BaseDexClassLoader"));
+            Object pathList = getObjectFromField(f, dexLoader);
+            Field f2 = getField("dexElements", getClassByAddressName("dalvik.system.DexPathList"));
+            Object[] list = getObjectFromField(f2, pathList);
+            Field f3 = getField("dexFile", getClassByAddressName("dalvik.system.DexPathList$Element"));
+
+            ArrayList<DexFile> res = new ArrayList<>();
+
+            assert list != null;
+            for (Object aList : list) {
+                DexFile d = getObjectFromField(f3, aList);
+                res.add(d);
+            }
+            return res;
+        }
+
+        static boolean canLoad(String pack) {
+            List<String> ignore = new ArrayList<>();
+            ignore.add("com.taobao.weex.");
+            ignore.add("com.alibaba.fastjson.");
+            ignore.add("com.alipay.security.");
+            ignore.add("com.bumptech.glide.");
+            ignore.add("com.luck.picture.");
+            ignore.add("com.weiui.framework.extend.");
+            ignore.add("$");
+            if (contains(ignore, pack)) {
+                return false;
+            }
+            List<String> need = new ArrayList<>();
+            need.add(".entry.");
+            return contains(need, pack);
+        }
+
+        public static boolean contains(List l, String s) {
+            for (Object q : l) {
+                if (s.contains(q + ""))
+                    return true;
+            }
+            return false;
+        }
+
+        static void registerDex(DexFile dex, Context context) {
+            if (dex == null) {
+                return;
+            }
+            Enumeration<String> entries = dex.entries();
+            PathClassLoader classLoader = (PathClassLoader) Thread.currentThread().getContextClassLoader();
+            while (entries.hasMoreElements()) {
+                String entryName = entries.nextElement();
+                if (canLoad(entryName)) {
+                    try {
+                        Class entryClass = Class.forName(entryName, true, classLoader);
+                        ModuleEntry wxentry = (ModuleEntry) entryClass.getAnnotation(ModuleEntry.class);
+                        if (wxentry != null) {
+                            Object instance = entryClass.newInstance();
+                            Method entry = entryClass.getMethod("init", Context.class);
+                            entry.invoke(instance, context);
+                            Log.d(TAG, "执行模块初始化:" + entryClass);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } catch (NoClassDefFoundError e) {
+                        e.printStackTrace();
+                    } catch (ExceptionInInitializerError ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        static void init(Context context) {
+            ArrayList<DexFile> list = getMultiDex();
+            for (DexFile dex : list) {
+                registerDex(dex, context);
+            }
+        }
+    }
 
     /***************************************************************************************************/
     /***************************************************************************************************/
@@ -1176,6 +1311,25 @@ public class weiui {
      */
     public void shareImage(Context context, String imgUrl) {
         weiuiShareUtils.shareImage(context, imgUrl);
+    }
+
+    /****************************************************************************************/
+    /****************************************************************************************/
+
+    /**
+     * 隐藏键盘
+     * @return
+     */
+    public void keyboardHide(Context context) {
+        utilcodeModule.KeyboardUtils((Activity) context, "hideSoftInput");
+    }
+
+    /**
+     * 键盘相关
+     * @return
+     */
+    public Boolean keyboardStatus(Context context) {
+        return (Boolean) utilcodeModule.KeyboardUtils((Activity) context, "isSoftInputVisible");
     }
 
     /***************************************************************************************************/

@@ -192,7 +192,7 @@ public class Recyler extends WXVContainer<ViewGroup> implements SwipeRefreshLayo
                 return true;
 
             case "pullTips":
-                mAdapter.setPullTips(weiuiParse.parseBool(val, true));
+                mAdapter.setPullTips(weiuiParse.parseBool(val, true) && getEvents().contains(weiuiConstants.Event.PULLLOAD_LISTENER));
                 return true;
 
             case "pullTipsDefault":
@@ -299,6 +299,8 @@ public class Recyler extends WXVContainer<ViewGroup> implements SwipeRefreshLayo
                 }
             }
         });
+        //
+        mAdapter.setPullTips(getEvents().contains(weiuiConstants.Event.PULLLOAD_LISTENER));
     }
 
     private void notifyUpdateList() {

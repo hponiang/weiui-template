@@ -7,6 +7,8 @@
 
 #import <Foundation/Foundation.h>
 #import <UserNotifications/UserNotifications.h>
+#import <WebKit/WKWebView.h>
+#import "JSCallCommon.h"
 
 static NSMutableArray *init_lists;
 
@@ -35,6 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void) willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler API_AVAILABLE(ios(10.0));
 + (void) didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
 + (void) openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options;
++ (void) setJSCallModule:(JSCallCommon *)callCommon webView:(WKWebView*)webView;
 
 @end
 
