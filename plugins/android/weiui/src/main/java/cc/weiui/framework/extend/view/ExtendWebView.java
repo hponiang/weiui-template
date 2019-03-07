@@ -25,20 +25,17 @@ import android.widget.Toast;
 import com.taobao.weex.bridge.JSCallback;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 import cc.weiui.framework.R;
 import cc.weiui.framework.activity.PageActivity;
+import cc.weiui.framework.extend.bean.WebCallBean;
 import cc.weiui.framework.extend.module.weiuiCommon;
 import cc.weiui.framework.extend.module.weiuiMap;
 import cc.weiui.framework.extend.module.weiuiParse;
 import cc.weiui.framework.extend.view.webviewBridge.InjectedChromeClient;
-import cc.weiui.framework.ui.module.webView.weiuiBridge;
-import cc.weiui.framework.ui.module.webView.weiuiCitypickerBridge;
-import cc.weiui.framework.ui.module.webView.weiuiPayBridge;
-import cc.weiui.framework.ui.module.webView.weiuiPictureBridge;
-import cc.weiui.framework.ui.module.webView.weiuiWebviewBridge;
+import cc.weiui.framework.ui.module.WebModule;
+import cc.weiui.framework.ui.module.WebviewModule;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -72,13 +69,9 @@ public class ExtendWebView extends WebView {
         progressbar.setVisibility(GONE);
         progressbarVisibility = true;
         //
-        Map<String, Class> classData = new HashMap<>();
-        classData.put("weiui", weiuiBridge.init());
-        classData.put("weiui_citypicker", weiuiCitypickerBridge.init());
-        classData.put("weiui_pay", weiuiPayBridge.init());
-        classData.put("weiui_picture", weiuiPictureBridge.init());
-        classData.put("weiui_webview", weiuiWebviewBridge.init());
-        mWebChromeClient = new WebChromeClient(classData);
+        WebCallBean.addClassData("weiui", WebModule.class);
+        WebCallBean.addClassData("webview", WebviewModule.class);
+        mWebChromeClient = new WebChromeClient(WebCallBean.getClassData());
         //
         Drawable drawable = context.getResources().getDrawable(R.drawable.progress_bar_states);
         progressbar.setProgressDrawable(drawable);
@@ -232,7 +225,7 @@ public class ExtendWebView extends WebView {
         }
 
         /**
-         * 图片上传部分】For Android < 3.0
+         * 【图片上传部分】For Android < 3.0
          * @param uploadMsg
          */
         public void openFileChooser(ValueCallback<Uri> uploadMsg) {

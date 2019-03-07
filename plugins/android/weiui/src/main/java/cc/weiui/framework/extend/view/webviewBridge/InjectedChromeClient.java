@@ -17,16 +17,13 @@ public class InjectedChromeClient extends WebChromeClient {
     private boolean mAgainInjectedJS;
     private boolean enableApi = true;
 
-    public InjectedChromeClient(String injectedName, Class injectedCls) {
-        mJsCallJava.put(injectedName, new JsCallJava(injectedName, injectedCls));
-    }
-
     public InjectedChromeClient(Map<String, Class> data) {
         if (data != null) {
             for (String injectedName : data.keySet()) {
+                String callName = "__weiui_js_" + injectedName;
                 Class injectedCls = data.get(injectedName);
                 if (injectedCls != null) {
-                    mJsCallJava.put(injectedName, new JsCallJava(injectedName, injectedCls));
+                    mJsCallJava.put(callName, new JsCallJava(callName, injectedCls));
                 }
             }
         }
@@ -64,7 +61,7 @@ public class InjectedChromeClient extends WebChromeClient {
                     view.loadUrl(value.getPreloadInterfaceJS());
                 }
             }
-            view.loadUrl("javascript:(function(b){b.__readyInternum=0;b.__readyInterval=setInterval(function(){if(b.__readyInternum>100){clearInterval(b.__readyInterval)}if(typeof b.weiuiReady===\"function\"){b.weiuiReady();clearInterval(b.__readyInterval)}b.__readyInternum++},100)})(window);");
+            view.loadUrl("javascript:(function(b){console.log('requireModuleJs initialization begin');if(b.__requireModuleJs===true){return}b.__requireModuleJs=true;var a=function(name){var moduleName='__weiui_js_'+name;if(typeof b[moduleName]==='object'&&b[moduleName]!==null){return b[moduleName]}};b.requireModuleJs=a;if(typeof b.weiuiApi==='function'){b.weiuiApi()}else if(typeof weiuiApi==='function'){weiuiApi()}console.log('requireModuleJs initialization end')})(window);");
             mAgainInjectedJS = true;
         }
         //JS注入结束

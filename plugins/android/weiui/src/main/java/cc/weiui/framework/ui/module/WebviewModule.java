@@ -1,4 +1,4 @@
-package cc.weiui.framework.ui.module.webView;
+package cc.weiui.framework.ui.module;
 
 
 import cc.weiui.framework.extend.view.ExtendWebView;
@@ -6,15 +6,7 @@ import cc.weiui.framework.extend.view.webviewBridge.JsCallback;
 import cc.weiui.framework.ui.weiui;
 
 
-public class weiuiWebviewBridge {
-
-    public static Class init() {
-        return weiuiWebviewBridge.class;
-    }
-
-    /***************************************************************************************************/
-    /***************************************************************************************************/
-    /***************************************************************************************************/
+public class WebviewModule {
 
     public static void goBack(ExtendWebView webView){
         goBack(webView, null);

@@ -357,6 +357,7 @@ public class weiui {
             @Override
             public void invokeAndKeepAlive(Object data) {
                 try {
+                    callback.setPermanent(true);
                     callback.apply(data);
                 } catch (JsCallback.JsCallbackException je) {
                     je.printStackTrace();
