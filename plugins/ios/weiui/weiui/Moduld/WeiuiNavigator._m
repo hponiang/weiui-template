@@ -1,0 +1,35 @@
+//
+//  WeiuiNavigator.m
+//  Pods
+//
+//  Created by 高一 on 2019/3/10.
+//
+
+#import "WeiuiNavigator.h"
+#import "WeiuiNewPageManager.h"
+#import "WXMainViewController.h"
+#import "DeviceUtil.h"
+
+@implementation WeiuiNavigator
+
+@synthesize weexInstance;
+
+WX_EXPORT_METHOD(@selector(push:callback:))
+WX_EXPORT_METHOD(@selector(pop:callback:))
+
+- (void)push:(NSDictionary*)params callback:(WXModuleKeepAliveCallback)callback
+{
+    [WeiuiNewPageManager sharedIntstance].weexInstance = weexInstance;
+    [[WeiuiNewPageManager sharedIntstance] openPage:params callback:callback];
+}
+
+- (void)pop:(NSMutableDictionary*)params callback:(WXModuleKeepAliveCallback)callback
+{
+    NSString *pageName = [WXConvert NSString:params[@"pageName"]];
+    if (pageName.length == 0) {
+        params[@"pageName"] = [(WXMainViewController*)[DeviceUtil getTopviewControler] pageName];
+    }
+    [[WeiuiNewPageManager sharedIntstance] closePage:params];
+}
+
+@end

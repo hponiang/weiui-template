@@ -46,7 +46,7 @@ public class TabbarBean {
 
     public String getSelectedIcon() {
         if (selectedIcon.isEmpty()) {
-            return unSelectedIcon.isEmpty() ? "home" : unSelectedIcon;
+            return unSelectedIcon.isEmpty() ? "tb-home" : unSelectedIcon;
         }
         return selectedIcon;
     }
@@ -57,7 +57,7 @@ public class TabbarBean {
 
     public String getUnSelectedIcon() {
         if (unSelectedIcon.isEmpty()) {
-            return selectedIcon.isEmpty() ? "home" : selectedIcon;
+            return selectedIcon.isEmpty() ? "tb-home" : selectedIcon;
         }
         return unSelectedIcon;
     }

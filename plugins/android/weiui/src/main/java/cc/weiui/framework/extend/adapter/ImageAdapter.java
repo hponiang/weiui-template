@@ -83,7 +83,7 @@ public class ImageAdapter implements IWXImgLoaderAdapter {
         String tempUrl = finalUrl;
         if (tempUrl.startsWith("//")) {
             tempUrl = "http:" + finalUrl;
-        } else if (!tempUrl.startsWith("http") && !tempUrl.startsWith("ftp:") && !tempUrl.startsWith("file:") && !tempUrl.startsWith("data:")) {
+        } else if (!tempUrl.startsWith("http") && !tempUrl.startsWith("ftp:") && !tempUrl.startsWith("file:") && !tempUrl.startsWith("data:image/")) {
             if (view.getContext() instanceof PageActivity) {
                 PageBean mPageBean = ((PageActivity) view.getContext()).getPageInfo();
                 if (mPageBean != null) {

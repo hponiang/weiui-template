@@ -527,7 +527,7 @@ WX_EXPORT_METHOD_SYNC(@selector(weexDp2px:))
 }
 
 #pragma mark 键盘
-WX_EXPORT_METHOD_SYNC(@selector(keyboardUtils:))
+WX_EXPORT_METHOD(@selector(keyboardUtils:))
 - (void) keyboardUtils:(NSString*)key
 {
     //动态隐藏软键盘

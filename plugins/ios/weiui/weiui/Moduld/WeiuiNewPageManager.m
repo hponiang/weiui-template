@@ -47,7 +47,6 @@
 - (void)openPage:(NSDictionary*)params callback:(WXModuleKeepAliveCallback)callback
 {
     NSString *url = params[@"url"] ? [WXConvert NSString:params[@"url"]] : @"";
-    
     //返回随机数名称
     NSString *pageName = params[@"pageName"] ? [WXConvert NSString:params[@"pageName"]] : [NSString stringWithFormat:@"NewPage-%d", (arc4random() % 100) + 1000];
     
@@ -55,7 +54,7 @@
     id data = params[@"params"];
     NSInteger cache = params[@"cache"] ? [WXConvert NSInteger:params[@"cache"]] : 0;
     BOOL loading = params[@"loading"] ? [WXConvert BOOL:params[@"loading"]] : YES;
-#warning ssss swipeBack默认改为yes
+
     BOOL swipeBack = params[@"swipeBack"] ? [WXConvert BOOL:params[@"swipeBack"]] : YES;
     NSString *statusBarType = params[@"statusBarType"] ? [WXConvert NSString:params[@"statusBarType"]] : @"normal";
     NSString *statusBarColor = params[@"statusBarColor"] ? [WXConvert NSString:params[@"statusBarColor"]] : @"#3EB4FF";

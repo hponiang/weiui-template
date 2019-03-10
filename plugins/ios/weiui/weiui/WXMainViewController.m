@@ -143,16 +143,21 @@
 {
     _weexHeight = self.view.frame.size.height;
     UIEdgeInsets safeArea = UIEdgeInsetsZero;
-#ifdef __IPHONE_11_0
+
     if (@available(iOS 11.0, *)) {
         safeArea = self.view.safeAreaInsets;
+    }else if (@available(iOS 9.0, *)) {
+        safeArea.top = 20;
     }
-#endif
     
     //自定义状态栏
     if ([_statusBarType isEqualToString:@""] || [_statusBarType isEqualToString:@"fullscreen"] || [_statusBarType isEqualToString:@"immersion"]) {
         _statusBar.hidden = YES;
-        _instance.frame = CGRectMake(safeArea.left, 0, self.view.frame.size.width-safeArea.left-safeArea.right, _weexHeight-safeArea.bottom);
+        if ([_pageType isEqualToString:@"web"]) {
+            _webView.frame = CGRectMake(safeArea.left, 0, self.view.frame.size.width-safeArea.left-safeArea.right, _weexHeight-safeArea.bottom);
+        }else{
+            _instance.frame = CGRectMake(safeArea.left, 0, self.view.frame.size.width-safeArea.left-safeArea.right, _weexHeight-safeArea.bottom);
+        }
     } else {
         CGFloat top = 0;
         if (!_isChildSubview) {
@@ -161,7 +166,11 @@
             _statusBar.frame = CGRectMake(0, 0, self.view.frame.size.width, safeArea.top);
         }
 
-        _instance.frame = CGRectMake(safeArea.left, top, self.view.frame.size.width - safeArea.left-safeArea.right, _weexHeight - top -safeArea.bottom);
+        if ([_pageType isEqualToString:@"web"]) {
+            _webView.frame = CGRectMake(safeArea.left, top, self.view.frame.size.width - safeArea.left-safeArea.right, _weexHeight - top -safeArea.bottom);
+        }else{
+            _instance.frame = CGRectMake(safeArea.left, top, self.view.frame.size.width - safeArea.left-safeArea.right, _weexHeight - top -safeArea.bottom);
+        }
     }
 }
 
@@ -404,13 +413,11 @@
     _instance.viewController = self;
     UIEdgeInsets safeArea = UIEdgeInsetsZero;
     
-#ifdef __IPHONE_11_0
     if (@available(iOS 11.0, *)) {
         safeArea = self.view.safeAreaInsets;
-    } else {
-        // Fallback on earlier versions
+    }else if (@available(iOS 9.0, *)) {
+        safeArea.top = 20;
     }
-#endif
     
     _instance.frame = CGRectMake(self.view.frame.size.width-width, safeArea.top, width, _weexHeight-safeArea.bottom);
     

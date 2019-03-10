@@ -60,11 +60,27 @@
         return [url stringByReplacingOccurrencesOfString:@"file://file://" withString:@"file://"];
     }
     
-    if (url == nil || [url hasPrefix:@"http"] || [url hasPrefix:@"ftp://"] || [url hasPrefix:@"file://"]) {
+    if (url == nil || [url hasPrefix:@"http"] || [url hasPrefix:@"ftp://"] || [url hasPrefix:@"file://"] || [url hasPrefix:@"data:image/"]) {
+        NSArray* elts = [url componentsSeparatedByString:@"?"];
+        if (elts.count >= 2) {
+            NSArray *urls = [elts.lastObject componentsSeparatedByString:@"="];
+            for (NSString *str in urls) {
+                if ([str isEqualToString:@"_wx_tpl"]) {
+                    url = [[urls lastObject]  stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                    break;
+                }
+            }
+        }
         return url;
     }
     
-    NSURL *URL = [NSURL URLWithString:[[WeexSDKManager sharedIntstance] weexUrl]];
+    NSString *topUrl = [[WeexSDKManager sharedIntstance] weexUrl];
+    WXMainViewController *top = (WXMainViewController *)[self getTopviewControler];
+    if (top && top.url) {
+        topUrl = top.url;
+    }
+    
+    NSURL *URL = [NSURL URLWithString:topUrl];
     NSString *scheme = [URL scheme];
     NSString *host = [URL host];
     NSInteger port = [[URL port] integerValue];
@@ -73,7 +89,7 @@
     if (scheme == nil) scheme = @"";
     if (host == nil) host = @"";
     
-    NSString *newUrl = [NSString stringWithFormat:@"%@://%@%@", scheme, host, port > 0 && port != 80 ? [NSString stringWithFormat:@":%ld", port] : @""];
+    NSString *newUrl = [NSString stringWithFormat:@"%@://%@%@", scheme, host, port > 0 && port != 80 ? [NSString stringWithFormat:@":%ld", (long)port] : @""];
     if ([url isAbsolutePath]) {
         newUrl = [newUrl stringByAppendingString:url];
     } else {

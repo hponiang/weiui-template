@@ -8,6 +8,8 @@
 
 #import "LBXScanViewStyle.h"
 
+#define iPhoneXSeries (([[UIApplication sharedApplication] statusBarFrame].size.height == 44.0f) ? (YES):(NO))
+
 @implementation LBXScanViewStyle
 
 - (id)init
@@ -20,7 +22,7 @@
        
         _colorRetangleLine = [UIColor whiteColor];
         
-        _centerUpOffset = 44;
+        _centerUpOffset = iPhoneXSeries ? 84 : 40;
         _xScanRetangleOffset = 60;
         
         _anmiationStyle = LBXScanViewAnimationStyle_LineMove;

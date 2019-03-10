@@ -52,8 +52,7 @@
         margin-top: 20px;
         padding-top: 20px;
         padding-bottom: 20px;
-        padding-left: 30px;
-        padding-right: 30px;
+        width: 220px;
         color: #ffffff;
         background-color: #00B4FF;
     }

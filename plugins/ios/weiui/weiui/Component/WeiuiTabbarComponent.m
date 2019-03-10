@@ -16,6 +16,7 @@
 #import "SDWebImageDownloader.h"
 #import "UIButton+WebCache.h"
 #import "SGEasyButton.h"
+#import "FDFullscreenScrollView.h"
 
 #define TabItemBtnTag 1000
 #define TabItemMessageTag 2000
@@ -53,7 +54,6 @@
 @property (nonatomic, assign) CGFloat iconHeight;
 @property (nonatomic, assign) NSInteger iconMargin;
 
-#warning ssss 无用参数
 @property (nonatomic, assign) NSInteger ksideLine;
 
 @property (nonatomic, assign) BOOL tabPageAnimated;
@@ -64,7 +64,7 @@
 @property (nonatomic, assign) BOOL isExistIconVisible;//辅助初始化
 
 @property (nonatomic, strong) UIScrollView *tabView;
-@property (nonatomic, strong) UIScrollView *bodyView;
+@property (nonatomic, strong) FDFullscreenScrollView *bodyView;
 @property (nonatomic, strong) UIView *underLineView;
 @property (nonatomic, strong) UIView *indicatorView;
 
@@ -175,11 +175,8 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                 _iconVisible = NO;
             }
         }
-        
-        _isRefreshListener = [events containsObject:@"refreshListener"];
-        
+        _isRefreshListener = [events containsObject:@"refreshListener"];        
     }
-    
     return self;
 }
 
@@ -193,23 +190,23 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
 
 - (void)viewDidLoad
 {
+    [self.view addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+    
     self.subComps = [NSMutableArray arrayWithCapacity:5];
     self.childPageList = [NSMutableArray arrayWithCapacity:5];
     self.childComponentList = [NSMutableArray arrayWithCapacity:5];
     self.lifeTabPages = [NSMutableDictionary dictionaryWithCapacity:5];
     
-    self.bodyView = [[UIScrollView alloc] init];
+    self.bodyView = [[FDFullscreenScrollView alloc] init];
     self.bodyView.pagingEnabled = YES;
     self.bodyView.showsHorizontalScrollIndicator = NO;
     self.bodyView.bounces = NO;
     self.bodyView.delegate = self;
     [self.view addSubview:self.bodyView];
     
-#ifdef __IPHONE_11_0
     if (@available(iOS 11.0, *)) {
         self.bodyView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     }
-#endif
     
     //tab
     self.tabView = [[UIScrollView alloc] init];
@@ -239,6 +236,23 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
     }
     
     [self fireEvent:@"ready" params:nil];
+}
+
+- (void) viewWillUnload
+{
+    [super viewWillUnload];
+    [self.view removeObserver:self forKeyPath:@"frame" context:nil];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"frame"]) {
+        [self loadTabView];
+        
+        [self loadSelectedView];
+        
+        [self loadUnderLineView];
+    }
 }
 
 - (void)updateStyles:(NSDictionary *)styles
@@ -616,8 +630,6 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
 {
     NSDictionary *data = @{@"position":@(_selectedIndex)};
     [self fireEvent:@"pageSelected" params:data];
-    
-#warning ssss
     [self fireEvent:@"pageScrollStateChanged" params:@{@"state":@""}];
     
     for (int i = 0; i < self.tabPages.count + self.subComps.count; i++) {
@@ -733,11 +745,9 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
         scoView.tag = TabBgScrollTag + _selectedIndex;
         [self.bodyView addSubview:scoView];
         
-#ifdef __IPHONE_11_0
         if (@available(iOS 11.0, *)) {
             scoView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }
-#endif
         
         WXMainViewController *vc = [[WXMainViewController alloc] init];
         vc.url = [DeviceUtil rewriteUrl:url];
@@ -747,16 +757,23 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
         vc.pageName = tabName;
         vc.title = title;
         
+        if ([url containsString:@"index-home-page.js"]) {
+            //self.bodyView.frame = CGRectMake(0, 0, self.bodyView.frame.size.width, 1800);
+            //scoView.frame = CGRectMake(0, 0, self.bodyView.frame.size.width, 1800);
+        }
+        
         [_tabInstance.viewController addChildViewController:vc];
         [scoView addSubview:vc.view];
         
         CGRect frame = vc.view.frame;
         UIEdgeInsets safeArea = UIEdgeInsetsZero;
-#ifdef __IPHONE_11_0
+        
         if (@available(iOS 11.0, *)) {
             safeArea = self.view.safeAreaInsets;
+        }else if (@available(iOS 9.0, *)) {
+            safeArea.top = 20;
         }
-#endif
+        
         if (statusBarColor) {
             frame = CGRectMake(0, safeArea.top, scoView.frame.size.width, scoView.frame.size.height - safeArea.top - safeArea.bottom);
             
@@ -898,7 +915,6 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
 #pragma mark scrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-#warning ssss
     if (scrollView == _bodyView || scrollView == _tabView) {
         NSDictionary *data = @{@"position":@(_selectedIndex), @"positionOffset":@"", @"positionOffsetPixels":@""};
         [self fireEvent:@"pageScrolled" params:data];
@@ -1091,13 +1107,13 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                 
                 CGRect frame = vc.view.frame;
                 UIEdgeInsets safeArea = UIEdgeInsetsZero;
-#ifdef __IPHONE_11_0
+                
                 if (@available(iOS 11.0, *)) {
                     safeArea = self.view.safeAreaInsets;
-                } else {
-                    // Fallback on earlier versions
+                }else if (@available(iOS 9.0, *)) {
+                    safeArea.top = 20;
                 }
-#endif
+                
                 if (statusBarColor) {
                     frame = CGRectMake(0, safeArea.top, scoView.frame.size.width, scoView.frame.size.height - safeArea.top - safeArea.bottom);
                     

@@ -20,5 +20,6 @@
 @property (copy, nonatomic) UIColor *progressBarColor;
 
 - (void)useWkWebView:(WKWebView *)webView;
+- (void)outWkWebView:(WKWebView *)webView;
 
 @end

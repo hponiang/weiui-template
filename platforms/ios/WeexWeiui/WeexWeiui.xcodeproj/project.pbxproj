@@ -417,8 +417,7 @@
 				"${PODS_ROOT}/../../../../plugins/ios/WeexSDK/ios/sdk/WeexSDK/Resources/wx_load_error@3x.png",
 				"${PODS_ROOT}/../../../../plugins/ios/weiui/weiui/Source/swipecaptcha_bg@2x.png",
 				"${PODS_ROOT}/../../../../plugins/ios/weiui/weiui/Source/weiuiicon.ttf",
-				"${PODS_ROOT}/../../../../plugins/ios/weiui/weiui/Utility/CCNScan/qrcode_scan_light_green@2x.png",
-				"${PODS_ROOT}/../../../../plugins/ios/weiui/weiui/Utility/CCNScan/qrcode_Scan_weixin_Line@2x.png",
+				"${PODS_ROOT}/../../../../plugins/ios/weiui/weiui/Utility/CCNScan/CodeScan.bundle",
 				"${PODS_ROOT}/../../../../plugins/ios/weiui/weiui/Utility/MJRefresh/MJRefresh.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -432,8 +431,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/wx_load_error@3x.png",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/swipecaptcha_bg@2x.png",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/weiuiicon.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/qrcode_scan_light_green@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/qrcode_Scan_weixin_Line@2x.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/CodeScan.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MJRefresh.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

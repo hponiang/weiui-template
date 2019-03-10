@@ -88,6 +88,14 @@
     [webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
 }
 
+- (void)outWkWebView:(WKWebView *)webView
+{
+    if (!webView) {
+        return;
+    }
+    [webView removeObserver:self forKeyPath:@"estimatedProgress"];
+}
+
 - (void)setProgress:(float)progress animated:(BOOL)animated
 {
     BOOL isGrowing = progress > 0.f;

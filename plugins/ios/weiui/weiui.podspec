@@ -18,8 +18,9 @@ Pod::Spec.new do |s|
   s.source_files  = "weiui", "**/**/*.{h,m,mm,c}"
   s.exclude_files = "Source/Exclude"
   s.resources = ['weiui/Source/*.*', 
-                  'weiui/Utility/CCNScan/*.png',
-                  'weiui/Utility/MJRefresh/MJRefresh.bundle']
+                  'weiui/Utility/CCNScan/CodeScan.bundle',
+                  'weiui/Utility/MJRefresh/MJRefresh.bundle',
+                  'weiui/Utility/IQKeyboardManager/Resources/IQKeyboardManager.bundle']
   s.platform     = :ios, "8.0"
   s.requires_arc = true  
   

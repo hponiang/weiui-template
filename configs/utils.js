@@ -7,6 +7,7 @@ const helper = require('./helper');
 const weiuiConfig = require('../weiui.config');
 const uuid = require('node-uuid');
 const http = require('http');
+const net = require('net');
 
 let socketAlready = false;
 let socketClients = [];
@@ -314,4 +315,24 @@ exports.createServer = (contentBase, port) => {
             res.end();
         });
     }).listen(port);
+};
+
+/**
+ * 检测端口是否被占用
+ * @param port
+ * @param callback
+ */
+exports.portIsOccupied = function (port, callback = (err, port) => {}) {
+    const server = net.createServer().listen(port);
+    server.on('listening', () => {
+        server.close();
+        callback(null, port);
+    });
+    server.on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+            this.portIsOccupied(port + 1, callback);
+        } else {
+            callback(err)
+        }
+    });
 };

@@ -6,16 +6,26 @@ const webpack = require('webpack');
 const weexConfig = commonConfig[1];
 weexConfig.watch = true;
 
-let isCreateServer = false;
+let serverStatus = 0;
+let serverPort = config.dev.portOnlyDev;
 
 webpack(weexConfig, (err, stats) => {
     if (!err) {
-        if (!isCreateServer) {
-            isCreateServer = true;
-            utils.createServer(config.dev.contentBase, config.dev.portOnlyDev);
+        if (serverStatus === 0) {
+            serverStatus = 1;
+            utils.portIsOccupied(serverPort, (err, port) => {
+                if (err == null) {
+                    serverStatus = 200;
+                    serverPort = port;
+                    utils.createServer(config.dev.contentBase, serverPort);
+                    utils.copySrcToDist(false);
+                    utils.syncFolderEvent(config.dev.host, serverPort, serverPort + 1);
+                }
+            });
+        } else if (serverStatus === 200) {
+            utils.copySrcToDist(false);
+            utils.syncFolderEvent(config.dev.host, serverPort, serverPort + 1);
         }
-        utils.copySrcToDist(false);
-        utils.syncFolderEvent(config.dev.host, config.dev.portOnlyDev, config.dev.portOnlyDev + 1);
     }
 });
 

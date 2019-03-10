@@ -3,6 +3,8 @@ package cc.weiui.framework.extend.module;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
@@ -183,7 +185,12 @@ public class weiuiPage {
      * @return
      */
     public static String rewriteUrl(Context context, String url) {
-        if (url == null || url.startsWith("http") || url.startsWith("ftp://")) {
+        if (url == null || url.startsWith("http") || url.startsWith("ftp://") || url.startsWith("file://") || url.startsWith("data:image/")) {
+            Uri mUri = Uri.parse(url);
+            if (TextUtils.equals("http", mUri.getScheme()) || TextUtils.equals("https", mUri.getScheme())) {
+                String weexTpl = mUri.getQueryParameter("_wx_tpl");
+                url = TextUtils.isEmpty(weexTpl) ? mUri.toString() : weexTpl;
+            }
             return url;
         }
         if (context instanceof PageActivity) {

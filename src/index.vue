@@ -16,9 +16,9 @@
             </weiui_navbar_item>
         </weiui_navbar>
 
-        <scroller class="list">
+        <weiui_list class="list">
 
-            <text class="list-title">Components</text>
+            <text class="list-title">组件 Components</text>
 
             <div class="list-item" v-for="(item, index) in components" :key="index" @click="openUrl(item.url)">
                 <div class="list-item-left">
@@ -31,7 +31,7 @@
                 </div>
             </div>
 
-            <text class="list-title">Module</text>
+            <text class="list-title">模块 Module</text>
 
             <div class="list-item" v-for="(item, index) in module" :key="index" @click="openUrl(item.url)">
                 <div class="list-item-left">
@@ -44,9 +44,9 @@
                 </div>
             </div>
 
-            <text class="list-title">Third Module</text>
+            <text class="list-title">插件化 Plugins</text>
 
-            <div class="list-item" v-for="(item, index) in third_module" :key="index" @click="openThird(item.url)">
+            <div class="list-item" v-for="(item, index) in plugin" :key="index" @click="openUrl(item.url)">
                 <div class="list-item-left">
                     <weiui_icon class="list-left-icon" :weiui="{content: item.icon}"></weiui_icon>
                     <text class="list-left-title">{{item.title}}</text>
@@ -57,7 +57,7 @@
                 </div>
             </div>
 
-            <text class="list-title">About Weiui</text>
+            <text class="list-title">关于 About Weiui</text>
 
             <div class="list-item" v-for="(item, index) in about_lists" :key="index" @click="openWeb(item.url)">
                 <div class="list-item-left">
@@ -76,7 +76,6 @@
             </div>
 
             <div v-if="history.length > 0">
-
                 <div class="list-item" v-for="(text, index) in history" :key="index" @click="openAuto(text)">
                     <div class="list-item-left">
                         <text class="list-left-title-history">{{text}}</text>
@@ -85,10 +84,9 @@
                         <weiui_icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></weiui_icon>
                     </div>
                 </div>
-
             </div>
 
-        </scroller>
+        </weiui_list>
 
     </div>
 
@@ -180,7 +178,7 @@
     .list-left-title-history {
         color: #242424;
         padding-left: 12px;
-        width: 600px;
+        width: 660px;
         font-size: 26px;
         text-overflow: ellipsis;
         lines: 1;
@@ -266,7 +264,7 @@
                     title: '标签页面',
                     title_en: 'weiui_tabbar',
                     icon: 'md-filing',
-                    url: jshome + 'component_tabbar.js',
+                    url: jshome + 'component_tabbar3.js',
                 }],
 
                 module: [{
@@ -329,44 +327,49 @@
                     title_en: 'adDialog',
                     icon: 'logo-buffer',
                     url: jshome + 'module_ad_dialog.js',
-                }, {
-                    title: '城市选择器',
-                    title_en: 'citypicker',
-                    icon: 'md-pin',
-                    url: jshome + 'third_citypicker.js',
-                }, {
-                    title: '图片选择器',
-                    title_en: 'pictureSelector',
-                    icon: 'md-camera',
-                    url: jshome + 'third_picture.js',
-                }, {
+                }/*, {
                     title: '更多拓展模块',
                     title_en: 'expandModule',
                     icon: 'md-more',
                     url: jshome + 'index_expand.js',
-                }],
+                }*/],
 
-                third_module: [{
+                plugin: [{
+                    title: '城市选择器',
+                    title_en: 'citypicker',
+                    icon: 'md-pin',
+                    url: jshome + 'plugin_citypicker.js',
+                }, {
+                    title: '图片选择器',
+                    title_en: 'picture',
+                    icon: 'md-camera',
+                    url: jshome + 'plugin_picture.js',
+                }, {
+                    title: '组件截图',
+                    title_en: 'screenshots',
+                    icon: 'md-crop',
+                    url: jshome + 'plugin_screenshots.js',
+                }, {
                     title: '融云通信模块',
-                    title_en: 'rongcloud',
+                    title_en: 'rongim',
                     icon: 'tb-community',
-                    url: 'rongcloud',
+                    url: jshome + 'plugin_rongim.js',
                 }, {
                     title: '友盟推送模块',
                     title_en: 'umeng',
                     icon: 'md-send',
-                    url: 'umeng',
+                    url: jshome + 'plugin_umeng.js',
                 }, {
-                    title: '第三方支付',
+                    title: '第三方支付(微信/支付宝)',
                     title_en: 'pay',
                     icon: 'tb-sponsor',
-                    url: 'pay',
-                }/*, {
-                    title: '视频播放器',
-                    title_en: 'video',
-                    icon: 'tb-video-fill',
-                    url: 'video',
-                }*/],
+                    url: jshome + 'plugin_pay.js',
+                }, {
+                    title: '即时通讯',
+                    title_en: 'websocket',
+                    icon: 'md-repeat',
+                    url: jshome + 'plugin_websocket.js',
+                }],
 
                 about_lists: [{
                     title: '开发文档',

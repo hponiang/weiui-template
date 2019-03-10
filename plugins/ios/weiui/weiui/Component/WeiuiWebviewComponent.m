@@ -139,8 +139,9 @@ WX_EXPORT_METHOD(@selector(goForward:))
     [webView addObserver:self forKeyPath:@"title" options:NSKeyValueObservingOptionNew context:nil];
 }
 
-- (void) viewDidUnload
+- (void) viewWillUnload
 {
+    [super viewWillUnload];
     WeiuiWebView *webView = (WeiuiWebView*)self.view;
     if (self.JSCall != nil) {
         [self.JSCall viewDidUnload];
@@ -151,7 +152,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
     }
     [webView removeObserver:self forKeyPath:@"URL" context:nil];
     [webView removeObserver:self forKeyPath:@"title" context:nil];
-    [super viewDidUnload];
+    [self.progressView outWkWebView:webView];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
