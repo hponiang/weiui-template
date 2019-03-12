@@ -46,6 +46,7 @@ WXMainViewController *homeController;
             homeController.statusBarType = [Config getHomeParams:@"statusBarType" defaultVal:@"normal"];
             homeController.statusBarColor = [Config getHomeParams:@"statusBarColor" defaultVal:@"#3EB4FF"];
             homeController.statusBarAlpha = [[Config getHomeParams:@"statusBarAlpha" defaultVal:@"0"] intValue];
+            homeController.statusBarStyleCustom = [Config getHomeParams:@"statusBarStyle" defaultVal:@""];
             homeController.backgroundColor = [Config getHomeParams:@"backgroundColor" defaultVal:@"#f4f8f9"];
             homeController.statusBlock = ^(NSString *status) {
                 if ([status isEqualToString:@"create"]) {

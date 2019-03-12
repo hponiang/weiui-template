@@ -33,6 +33,10 @@ public class WelcomeActivity extends AppCompatActivity {
             mPageBean.setStatusBarType(weiuiBase.config.getHomeParams("statusBarType", "normal"));
             mPageBean.setStatusBarColor(weiuiBase.config.getHomeParams("statusBarColor", "#3EB4FF"));
             mPageBean.setStatusBarAlpha(weiuiParse.parseInt(weiuiBase.config.getHomeParams("statusBarAlpha", "0")));
+            String statusBarStyle = weiuiBase.config.getHomeParams("statusBarStyle", null);
+            if (statusBarStyle != null) {
+                mPageBean.setStatusBarStyle(weiuiParse.parseBool(statusBarStyle));
+            }
             mPageBean.setSoftInputMode(weiuiBase.config.getHomeParams("softInputMode", "auto"));
             mPageBean.setBackgroundColor(weiuiBase.config.getHomeParams("backgroundColor", "#f4f8f9"));
             mPageBean.setCallback(new JSCallback() {

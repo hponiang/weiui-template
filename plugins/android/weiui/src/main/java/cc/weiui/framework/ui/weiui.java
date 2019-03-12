@@ -433,6 +433,10 @@ public class weiui {
         if (json.getInteger("statusBarAlpha") != null) {
             mBean.setStatusBarAlpha(json.getInteger("statusBarAlpha"));
         }
+        //状态栏样式
+        if (json.getString("statusBarStyle") != null) {
+            mBean.setStatusBarStyle(json.getBooleanValue("statusBarStyle"));
+        }
         //透明底色窗口（默认：false）
         if (json.getBoolean("translucent") != null) {
             mBean.setTranslucent(json.getBoolean("translucent"));
@@ -565,6 +569,19 @@ public class weiui {
         }
         PageActivity mPageActivity = ((PageActivity) mPageBean.getContext());
         mPageActivity.setSoftInputMode(mode);
+    }
+
+    /**
+     * 修改状态栏样式
+     * @param context
+     * @param isLight 是否亮色
+     */
+    public void statusBarStyle(Context context, boolean isLight) {
+        if (context instanceof PageActivity) {
+            ((PageActivity) context).statusBarStyle(isLight);
+        } else {
+            this.toast(context, "当前页面不支持状态栏字体变色");
+        }
     }
 
     /**

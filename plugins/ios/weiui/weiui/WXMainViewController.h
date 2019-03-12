@@ -25,9 +25,10 @@ typedef NS_ENUM(NSInteger, LifeCycleType) {
 @property (nonatomic, assign) BOOL isTabbarChildView;//是否tabbar子视图
 @property (nonatomic, assign) BOOL isTabbarChildSelected;//是否tabbar子视图当前页，用于生命周期回传值
 
+@property (nonatomic, strong) NSString *statusBarType;
 @property (nonatomic, strong) NSString *statusBarColor;//状态栏颜色值
 @property (nonatomic, assign) NSInteger statusBarAlpha;//状态栏透明度， 0-255
-@property (nonatomic, strong) NSString *statusBarType;
+@property (nonatomic, strong) NSString *statusBarStyleCustom; //状态栏样式
 @property (nonatomic, strong) NSString *pageName;
 @property (nonatomic, strong) NSString *backgroundColor;
 @property (nonatomic, strong) NSString *softInputMode;

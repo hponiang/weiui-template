@@ -90,26 +90,24 @@
     
     [self updateStatus:@"start"];
     
-//    [self.navigationController setNavigationBarHidden:_showNavigationBar animated:YES];
-    
     if ([_statusBarType isEqualToString:@"fullscreen"]) {
         [UIApplication sharedApplication].statusBarHidden = YES;//状态栏隐藏
     } else {
         [UIApplication sharedApplication].statusBarHidden = NO;
     }
     
-//    [self.view bringSubviewToFront:self.statusBar];
+    //状态栏样式
+    if ([_statusBarStyleCustom isEqualToString:@"1"]) {
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    }else{
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     [self updateInstanceState:WeexInstanceAppear];
-    
-    //页面生命周期:页面激活(恢复)
-    //if (_isTabbarChildView && _isTabbarChildSelected == NO) {
-    //    return;
-    //}
     
     [self updateStatus:@"resume"];
     [self liftCycleEvent:LifeCycleResume];
@@ -120,17 +118,19 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    
+    //状态栏样式
+    if ([_statusBarStyleCustom isEqualToString:@"1"]) {
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    }else{
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
     [self updateInstanceState:WeexInstanceDisappear];
-    
-    //页面生命周期:页面失活(暂停)
-    //if (_isTabbarChildView && _isTabbarChildSelected == NO) {
-    //    return;
-    //}
     
     [self updateStatus:@"pause"];
     [self liftCycleEvent:LifeCyclePause];

@@ -21,6 +21,7 @@
 - (NSDictionary*)getPageInfo:(id)params;
 - (void)reloadPage:(id)params;
 - (void)setSoftInputMode:(id)params modo:(NSString*)modo;
+- (void)setStatusBarStyle:(BOOL)isLight;
 - (void)setPageBackPressed:(id)params callback:(WXModuleKeepAliveCallback)callback;
 - (void)setOnRefreshListener:(id)params callback:(WXModuleKeepAliveCallback)callback;
 - (void)setRefreshing:(id)params refreshing:(BOOL)refreshing;

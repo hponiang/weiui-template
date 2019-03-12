@@ -619,6 +619,10 @@ public class PageActivity extends AppCompatActivity {
                 break;
         }
         //
+        if (mPageInfo.getStatusBarStyle() != null) {
+            statusBarStyle(mPageInfo.getStatusBarStyle());
+        }
+        //
         setSoftInputMode(mPageInfo.getSoftInputMode());
         initDefaultPageView();
     }
@@ -1317,6 +1321,25 @@ public class PageActivity extends AppCompatActivity {
             retData.put("pageName", mPageInfo.getPageName());
             retData.put("status", status);
             callback.invokeAndKeepAlive(retData);
+        }
+    }
+
+    /**
+     * 修改状态栏样式
+     * @param isLight
+     */
+    public void statusBarStyle(boolean isLight) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            View decorView = this.getWindow().getDecorView();
+            if (isLight) {
+                //白色样式
+                decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            } else {
+                //黑色样式
+                decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            }
+        } else {
+            Toast.makeText(this, "当前设备不支持状态栏字体变色", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -83,6 +83,14 @@ public class WebModule {
     }
 
     /**
+     * 修改状态栏样式
+     * @param isLight 是否亮色
+     */
+    public void statusBarStyle(ExtendWebView webView, boolean isLight) {
+        myApp().statusBarStyle(webView.getContext(), isLight);
+    }
+
+    /**
      * 拦截返回按键事件
      * @param object
      * @param callback  为null时取消拦截

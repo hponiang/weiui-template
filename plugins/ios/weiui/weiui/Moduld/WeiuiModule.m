@@ -161,6 +161,7 @@ WX_EXPORT_METHOD(@selector(openPage:callback:))
 WX_EXPORT_METHOD_SYNC(@selector(getPageInfo:))
 WX_EXPORT_METHOD(@selector(reloadPage:))
 WX_EXPORT_METHOD(@selector(setSoftInputMode:modo:))
+WX_EXPORT_METHOD(@selector(statusBarStyle:))
 WX_EXPORT_METHOD(@selector(setPageBackPressed:callback:))
 WX_EXPORT_METHOD(@selector(setOnRefreshListener:callback:))
 WX_EXPORT_METHOD(@selector(setRefreshing:refreshing:))
@@ -193,6 +194,11 @@ WX_EXPORT_METHOD(@selector(goDesktop))
 - (void)setSoftInputMode:(id)params modo:(NSString*)modo
 {
     [[WeiuiNewPageManager sharedIntstance] setSoftInputMode:params modo:modo];
+}
+
+- (void)statusBarStyle:(BOOL)isLight
+{
+    [[WeiuiNewPageManager sharedIntstance] setStatusBarStyle:isLight];
 }
 
 - (void)setPageBackPressed:(id)params callback:(WXModuleKeepAliveCallback)callback
@@ -527,6 +533,7 @@ WX_EXPORT_METHOD_SYNC(@selector(weexDp2px:))
 }
 
 #pragma mark 键盘
+
 WX_EXPORT_METHOD(@selector(keyboardUtils:))
 - (void) keyboardUtils:(NSString*)key
 {
@@ -551,6 +558,8 @@ WX_EXPORT_METHOD_SYNC(@selector(keyboardStatus))
 {
     return [CustomWeexSDKManager getKeyBoardlsVisible];
 }
+
+#pragma mark 不知道有什么用
 
 - (UIView *)findKeyboard
 {
@@ -586,6 +595,5 @@ WX_EXPORT_METHOD_SYNC(@selector(keyboardStatus))
     }
     return nil;
 }
-
 
 @end

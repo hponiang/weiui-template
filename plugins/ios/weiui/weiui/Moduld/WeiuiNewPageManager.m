@@ -59,6 +59,7 @@
     NSString *statusBarType = params[@"statusBarType"] ? [WXConvert NSString:params[@"statusBarType"]] : @"normal";
     NSString *statusBarColor = params[@"statusBarColor"] ? [WXConvert NSString:params[@"statusBarColor"]] : @"#3EB4FF";
     NSInteger statusBarAlpha = params[@"statusBarAlpha"] ? [WXConvert NSInteger:params[@"statusBarAlpha"]] : 0;
+    NSString *statusBarStyle = params[@"statusBarStyle"] ? [WXConvert NSString:params[@"statusBarStyle"]] : @"";
     
     NSString *softInputMode = params[@"softInputMode"] ? [WXConvert NSString:params[@"softInputMode"]] : @"auto";
     BOOL translucent = params[@"translucent"] ? [WXConvert BOOL:params[@"translucent"]] : NO;
@@ -80,6 +81,7 @@
     mainVC.statusBarType = statusBarType;
     mainVC.statusBarColor = statusBarColor;
     mainVC.statusBarAlpha = statusBarAlpha;
+    mainVC.statusBarStyleCustom = statusBarStyle;
     mainVC.params = data;
     mainVC.pageName = pageName;
     mainVC.backgroundColor = backgroundColor;
@@ -154,6 +156,9 @@
             vc = (WXMainViewController*)[DeviceUtil getTopviewControler];
         }
     }
+    if (vc == nil) {
+        return;
+    }
     
     [(WXMainViewController*)vc refreshPage];
 }
@@ -170,9 +175,30 @@
     } else {
         name = [(WXMainViewController*)[DeviceUtil getTopviewControler] pageName];
     }
-    WXMainViewController *vc = (WXMainViewController*)[DeviceUtil getTopviewControler];
+    WXMainViewController *vc = nil;
+    if (name.length > 0) {
+        id data = self.viewData[name];
+        if (data && [data isKindOfClass:[UIViewController class]]) {
+            vc = data;
+        } else {
+            vc = (WXMainViewController*)[DeviceUtil getTopviewControler];
+        }
+    }
+    if (vc == nil) {
+        return;
+    }
     vc.softInputMode = modo;
     [CustomWeexSDKManager setSoftInputMode:modo];
+}
+
+- (void)setStatusBarStyle:(BOOL)isLight
+{
+    WXMainViewController *vc = (WXMainViewController*)[DeviceUtil getTopviewControler];
+    if (vc == nil) {
+        return;
+    }
+    vc.statusBarStyleCustom = isLight ? @"1" : @"0";
+    [[UIApplication sharedApplication] setStatusBarStyle:isLight ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault];
 }
 
 - (void)setPageBackPressed:(id)params callback:(WXModuleKeepAliveCallback)callback
@@ -555,6 +581,7 @@
         [res setObject:vc.statusBarType forKey:@"statusBarType"];
         [res setObject:vc.statusBarColor forKey:@"statusBarColor"];
         [res setObject:[NSString stringWithFormat:@"%ld", vc.statusBarAlpha] forKey:@"statusBarAlpha"];
+        [res setObject:vc.statusBarStyleCustom forKey:@"statusBarStyle"];
         [res setObject:vc.backgroundColor forKey:@"backgroundColor"];
         [self.pageData setObject:res forKey:pageName];
     }

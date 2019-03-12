@@ -156,6 +156,11 @@
     [[WeiuiNewPageManager sharedIntstance] setSoftInputMode:params modo:modo];
 }
 
+- (void)statusBarStyle:(BOOL)isLight
+{
+    [[WeiuiNewPageManager sharedIntstance] setStatusBarStyle:isLight];
+}
+
 - (void)setPageBackPressed:(id)params callback:(WXModuleKeepAliveCallback)callback
 {
     [[WeiuiNewPageManager sharedIntstance] setPageBackPressed:params callback:callback];

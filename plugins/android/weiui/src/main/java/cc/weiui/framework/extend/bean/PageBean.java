@@ -29,6 +29,7 @@ public class PageBean {
         temp.put("statusBarType", getStatusBarType());
         temp.put("statusBarColor", getStatusBarColor());
         temp.put("statusBarAlpha", getStatusBarAlpha());
+        temp.put("statusBarStyle", getStatusBarStyle());
         temp.put("softInputMode", getSoftInputMode());
         temp.put("translucent", isTranslucent());
         temp.put("backgroundColor", getBackgroundColor());
@@ -47,6 +48,7 @@ public class PageBean {
      * statusBarType :      状态栏样式（可选，等于fullscreen|immersion时statusBarType、statusBarAlpha无效）
      * statusBarColor :     状态栏颜色值（可选，默认：#3EB4FF）
      * statusBarAlpha : 0   状态栏透明度（可选，默认：0）
+     * statusBarStyle :     状态栏样式（可选，默认：null）
      * softInputMode :      键盘弹出方式（可选，默认：auto）
      * translucent :        透明底色窗口（可选，默认：false）
      * backgroundColor :    页面背景颜色（可选，默认：#f4f8f9）
@@ -66,6 +68,7 @@ public class PageBean {
     private String statusBarType = "default";
     private String statusBarColor = "#3EB4FF";
     private int statusBarAlpha = 0;
+    private Boolean statusBarStyle = null;
     private String softInputMode = "auto";
     private boolean translucent = false;
     private String backgroundColor = "#f4f8f9";
@@ -156,6 +159,14 @@ public class PageBean {
 
     public void setStatusBarAlpha(int statusBarAlpha) {
         this.statusBarAlpha = statusBarAlpha;
+    }
+
+    public Boolean getStatusBarStyle() {
+        return statusBarStyle;
+    }
+
+    public void setStatusBarStyle(Boolean statusBarStyle) {
+        this.statusBarStyle = statusBarStyle;
     }
 
     public String getSoftInputMode() {
