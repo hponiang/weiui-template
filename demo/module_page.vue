@@ -16,6 +16,13 @@
             <text class="button" @click="openPage2">打开一个沉浸式页面</text>
             <text class="button" @click="openPage3">打开一个全屏的页面</text>
             <text class="button" @click="openPage4">打开一个WEB页面</text>
+
+            <div class="item" @click="isLight = !isLight">
+                <text class="item-title">状态栏字体颜色</text>
+                <div class="item-input"></div>
+                <w-switch class="switch" v-model="isLight"></w-switch>
+            </div>
+
         </div>
 
     </div>
@@ -62,14 +69,57 @@
         color: #ffffff;
         background-color: #00B4FF;
     }
+
+    .item {
+        width: 380px;
+        height: 100px;
+        flex-direction: row;
+        align-items: center;
+        background-color: #ffffff;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .item-title {
+        font-size: 28px;
+        margin-left: 24px;
+        margin-right: 34px;
+        color: #242424;
+    }
+    .item-input {
+        flex: 1;
+        font-size: 28px;
+        height: 80px;
+        padding-right: 24px;
+        text-align: right;
+    }
+    .switch {
+        width: 86px;
+        height: 50px;
+        margin-right: 24px;
+    }
 </style>
 
 <script>
     import {openViewCode} from "../statics/js/app";
+    import WSwitch from "@/components/WSwitch";
 
     const weiui = weex.requireModule('weiui');
 
     export default {
+        components: {WSwitch},
+        data() {
+            return {
+                isLight: false,
+            }
+        },
+        mounted() {
+            weiui.statusBarStyle(isLight);
+        },
+        watch: {
+            isLight(val) {
+                weiui.statusBarStyle(val);
+            }
+        },
         methods: {
             viewCode(str) {
                 openViewCode(str);
