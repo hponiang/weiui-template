@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WXModuleProtocol.h"
 
 typedef NS_ENUM(NSInteger, LifeCycleType) {
     LifeCycleReady = 0,
@@ -16,6 +17,7 @@ typedef NS_ENUM(NSInteger, LifeCycleType) {
 
 @interface WXMainViewController : UIViewController
 
+@property (nonatomic, assign) BOOL isFirstPage;//是否系统第一页
 @property (nonatomic, assign) BOOL isDisSwipeBack;//禁止滑动返回
 @property (nonatomic, assign) BOOL isDisItemBack;//禁止点击返回按钮
 @property (nonatomic, assign) BOOL loading;//显示等待加载图
@@ -30,8 +32,10 @@ typedef NS_ENUM(NSInteger, LifeCycleType) {
 @property (nonatomic, assign) NSInteger statusBarAlpha;//状态栏透明度， 0-255
 @property (nonatomic, strong) NSString *statusBarStyleCustom; //状态栏样式
 @property (nonatomic, strong) NSString *pageName;
+@property (nonatomic, strong) NSString *pageTitle;
 @property (nonatomic, strong) NSString *backgroundColor;
 @property (nonatomic, strong) NSString *softInputMode;
+@property (nonatomic, strong) NSString *safeAreaBottom;//底部安全距离
 
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, assign) NSInteger cache;//缓存时长，0则不缓存
@@ -58,5 +62,8 @@ typedef NS_ENUM(NSInteger, LifeCycleType) {
 - (void)postStatusListener:(NSString*)name data:(id)data;
 
 - (void)liftCycleEvent:(LifeCycleType)type;
+
+- (void)setNavigationTitle:(id) params callback:(WXModuleKeepAliveCallback) callback;
+- (void)setNavigationItems:(id) params position:(NSString *)position callback:(WXModuleKeepAliveCallback) callback;
 
 @end

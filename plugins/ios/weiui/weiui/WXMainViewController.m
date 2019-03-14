@@ -12,11 +12,15 @@
 #import "weiuiNewPageManager.h"
 #import "UINavigationController+FDFullscreenPopGesture.h"
 #import "CustomWeexSDKManager.h"
+#import "DeviceUtil.h"
+#import "SGEasyButton.h"
 
 #define kCacheUrl @"cache_url"
 #define kCacheTime @"cache_time"
 
 #define kLifeCycle @"lifecycle"//生命周期
+
+static int easyNavigationButtonTag = 8000;
 
 @interface WXMainViewController ()<UIWebViewDelegate, UIGestureRecognizerDelegate>
 
@@ -32,7 +36,8 @@
 @property (nonatomic, assign) NSString *liftCycleLastStatus;
 @property (nonatomic, assign) NSString *liftCycleLastStatusChild;
 @property (nonatomic, assign) BOOL didWillEnter;
-//@property (nonatomic, strong) UIScrollView *mainScrollView;
+
+@property (nonatomic, strong) NSMutableDictionary *navigationCallbackDictionary;
 
 @end
 
@@ -52,7 +57,6 @@
     _cache = 0;
     
     _showNavigationBar = YES;
-    //_statusBarColor = @"#3EB4FF";
     _statusBarAlpha = 0;
     
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
@@ -66,8 +70,6 @@
         self.view.backgroundColor = [WXConvert UIColor:_backgroundColor];
     }
     
-    [self setupNaviBar];
-    
     [self setupUI];
     
     if ([_pageType isEqualToString:@"web"]) {
@@ -77,6 +79,8 @@
     }
     
     [self setupActivityView];
+    
+    [self setupNaviBar];
     
     [self updateStatus:@"create"];
     
@@ -149,9 +153,12 @@
     }else if (@available(iOS 9.0, *)) {
         safeArea.top = 20;
     }
+    if (_safeAreaBottom.length > 0) {
+        safeArea.bottom = [_safeAreaBottom integerValue];
+    }
     
     //自定义状态栏
-    if ([_statusBarType isEqualToString:@""] || [_statusBarType isEqualToString:@"fullscreen"] || [_statusBarType isEqualToString:@"immersion"]) {
+    if ([_statusBarType isEqualToString:@""] || [_statusBarType isEqualToString:@"fullscreen"] || [_statusBarType isEqualToString:@"immersion"] || self.edgesForExtendedLayout == UIRectEdgeNone) {
         _statusBar.hidden = YES;
         if ([_pageType isEqualToString:@"web"]) {
             _webView.frame = CGRectMake(safeArea.left, 0, self.view.frame.size.width-safeArea.left-safeArea.right, _weexHeight-safeArea.bottom);
@@ -267,20 +274,6 @@
     _statusBar.backgroundColor = [[WXConvert UIColor:_statusBarColor?_statusBarColor : @"#3EB4FF"] colorWithAlphaComponent:alpha];
     [self.view addSubview:_statusBar];
     _statusBar.hidden = YES;
-
-    //主页滚动图
-    //    self.mainScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    //    self.mainScrollView.showsVerticalScrollIndicator = NO;
-    //    self.mainScrollView.contentSize = CGSizeMake(0, self.view.frame.size.height + 0.1);
-    //    self.mainScrollView.scrollEnabled = NO;
-    //    self.mainScrollView.contentOffset = CGPointMake(0, 0);
-    //    [self.view addSubview:self.mainScrollView];
-    //
-    //    self.mainScrollView.mj_header = [MJRefreshHeader headerWithRefreshingBlock:^{
-    //        if (self.refreshHeaderBlock) {
-    //            self.refreshHeaderBlock();
-    //        }
-    //    }];
 }
 
 - (void)setupActivityView
@@ -296,29 +289,9 @@
 
 - (void)setupNaviBar
 {
-//    UIScreenEdgePanGestureRecognizer *edgePanGestureRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(edgePanGesture:)];
-//    edgePanGestureRecognizer.delegate = self;
-//    edgePanGestureRecognizer.edges = UIRectEdgeLeft;
-//    [self.view addGestureRecognizer:edgePanGestureRecognizer];
-//
-//    NSArray *ver = [[UIDevice currentDevice].systemVersion componentsSeparatedByString:@"."];
-//    if ([[ver objectAtIndex:0] intValue] >= 7) {
-//        // iOS 7.0 or later
-//        self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:0.27 green:0.71 blue:0.94 alpha:1];
-//        self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-//        [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
-//        self.navigationController.navigationBar.translucent = NO;
-//    }
-    
-    //backBarItem
-    //    UIImage *backImg = [UIImage iconWithInfo:TBCityIconInfoMake([IconFontUtil iconFont:@"android-arrow-back"], 19, [UIColor whiteColor])];
-    //
-    //    [self.navigationController.navigationBar setBackIndicatorImage:backImg];
-    //    [self.navigationController.navigationBar setBackIndicatorTransitionMaskImage:backImg];
-    //
-    //    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:@selector(backButtonClicked)];
-    //
-    //    self.navigationItem.backBarButtonItem = backItem;
+    if (_pageTitle.length > 0) {
+        [self setNavigationTitle:_pageTitle callback:nil];
+    }
 }
 
 - (void)loadWebPage
@@ -326,7 +299,7 @@
     self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     self.webView.delegate = self;
     NSURL *url = [NSURL URLWithString:_url];
-    NSURLRequest *request =[NSURLRequest requestWithURL:url];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [self.webView loadRequest:request];
     [self.view addSubview:self.webView];
 }
@@ -674,11 +647,170 @@
     [self stopLoading];
     
     if (error) {
-        NSString *code = [NSString stringWithFormat:@"%ld", error.code];
+        NSString *code = [NSString stringWithFormat:@"%ld", (long) error.code];
         NSString *msg = [NSString stringWithFormat:@"%@", error.description];
         self.webBlock(@{@"status":@"errorChanged", @"webStatus":@"", @"errCode":code, @"errMsg":msg, @"errUrl":_url, @"title":@""});
     }
 }
 
+//设置页面标题栏标题
+- (void)setNavigationTitle:(id) params callback:(WXModuleKeepAliveCallback) callback
+{
+    if (nil == _navigationCallbackDictionary) {
+        _navigationCallbackDictionary = [[NSMutableDictionary alloc] init];
+    }
+    
+    NSMutableDictionary *item = [[NSMutableDictionary alloc] init];
+    if ([params isKindOfClass:[NSString class]]) {
+        item[@"title"] = [WXConvert NSString:params];
+    }
+    NSString *title = item[@"title"] ? [WXConvert NSString:item[@"title"]] : @"";
+    NSString *titleColor = item[@"titleColor"] ? [WXConvert NSString:item[@"titleColor"]] : @"#232323";
+    CGFloat titleSize = item[@"titleSize"] ? [WXConvert CGFloat:item[@"titleSize"]] : 32.0;
+    NSString *subtitle = item[@"subtitle"] ? [WXConvert NSString:item[@"subtitle"]] : @"";
+    NSString *subtitleColor = item[@"subtitleColor"] ? [WXConvert NSString:item[@"subtitleColor"]] : @"#232323";
+    CGFloat subtitleSize = item[@"subtitleSize"] ? [WXConvert CGFloat:item[@"subtitleSize"]] : 24.0;
+    NSString *backgroundColor = item[@"backgroundColor"] ? [WXConvert NSString:item[@"backgroundColor"]] : (_statusBarColor ? _statusBarColor : @"#3EB4FF");
+    
+    //背景色
+    CGFloat alpha = (255 - _statusBarAlpha) * 1.0 / 255;
+    [self setFd_prefersNavigationBarHidden:NO];
+    [self.navigationController setNavigationBarHidden:NO];
+    self.navigationController.navigationBar.barTintColor = [[WXConvert UIColor:backgroundColor] colorWithAlphaComponent:alpha];
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    
+    //标题
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+    [titleLabel setBackgroundColor:[UIColor clearColor]];
+    [titleLabel setTextColor:[WXConvert UIColor:titleColor]];
+    [titleLabel setText:[[NSString alloc] initWithFormat:@"  %@  ", title]];
+    [titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:SCALE(titleSize)]];
+    [titleLabel sizeToFit];
+    
+    if (subtitle.length > 0) {
+        UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 19, 0, 0)];
+        [subtitleLabel setBackgroundColor:[UIColor clearColor]];
+        [subtitleLabel setTextColor:[WXConvert UIColor:subtitleColor]];
+        [subtitleLabel setText:[[NSString alloc] initWithFormat:@"  %@  ", subtitle]];
+        [subtitleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:SCALE(subtitleSize)]];
+        [subtitleLabel sizeToFit];
+        
+        UIView *twoLineTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, MAX(subtitleLabel.frame.size.width, titleLabel.frame.size.width), 30)];
+        [twoLineTitleView addSubview:titleLabel];
+        [twoLineTitleView addSubview:subtitleLabel];
+        
+        float widthDiff = subtitleLabel.frame.size.width - titleLabel.frame.size.width;
+        if (widthDiff > 0) {
+            CGRect frame = titleLabel.frame;
+            frame.origin.x = widthDiff / 2;
+            titleLabel.frame = CGRectIntegral(frame);
+        } else{
+            CGRect frame = subtitleLabel.frame;
+            frame.origin.x = fabs(widthDiff) / 2;
+            subtitleLabel.frame = CGRectIntegral(frame);
+        }
+        if (callback) {
+            twoLineTitleView.userInteractionEnabled = YES;
+            twoLineTitleView.tag = ++easyNavigationButtonTag;
+            UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(navigationTitleClick:)];
+            [twoLineTitleView addGestureRecognizer:tapGesture];
+            [_navigationCallbackDictionary setObject:@{@"callback":[callback copy], @"params":[item copy]} forKey:@(twoLineTitleView.tag)];
+        }
+        self.navigationItem.titleView = twoLineTitleView;
+    }else{
+        if (callback) {
+            titleLabel.userInteractionEnabled = YES;
+            titleLabel.tag = ++easyNavigationButtonTag;
+            UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(navigationTitleClick:)];
+            [titleLabel addGestureRecognizer:tapGesture];
+            [_navigationCallbackDictionary setObject:@{@"callback":[callback copy], @"params":[item copy]} forKey:@(titleLabel.tag)];
+        }
+        self.navigationItem.titleView = titleLabel;
+    }
+    
+    if (!_isFirstPage && self.navigationItem.leftBarButtonItems.count == 0) {
+        [self setNavigationItems:@{@"icon":@"tb-back", @"iconSize":@(36)} position:@"left" callback:^(id result, BOOL keepAlive) {
+            [[[DeviceUtil getTopviewControler] navigationController] popViewControllerAnimated:YES];
+        }];
+    }
+}
+
+//设置页面标题栏左右按钮
+- (void)setNavigationItems:(id) params position:(NSString *)position callback:(WXModuleKeepAliveCallback) callback
+{
+    if (nil == _navigationCallbackDictionary) {
+        _navigationCallbackDictionary = [[NSMutableDictionary alloc] init];
+    }
+    
+    NSMutableArray *buttonArray = [[NSMutableArray alloc] init];
+    
+    if ([params isKindOfClass:[NSString class]]) {
+        [buttonArray addObject:@{@"title": [WXConvert NSString:params]}];
+    } else if ([params isKindOfClass:[NSArray class]]) {
+        buttonArray = params;
+    } else if ([params isKindOfClass:[NSDictionary class]]) {
+        [buttonArray addObject:params];
+    }
+    
+    NSMutableArray *buttonItems = [[NSMutableArray alloc] init];
+    for (NSDictionary *item in buttonArray)
+    {
+        NSString *title = item[@"title"] ? [WXConvert NSString:item[@"title"]] : @"";
+        NSString *titleColor = item[@"titleColor"] ? [WXConvert NSString:item[@"titleColor"]] : @"#232323";
+        CGFloat titleSize = item[@"titleSize"] ? [WXConvert CGFloat:item[@"titleSize"]] : 28.0;
+        NSString *icon = item[@"icon"] ? [WXConvert NSString:item[@"icon"]] : @"";
+        NSString *iconColor = item[@"iconColor"] ? [WXConvert NSString:item[@"iconColor"]] : @"#232323";
+        CGFloat iconSize = item[@"iconSize"] ? [WXConvert CGFloat:item[@"iconSize"]] : 28.0;
+        
+        UIButton *customButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        customButton.tag = ++easyNavigationButtonTag;
+        if (icon.length > 0) {
+            [customButton setImage:[DeviceUtil getIconText:icon font:SCALE(iconSize) color:iconColor] forState:UIControlStateNormal];
+        }
+        if (title.length > 0){
+            customButton.titleLabel.font = [UIFont systemFontOfSize:SCALE(titleSize)];
+            [customButton setTitle:title forState:UIControlStateNormal];
+            [customButton setTitleColor:[WXConvert UIColor:titleColor] forState:UIControlStateNormal];
+            [customButton.titleLabel sizeToFit];
+        }
+        [customButton SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing: (icon.length > 0 && title.length > 0) ? 5 : 0];
+        [customButton addTarget:self action:@selector(navigationItemClick:) forControlEvents:UIControlEventTouchUpInside];
+        if (callback) {
+            [_navigationCallbackDictionary setObject:@{@"callback":[callback copy], @"params":[item copy]} forKey:@(customButton.tag)];
+        }
+        [customButton sizeToFit];
+        [buttonItems addObject:[[UIBarButtonItem alloc] initWithCustomView:customButton]];
+    }
+    
+    if ([position isEqualToString:@"right"]) {
+        self.navigationItem.rightBarButtonItems = buttonItems;
+    }else{
+        self.navigationItem.leftBarButtonItems = buttonItems;
+    }
+}
+
+//导航标题点击回调
+- (void)navigationTitleClick:(UITapGestureRecognizer *)tapGesture
+{
+    id item = [_navigationCallbackDictionary objectForKey:@(tapGesture.view.tag)];
+    if ([item isKindOfClass:[NSDictionary class]]) {
+        WXModuleKeepAliveCallback callback = item[@"callback"];
+        if (callback) {
+            callback([item[@"params"] isKindOfClass:[NSDictionary class]] ? item[@"params"] : @{}, YES);
+        }
+    }
+}
+
+//导航菜单点击回调
+-(void)navigationItemClick:(UIButton *) button
+{
+    id item = [_navigationCallbackDictionary objectForKey:@(button.tag)];
+    if ([item isKindOfClass:[NSDictionary class]]) {
+        WXModuleKeepAliveCallback callback = item[@"callback"];
+        if (callback) {
+            callback([item[@"params"] isKindOfClass:[NSDictionary class]] ? item[@"params"] : @{}, YES);
+        }
+    }
+}
 
 @end

@@ -196,6 +196,11 @@ WX_EXPORT_METHOD(@selector(goDesktop))
     [[WeiuiNewPageManager sharedIntstance] setSoftInputMode:params modo:modo];
 }
 
+- (void)setStatusBarStyle:(BOOL)isLight
+{
+    [[WeiuiNewPageManager sharedIntstance] setStatusBarStyle:isLight];
+}
+
 - (void)statusBarStyle:(BOOL)isLight
 {
     [[WeiuiNewPageManager sharedIntstance] setStatusBarStyle:isLight];

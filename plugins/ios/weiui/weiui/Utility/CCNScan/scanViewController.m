@@ -10,6 +10,7 @@
 #import "resultViewController.h"
 #import "DeviceUtil.h"
 #import "LBXScanView.h"
+#import "WXConvert.h"
 #import <AVFoundation/AVFoundation.h>
 
 #define mainWidth [UIScreen mainScreen].bounds.size.width
@@ -50,6 +51,7 @@
     UIBarButtonItem *navRightButton = [[UIBarButtonItem alloc]initWithTitle:@"相册" style:UIBarButtonItemStylePlain target:self action:@selector(choicePhoto)];
     self.navigationItem.rightBarButtonItem = navRightButton;
     self.navigationItem.title = @"二维码/条码";
+    self.navigationController.navigationBar.barTintColor = [WXConvert UIColor:@"#93c0ff"];
     
     [self.view setBackgroundColor:[UIColor blackColor]];
     

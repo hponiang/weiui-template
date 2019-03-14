@@ -112,11 +112,9 @@ WX_EXPORT_METHOD(@selector(smoothScrollToPosition:))
     //collectionView.bounces = NO;
     _collectionView.scrollEnabled = _scrollEnabled;
     
-    #ifdef __IPHONE_11_0
     if (@available(iOS 11.0, *)) {
         _collectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     }
-    #endif
     
     __weak typeof(self) ws = self;
     if (_isRefreshListener) {

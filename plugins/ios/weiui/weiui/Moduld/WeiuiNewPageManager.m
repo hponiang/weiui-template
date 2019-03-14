@@ -47,8 +47,10 @@
 - (void)openPage:(NSDictionary*)params callback:(WXModuleKeepAliveCallback)callback
 {
     NSString *url = params[@"url"] ? [WXConvert NSString:params[@"url"]] : @"";
-    //返回随机数名称
+    
     NSString *pageName = params[@"pageName"] ? [WXConvert NSString:params[@"pageName"]] : [NSString stringWithFormat:@"NewPage-%d", (arc4random() % 100) + 1000];
+    NSString *pageTitle = params[@"pageTitle"] ? [WXConvert NSString:params[@"pageTitle"]] : @"";
+    NSString *safeAreaBottom = params[@"safeAreaBottom"] ? [WXConvert NSString:params[@"safeAreaBottom"]] : @"";
     
     NSString *pageType = params[@"pageType"] ? [WXConvert NSString:params[@"pageType"]] : @"weex";
     id data = params[@"params"];
@@ -64,7 +66,7 @@
     NSString *softInputMode = params[@"softInputMode"] ? [WXConvert NSString:params[@"softInputMode"]] : @"auto";
     BOOL translucent = params[@"translucent"] ? [WXConvert BOOL:params[@"translucent"]] : NO;
     
-    NSString *backgroundColor = params[@"backgroundColor"] ? [WXConvert NSString:params[@"backgroundColor"]] : @"#f4f8f9";
+    NSString *backgroundColor = params[@"backgroundColor"] ? [WXConvert NSString:params[@"backgroundColor"]] : @"#ffffff";
     BOOL backPressedClose = params[@"backPressedClose"] ? [WXConvert BOOL:params[@"backPressedClose"]] : YES;
     
     url = [DeviceUtil rewriteUrl:url];
@@ -73,6 +75,10 @@
     //跳转页面
     WXMainViewController *mainVC = [[WXMainViewController alloc] init];
     mainVC.pageType = pageType;
+    mainVC.pageName = pageName;
+    mainVC.pageTitle = pageTitle;
+    mainVC.safeAreaBottom = safeAreaBottom;
+    mainVC.params = data;
     mainVC.url = url;
     mainVC.cache = cache;
     mainVC.isDisSwipeBack = !swipeBack;
@@ -82,8 +88,6 @@
     mainVC.statusBarColor = statusBarColor;
     mainVC.statusBarAlpha = statusBarAlpha;
     mainVC.statusBarStyleCustom = statusBarStyle;
-    mainVC.params = data;
-    mainVC.pageName = pageName;
     mainVC.backgroundColor = backgroundColor;
     mainVC.softInputMode = softInputMode;
     
@@ -576,14 +580,38 @@
         [res setObject:vc.pageName forKey:@"pageName"];
         [res setObject:vc.pageType forKey:@"pageType"];
         [res setObject:vc.params ? vc.params: @{} forKey:@"params"];
-        [res setObject:[NSString stringWithFormat:@"%ld", vc.cache] forKey:@"cache"];
+        [res setObject:[NSString stringWithFormat:@"%ld", (long)vc.cache] forKey:@"cache"];
         [res setObject:vc.loading ? @"true" : @"false" forKey:@"loading"];
         [res setObject:vc.statusBarType forKey:@"statusBarType"];
         [res setObject:vc.statusBarColor forKey:@"statusBarColor"];
-        [res setObject:[NSString stringWithFormat:@"%ld", vc.statusBarAlpha] forKey:@"statusBarAlpha"];
+        [res setObject:[NSString stringWithFormat:@"%ld", (long)vc.statusBarAlpha] forKey:@"statusBarAlpha"];
         [res setObject:vc.statusBarStyleCustom forKey:@"statusBarStyle"];
         [res setObject:vc.backgroundColor forKey:@"backgroundColor"];
         [self.pageData setObject:res forKey:pageName];
+    }
+}
+
+- (void)setTitle:(id) params callback:(WXModuleKeepAliveCallback) callback
+{
+    WXMainViewController *vc = (WXMainViewController*)[DeviceUtil getTopviewControler];
+    if (vc) {
+        [vc setNavigationTitle:params callback:callback];
+    }
+}
+
+- (void)setLeftItems:(id) params callback:(WXModuleKeepAliveCallback) callback
+{
+    WXMainViewController *vc = (WXMainViewController*)[DeviceUtil getTopviewControler];
+    if (vc) {
+        [vc setNavigationItems:params position:@"left" callback:callback];
+    }
+}
+
+- (void)setRightItems:(id) params callback:(WXModuleKeepAliveCallback) callback
+{
+    WXMainViewController *vc = (WXMainViewController*)[DeviceUtil getTopviewControler];
+    if (vc) {
+        [vc setNavigationItems:params position:@"right" callback:callback];
     }
 }
 

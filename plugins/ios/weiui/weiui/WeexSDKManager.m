@@ -49,6 +49,8 @@
 
     //Module
     [WXSDKEngine registerModule:@"weiui" withClass:NSClassFromString(@"WeiuiModule")];
+    [WXSDKEngine registerModule:@"navigator" withClass:NSClassFromString(@"WeiuiNavigatorModule")];
+    [WXSDKEngine registerModule:@"navigationBar" withClass:NSClassFromString(@"WeiuiNavigationBarModule")];
 
     //Component
     [WXSDKEngine registerComponent:@"weiui_button" withClass:NSClassFromString(@"WeiuiButtonComponent")];
