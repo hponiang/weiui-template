@@ -86,8 +86,16 @@ public class WebModule {
      * 修改状态栏样式
      * @param isLight 是否亮色
      */
+    public void setStatusBarStyle(ExtendWebView webView, boolean isLight) {
+        myApp().setStatusBarStyle(webView.getContext(), isLight);
+    }
+
+    /**
+     * 修改状态栏样式
+     * @param isLight 是否亮色
+     */
     public void statusBarStyle(ExtendWebView webView, boolean isLight) {
-        myApp().statusBarStyle(webView.getContext(), isLight);
+        myApp().setStatusBarStyle(webView.getContext(), isLight);
     }
 
     /**

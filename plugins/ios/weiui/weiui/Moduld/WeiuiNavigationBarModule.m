@@ -13,22 +13,55 @@
 @synthesize weexInstance;
 
 WX_EXPORT_METHOD(@selector(setTitle:callback:))
-WX_EXPORT_METHOD(@selector(setLeftItems:callback:))
-WX_EXPORT_METHOD(@selector(setRightItems:callback:))
+WX_EXPORT_METHOD(@selector(setTitle:callback:noopParam:))
 
 - (void)setTitle:(id)params callback:(WXModuleKeepAliveCallback)callback
 {
     [[WeiuiNewPageManager sharedIntstance] setTitle:params callback:callback];
 }
 
-- (void)setLeftItems:(id)params callback:(WXModuleKeepAliveCallback)callback
+- (void)setTitle:(id)params callback:(WXModuleKeepAliveCallback)callback noopParam:(id)noopParam
+{
+    [[WeiuiNewPageManager sharedIntstance] setTitle:params callback:callback];
+}
+
+WX_EXPORT_METHOD(@selector(setLeftItem:callback:))
+WX_EXPORT_METHOD(@selector(setLeftItem:callback:noopParam:))
+
+- (void)setLeftItem:(id)params callback:(WXModuleKeepAliveCallback)callback
 {
     [[WeiuiNewPageManager sharedIntstance] setLeftItems:params callback:callback];
 }
 
-- (void)setRightItems:(id)params callback:(WXModuleKeepAliveCallback)callback
+- (void)setLeftItem:(id)params callback:(WXModuleKeepAliveCallback)callback noopParam:(id)noopParam
+{
+    [[WeiuiNewPageManager sharedIntstance] setLeftItems:params callback:callback];
+}
+
+WX_EXPORT_METHOD(@selector(setRightItem:callback:))
+WX_EXPORT_METHOD(@selector(setRightItem:callback:noopParam:))
+
+- (void)setRightItem:(id)params callback:(WXModuleKeepAliveCallback)callback
 {
     [[WeiuiNewPageManager sharedIntstance] setRightItems:params callback:callback];
+}
+
+- (void)setRightItem:(id)params callback:(WXModuleKeepAliveCallback)callback noopParam:(id)noopParam
+{
+    [[WeiuiNewPageManager sharedIntstance] setRightItems:params callback:callback];
+}
+
+WX_EXPORT_METHOD(@selector(show))
+WX_EXPORT_METHOD(@selector(hide))
+
+- (void)show
+{
+    [[WeiuiNewPageManager sharedIntstance] showNavigation];
+}
+
+- (void)hide
+{
+    [[WeiuiNewPageManager sharedIntstance] hideNavigation];
 }
 
 @end

@@ -65,5 +65,7 @@ typedef NS_ENUM(NSInteger, LifeCycleType) {
 
 - (void)setNavigationTitle:(id) params callback:(WXModuleKeepAliveCallback) callback;
 - (void)setNavigationItems:(id) params position:(NSString *)position callback:(WXModuleKeepAliveCallback) callback;
+- (void)showNavigation;
+- (void)hideNavigation;
 
 @end

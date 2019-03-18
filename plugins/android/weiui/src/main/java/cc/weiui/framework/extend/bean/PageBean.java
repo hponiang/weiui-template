@@ -21,11 +21,14 @@ public class PageBean {
         Map<String, Object> temp = new HashMap<>();
         temp.put("url", getUrl());
         temp.put("pageName", getPageName());
+        temp.put("pageTitle", getPageTitle());
         temp.put("pageType", getPageType());
         temp.put("params", getParams());
         temp.put("cache", getUrl());
         temp.put("loading", isLoading());
         temp.put("swipeBack", isSwipeBack());
+        temp.put("animated", isAnimated());
+        temp.put("animatedClose", isAnimatedClose());
         temp.put("statusBarType", getStatusBarType());
         temp.put("statusBarColor", getStatusBarColor());
         temp.put("statusBarAlpha", getStatusBarAlpha());
@@ -40,39 +43,48 @@ public class PageBean {
     /**
      * url :                网址
      * pageName :           页面标识（可选）
+     * pageTitle :          页面标题（可选）
      * pageType :           类型（可选，如：web|weex，默认：weex）
      * params :             传递参数（可选）
      * cache :              缓存时间（可选，单位：毫秒，仅weex有效，默认：0不启用）
      * loading :            是否显示等待（可选，默认：true）
-     * swipeBack :          是否支持滑动返回（可选，默认：false）
+     * swipeBack :          是否支持滑动返回（可选，默认：true）
+     * animated :           是否进入页面需要动画效果（可选，默认：true）
+     * animatedClose :      是否关闭页面需要动画效果（可选，默认：true）
      * statusBarType :      状态栏样式（可选，等于fullscreen|immersion时statusBarType、statusBarAlpha无效）
      * statusBarColor :     状态栏颜色值（可选，默认：#3EB4FF）
      * statusBarAlpha : 0   状态栏透明度（可选，默认：0）
      * statusBarStyle :     状态栏样式（可选，默认：null）
      * softInputMode :      键盘弹出方式（可选，默认：auto）
      * translucent :        透明底色窗口（可选，默认：false）
-     * backgroundColor :    页面背景颜色（可选，默认：#f4f8f9）
+     * backgroundColor :    页面背景颜色（可选，默认：#ffffff）
      * backPressedClose :   返回键关闭（可选，默认：true）
      * callback :           JS回调事件（可选）
+     *
+     * firstPage :          是否为启动页（可选，默认：false，内部使用）
      *
      * context :            上下文
      */
 
     private String url;
     private String pageName;
+    private String pageTitle;
     private String pageType = "weex";
     private Object params;
     private long cache = 0;
     private boolean loading = true;
-    private boolean swipeBack = false;
+    private boolean swipeBack = true;
+    private boolean animated = true;
+    private boolean animatedClose = true;
     private String statusBarType = "default";
     private String statusBarColor = "#3EB4FF";
     private int statusBarAlpha = 0;
     private Boolean statusBarStyle = null;
     private String softInputMode = "auto";
     private boolean translucent = false;
-    private String backgroundColor = "#f4f8f9";
+    private String backgroundColor = "#ffffff";
     private boolean backPressedClose = true;
+    private boolean firstPage = false;
     private JSCallback callback;
     private Context context;
     private JSONObject otherObject;
@@ -83,6 +95,14 @@ public class PageBean {
 
     public void setPageName(String pageName) {
         this.pageName = pageName;
+    }
+
+    public String getPageTitle() {
+        return pageTitle;
+    }
+
+    public void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
     }
 
     public String getUrl() {
@@ -135,6 +155,22 @@ public class PageBean {
 
     public void setSwipeBack(boolean swipeBack) {
         this.swipeBack = swipeBack;
+    }
+
+    public boolean isAnimated() {
+        return animated;
+    }
+
+    public void setAnimated(boolean animated) {
+        this.animated = animated;
+    }
+
+    public boolean isAnimatedClose() {
+        return animatedClose;
+    }
+
+    public void setAnimatedClose(boolean animatedClose) {
+        this.animatedClose = animatedClose;
     }
 
     public String getStatusBarType() {
@@ -199,6 +235,14 @@ public class PageBean {
 
     public void setBackPressedClose(boolean backPressedClose) {
         this.backPressedClose = backPressedClose;
+    }
+
+    public boolean isFirstPage() {
+        return firstPage;
+    }
+
+    public void setFirstPage(boolean firstPage) {
+        this.firstPage = firstPage;
     }
 
     public JSCallback getCallback() {

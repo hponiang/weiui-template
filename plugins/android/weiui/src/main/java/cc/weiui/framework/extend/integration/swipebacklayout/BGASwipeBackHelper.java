@@ -71,9 +71,10 @@ public class BGASwipeBackHelper {
                 @Override
                 public void onPanelSlide(View panel, float slideOffset) {
                     // 开始滑动返回时关闭软键盘
-                    if (slideOffset < 0.03) {
+                    // weiui dev 取消开始滑动返回关闭键盘
+                    /*if (slideOffset < 0.03) {
                         BGAKeyboardUtil.closeKeyboard(mActivity);
-                    }
+                    }*/
 
                     mDelegate.onSwipeBackLayoutSlide(slideOffset);
                 }
@@ -326,7 +327,8 @@ public class BGASwipeBackHelper {
     public void swipeBackward() {
         BGAKeyboardUtil.closeKeyboard(mActivity);
         mActivity.finish();
-        executeSwipeBackAnim();
+        mActivity.overridePendingTransition(0, 0);
+        //executeSwipeBackAnim();
     }
 
     /**

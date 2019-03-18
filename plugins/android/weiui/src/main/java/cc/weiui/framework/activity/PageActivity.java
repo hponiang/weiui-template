@@ -5,18 +5,22 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AndroidRuntimeException;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -35,6 +39,15 @@ import android.widget.Toast;
 
 import cc.weiui.framework.extend.integration.actionsheet.ActionItem;
 import cc.weiui.framework.extend.integration.actionsheet.ActionSheet;
+import cc.weiui.framework.extend.integration.glide.load.DataSource;
+import cc.weiui.framework.extend.integration.glide.load.engine.DiskCacheStrategy;
+import cc.weiui.framework.extend.integration.glide.load.engine.GlideException;
+import cc.weiui.framework.extend.integration.glide.request.RequestListener;
+import cc.weiui.framework.extend.integration.glide.request.RequestOptions;
+import cc.weiui.framework.extend.integration.glide.request.target.Target;
+import cc.weiui.framework.extend.integration.iconify.widget.IconTextView;
+import cc.weiui.framework.extend.module.utilcode.util.KeyboardUtils;
+import cc.weiui.framework.extend.module.weiuiScreenUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import cc.weiui.framework.BuildConfig;
@@ -65,6 +78,7 @@ import com.rabtman.wsmanager.listener.WsStatusListener;
 import com.taobao.weex.IWXRenderListener;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.bridge.JSCallback;
+import com.taobao.weex.bridge.ResultCallback;
 import com.taobao.weex.bridge.WXBridgeManager;
 import com.taobao.weex.common.OnWXScrollListener;
 import com.taobao.weex.common.WXRenderStrategy;
@@ -143,6 +157,11 @@ public class PageActivity extends AppCompatActivity {
     private int scan_cropHeight = 0;
     private boolean scan_flashing = true;
     private boolean scan_vibrate = true;
+
+    //标题栏部分
+    private LinearLayout titleBar, titleBarLeft, titleBarMiddle, titleBarRight;
+    private TextView titleBarTitle, titleBarSubtitle;
+    private boolean titleBarLeftNull = true;
 
     /****************************************************************************************************/
     /****************************************************************************************************/
@@ -310,7 +329,18 @@ public class PageActivity extends AppCompatActivity {
                 initDefaultPage();
                 break;
         }
+        if (mPageInfo.getPageTitle() != null && !mPageInfo.getPageTitle().isEmpty()) {
+            setNavigationTitle(mPageInfo.getPageTitle(), null);
+        }
         invokeAndKeepAlive("create", null);
+    }
+
+    @Override
+    public void finish(){
+        super.finish();
+        if (!mPageInfo.isAnimatedClose()) {
+            this.overridePendingTransition(0, 0);
+        }
     }
 
     @Override
@@ -456,6 +486,9 @@ public class PageActivity extends AppCompatActivity {
         if (mPageInfo != null) {
             weiuiIhttp.cancel(mPageInfo.getPageName());
             weiuiPage.removePageBean(mPageInfo.getPageName());
+            if (mPageInfo.isSwipeBack()) {
+                KeyboardUtils.unregisterSoftInputChangedListener(this);
+            }
         }
         invoke("destroy", null);
         super.onDestroy();
@@ -611,8 +644,15 @@ public class PageActivity extends AppCompatActivity {
                 break;
             default:
                 //默认
-                if (mPageInfo.isSwipeBack()) {
+                if (mPageInfo.isSwipeBack() && Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
                     StatusBarUtil.setColorForSwipeBack(this, Color.parseColor(mPageInfo.getStatusBarColor()), mPageInfo.getStatusBarAlpha());
+                    KeyboardUtils.registerSoftInputChangedListener(this, (int height) -> {
+                        if (KeyboardUtils.isSoftInputVisible(this)) {
+                            KeyboardUtils.unregisterSoftInputChangedListener(this);
+                            StatusBarUtil.cancelColorForSwipeBack(this);
+                            StatusBarUtil.setColor(this, Color.parseColor(mPageInfo.getStatusBarColor()), mPageInfo.getStatusBarAlpha());
+                        }
+                    });
                 }else{
                     StatusBarUtil.setColor(this, Color.parseColor(mPageInfo.getStatusBarColor()), mPageInfo.getStatusBarAlpha());
                 }
@@ -620,7 +660,7 @@ public class PageActivity extends AppCompatActivity {
         }
         //
         if (mPageInfo.getStatusBarStyle() != null) {
-            statusBarStyle(mPageInfo.getStatusBarStyle());
+            setStatusBarStyle(mPageInfo.getStatusBarStyle());
         }
         //
         setSoftInputMode(mPageInfo.getSoftInputMode());
@@ -1197,6 +1237,10 @@ public class PageActivity extends AppCompatActivity {
             mErrorCbox.setVisibility(View.GONE);
         }
         //
+        hideNavigation();
+        titleBarLeft.removeAllViews();
+        titleBarRight.removeAllViews();
+        //
         switch (mPageInfo.getPageType()) {
             case "web":
                 mWebView.loadUrl(mPageInfo.getUrl());
@@ -1328,7 +1372,7 @@ public class PageActivity extends AppCompatActivity {
      * 修改状态栏样式
      * @param isLight
      */
-    public void statusBarStyle(boolean isLight) {
+    public void setStatusBarStyle(boolean isLight) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View decorView = this.getWindow().getDecorView();
             if (isLight) {
@@ -1341,6 +1385,217 @@ public class PageActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "当前设备不支持状态栏字体变色", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * 是否是字体
+     * @param var
+     * @return
+     */
+    private boolean isFontIcon(String var) {
+        return var != null && !var.contains("//") && !var.startsWith("data:");
+    }
+
+    /**
+     * 标题栏组件初始化
+     */
+    private void navigationInit() {
+        if (titleBar == null) {
+            titleBar = findViewById(R.id.titleBar);
+            titleBarLeft = findViewById(R.id.titleBarLeft);
+            titleBarMiddle = findViewById(R.id.titleBarMiddle);
+            titleBarRight = findViewById(R.id.titleBarRight);
+            titleBarTitle = findViewById(R.id.titleBarTitle);
+            titleBarSubtitle = findViewById(R.id.titleBarSubtitle);
+        }
+    }
+
+    /**
+     * 设置页面标题栏标题
+     * @param params
+     * @param callback
+     */
+    public void setNavigationTitle(Object params, ResultCallback<JSONObject> callback) {
+        if ("fullscreen".equals(mPageInfo.getStatusBarType()) || "immersion".equals(mPageInfo.getStatusBarType())) {
+            return;
+        }
+        navigationInit();
+        JSONObject item = new JSONObject();
+        if (params instanceof String) {
+            item.put("title", params);
+        } else {
+            item = weiuiJson.parseObject(params);
+        }
+
+        String title = weiuiJson.getString(item, "title", "");
+        String titleColor = weiuiJson.getString(item, "titleColor", "#232323");
+        float titleSize = weiuiJson.getFloat(item, "titleSize", 32f);
+        String subtitle = weiuiJson.getString(item, "subtitle", "");
+        String subtitleColor = weiuiJson.getString(item, "subtitleColor", "#232323");
+        float subtitleSize = weiuiJson.getFloat(item, "subtitleSize", 24f);
+        String backgroundColor = weiuiJson.getString(item, "backgroundColor", (!mPageInfo.getStatusBarColor().equals("") ? mPageInfo.getStatusBarColor() : "#3EB4FF"));
+
+        titleBar.setBackgroundColor(Color.parseColor(backgroundColor));
+        showNavigation();
+
+        titleBarTitle.setText(title);
+        titleBarTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, weiuiScreenUtils.weexPx2dp(mWXSDKInstance, titleSize));
+        titleBarTitle.setTextColor(Color.parseColor(titleColor));
+
+        if ("".equals(subtitle)) {
+            titleBarSubtitle.setVisibility(View.GONE);
+        }else{
+            titleBarSubtitle.setVisibility(View.VISIBLE);
+            titleBarSubtitle.setText(subtitle);
+            titleBarSubtitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, weiuiScreenUtils.weexPx2dp(mWXSDKInstance, subtitleSize));
+            titleBarSubtitle.setTextColor(Color.parseColor(subtitleColor));
+        }
+
+        JSONObject finalItem = item;
+        titleBarMiddle.setOnClickListener(v -> {
+            if (callback != null) {
+                callback.onReceiveResult(finalItem);
+            }
+        });
+
+        if (!mPageInfo.isFirstPage() && titleBarLeftNull) {
+            setNavigationItems(weiuiJson.parseObject("{'icon':'tb-back', 'iconSize': 36}"), "left", result -> weiuiPage.closeWin(mPageInfo.getPageName()));
+        }
+    }
+
+    /**
+     * 设置页面标题栏左右按钮
+     * @param params
+     * @param position
+     * @param callback
+     */
+    public void setNavigationItems(Object params, String position, ResultCallback<JSONObject> callback) {
+        navigationInit();
+        JSONArray buttonArray = new JSONArray();
+        if (params instanceof String) {
+            JSONObject temp = new JSONObject();
+            temp.put("title", params);
+            buttonArray.add(temp);
+        } else if (params instanceof JSONObject) {
+            JSONObject temp = weiuiJson.parseObject(params);
+            buttonArray.add(temp);
+        } else {
+            buttonArray = weiuiJson.parseArray(params);
+        }
+        if (position.equals("right")) {
+            titleBarRight.removeAllViews();
+        } else {
+            titleBarLeft.removeAllViews();
+        }
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        for (int i = 0; i < buttonArray.size(); i++) {
+            JSONObject item = weiuiJson.parseObject(buttonArray.get(i));
+            String title = weiuiJson.getString(item, "title", "");
+            String titleColor = weiuiJson.getString(item, "titleColor", "#232323");
+            float titleSize = weiuiJson.getFloat(item, "titleSize", 28f);
+            String icon = weiuiJson.getString(item, "icon", "");
+            String iconColor = weiuiJson.getString(item, "iconColor", "#232323");
+            float iconSize = weiuiJson.getFloat(item, "iconSize", 28f);
+
+            LinearLayout customButton = new LinearLayout(this);
+            customButton.setLayoutParams(layoutParams);
+            customButton.setGravity(Gravity.CENTER);
+            customButton.setOrientation(LinearLayout.HORIZONTAL);
+            customButton.setMinimumWidth(SizeUtils.dp2px(56));
+            TextView titleView = new TextView(this);
+            if (!"".equals(icon)) {
+                if (isFontIcon(icon)) {
+                    IconTextView iconView = new IconTextView(this);
+                    iconView.setLayoutParams(layoutParams);
+                    iconView.setGravity(Gravity.CENTER);
+                    iconView.setText(String.format("{%s}", icon));
+                    iconView.setTextSize(TypedValue.COMPLEX_UNIT_PX, weiuiScreenUtils.weexPx2dp(mWXSDKInstance, iconSize));
+                    iconView.setTextColor(Color.parseColor(iconColor));
+                    customButton.addView(iconView);
+                }else{
+                    ImageView imgView = new ImageView(this);
+                    imgView.setLayoutParams(new LinearLayout.LayoutParams(weiuiScreenUtils.weexPx2dp(mWXSDKInstance, iconSize), LinearLayout.LayoutParams.MATCH_PARENT));
+                    imgView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    Glide.with(imgView.getContext()).load(icon).apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL)).listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            return false;
+                        }
+                    }).into(imgView);
+                    customButton.addView(imgView);
+                }
+            }
+            if (!"".equals(title)) {
+                if (!"".equals(icon)) {
+                    titleView.setPadding(5, 0, 0, 0);
+                }
+                titleView.setLayoutParams(layoutParams);
+                titleView.setGravity(Gravity.CENTER);
+                titleView.setText(title);
+                titleView.setTextSize(TypedValue.COMPLEX_UNIT_PX, weiuiScreenUtils.weexPx2dp(mWXSDKInstance, titleSize));
+                titleView.setTextColor(Color.parseColor(titleColor));
+                customButton.addView(titleView);
+            }
+            customButton.setClickable(true);
+            customButton.setFocusable(true);
+            try {
+                TypedValue typedValue = new TypedValue();
+                customButton.getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, typedValue, true);
+                int[] attribute = new int[]{android.R.attr.selectableItemBackground};
+                TypedArray typedArray = customButton.getContext().getTheme().obtainStyledAttributes(typedValue.resourceId, attribute);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    customButton.setForeground(typedArray.getDrawable(0));
+                }
+                typedArray.recycle();
+            } catch (Exception ignored) { }
+            customButton.setOnClickListener(v -> {
+                if (callback != null) {
+                    callback.onReceiveResult(item);
+                }
+            });
+            if (position.equals("right")) {
+                titleBarRight.addView(customButton);
+            } else {
+                titleBarLeftNull = false;
+                titleBarLeft.addView(customButton);
+            }
+        }
+        titleBarLeft.setLayoutParams(layoutParams);
+        titleBarLeft.post(() -> {
+            int leftWidth = titleBarLeft.getWidth();
+            titleBarRight.setLayoutParams(layoutParams);
+            titleBarRight.post(() -> {
+                int rightWidth = titleBarRight.getWidth();
+                if (leftWidth > rightWidth) {
+                    titleBarRight.setLayoutParams(new LinearLayout.LayoutParams(leftWidth, LinearLayout.LayoutParams.MATCH_PARENT));
+                } else if (leftWidth < rightWidth) {
+                    titleBarLeft.setLayoutParams(new LinearLayout.LayoutParams(rightWidth, LinearLayout.LayoutParams.MATCH_PARENT));
+                }
+            });
+        });
+    }
+
+    /**
+     * 显示标题栏
+     */
+    public void showNavigation() {
+        if ("fullscreen".equals(mPageInfo.getStatusBarType()) || "immersion".equals(mPageInfo.getStatusBarType())) {
+            return;
+        }
+        navigationInit();
+        titleBar.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 隐藏标题栏
+     */
+    public void hideNavigation() {
+        navigationInit();
+        titleBar.setVisibility(View.GONE);
     }
 
     /****************************************************************************************************/

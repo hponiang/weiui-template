@@ -10,10 +10,11 @@
 #import "WeexSDK.h"
 #import "WeexSDKManager.h"
 #import "weiuiNewPageManager.h"
-#import "UINavigationController+FDFullscreenPopGesture.h"
 #import "CustomWeexSDKManager.h"
 #import "DeviceUtil.h"
 #import "SGEasyButton.h"
+#import "SDWebImageDownloader.h"
+#import "UINavigationController+FDFullscreenPopGesture.h"
 
 #define kCacheUrl @"cache_url"
 #define kCacheTime @"cache_time"
@@ -123,6 +124,9 @@ static int easyNavigationButtonTag = 8000;
 {
     [super viewWillDisappear:animated];
     
+    [self updateStatus:@"pause"];
+    [self liftCycleEvent:LifeCyclePause];
+    
     //状态栏样式
     if ([_statusBarStyleCustom isEqualToString:@"1"]) {
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -136,9 +140,6 @@ static int easyNavigationButtonTag = 8000;
     [super viewDidDisappear:animated];
     [self updateInstanceState:WeexInstanceDisappear];
     
-    [self updateStatus:@"pause"];
-    [self liftCycleEvent:LifeCyclePause];
-    
     [self updateStatus:@"stop"];
 }
 
@@ -147,23 +148,28 @@ static int easyNavigationButtonTag = 8000;
 {
     _weexHeight = self.view.frame.size.height;
     UIEdgeInsets safeArea = UIEdgeInsetsZero;
+    
+    CGFloat plusY = 0.0;
 
     if (@available(iOS 11.0, *)) {
         safeArea = self.view.safeAreaInsets;
     }else if (@available(iOS 9.0, *)) {
         safeArea.top = 20;
+        if (![self fd_prefersNavigationBarHidden]) {
+            plusY = self.navigationController.navigationBar.frame.size.height;
+        }
     }
     if (_safeAreaBottom.length > 0) {
         safeArea.bottom = [_safeAreaBottom integerValue];
     }
     
     //自定义状态栏
-    if ([_statusBarType isEqualToString:@""] || [_statusBarType isEqualToString:@"fullscreen"] || [_statusBarType isEqualToString:@"immersion"] || self.edgesForExtendedLayout == UIRectEdgeNone) {
+    if ([_statusBarType isEqualToString:@"fullscreen"] || [_statusBarType isEqualToString:@"immersion"]) {
         _statusBar.hidden = YES;
         if ([_pageType isEqualToString:@"web"]) {
-            _webView.frame = CGRectMake(safeArea.left, 0, self.view.frame.size.width-safeArea.left-safeArea.right, _weexHeight-safeArea.bottom);
+            _webView.frame = CGRectMake(safeArea.left, 0 + plusY, self.view.frame.size.width - safeArea.left - safeArea.right, _weexHeight - plusY - safeArea.bottom);
         }else{
-            _instance.frame = CGRectMake(safeArea.left, 0, self.view.frame.size.width-safeArea.left-safeArea.right, _weexHeight-safeArea.bottom);
+            _instance.frame = CGRectMake(safeArea.left, 0 + plusY, self.view.frame.size.width - safeArea.left - safeArea.right, _weexHeight - plusY - safeArea.bottom);
         }
     } else {
         CGFloat top = 0;
@@ -174,9 +180,9 @@ static int easyNavigationButtonTag = 8000;
         }
 
         if ([_pageType isEqualToString:@"web"]) {
-            _webView.frame = CGRectMake(safeArea.left, top, self.view.frame.size.width - safeArea.left-safeArea.right, _weexHeight - top -safeArea.bottom);
+            _webView.frame = CGRectMake(safeArea.left, top + plusY, self.view.frame.size.width - safeArea.left - safeArea.right, _weexHeight - top - plusY - safeArea.bottom);
         }else{
-            _instance.frame = CGRectMake(safeArea.left, top, self.view.frame.size.width - safeArea.left-safeArea.right, _weexHeight - top -safeArea.bottom);
+            _instance.frame = CGRectMake(safeArea.left, top + plusY, self.view.frame.size.width - safeArea.left - safeArea.right, _weexHeight - top - plusY - safeArea.bottom);
         }
     }
 }
@@ -536,7 +542,7 @@ static int easyNavigationButtonTag = 8000;
     }
     _notificationStatus = status;
     for (NSString *key in self.listenerList) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:key object:@{@"status":status}];
+        [[NSNotificationCenter defaultCenter] postNotificationName:key object:@{@"status":status, @"listenerName":key}];
     }
 }
 
@@ -593,6 +599,10 @@ static int easyNavigationButtonTag = 8000;
 #pragma mark - refresh
 - (void)refreshPage
 {
+    self.navigationItem.leftBarButtonItem = nil;
+    self.navigationItem.rightBarButtonItem = nil;
+    [self hideNavigation];
+    
     if ([_pageType isEqualToString:@"web"]) {
         [self.webView reload];
     } else {
@@ -656,6 +666,9 @@ static int easyNavigationButtonTag = 8000;
 //设置页面标题栏标题
 - (void)setNavigationTitle:(id) params callback:(WXModuleKeepAliveCallback) callback
 {
+    if ([_statusBarType isEqualToString:@"fullscreen"] || [_statusBarType isEqualToString:@"immersion"]) {
+        return;
+    }
     if (nil == _navigationCallbackDictionary) {
         _navigationCallbackDictionary = [[NSMutableDictionary alloc] init];
     }
@@ -663,6 +676,8 @@ static int easyNavigationButtonTag = 8000;
     NSMutableDictionary *item = [[NSMutableDictionary alloc] init];
     if ([params isKindOfClass:[NSString class]]) {
         item[@"title"] = [WXConvert NSString:params];
+    } else if ([params isKindOfClass:[NSDictionary class]]) {
+        item = [params copy];
     }
     NSString *title = item[@"title"] ? [WXConvert NSString:item[@"title"]] : @"";
     NSString *titleColor = item[@"titleColor"] ? [WXConvert NSString:item[@"titleColor"]] : @"#232323";
@@ -674,10 +689,8 @@ static int easyNavigationButtonTag = 8000;
     
     //背景色
     CGFloat alpha = (255 - _statusBarAlpha) * 1.0 / 255;
-    [self setFd_prefersNavigationBarHidden:NO];
-    [self.navigationController setNavigationBarHidden:NO];
     self.navigationController.navigationBar.barTintColor = [[WXConvert UIColor:backgroundColor] colorWithAlphaComponent:alpha];
-    self.edgesForExtendedLayout = UIRectEdgeNone;
+    [self showNavigation];
     
     //标题
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
@@ -752,7 +765,7 @@ static int easyNavigationButtonTag = 8000;
         [buttonArray addObject:params];
     }
     
-    NSMutableArray *buttonItems = [[NSMutableArray alloc] init];
+    UIView *buttonItems = [[UIView alloc] init];
     for (NSDictionary *item in buttonArray)
     {
         NSString *title = item[@"title"] ? [WXConvert NSString:item[@"title"]] : @"";
@@ -763,9 +776,19 @@ static int easyNavigationButtonTag = 8000;
         CGFloat iconSize = item[@"iconSize"] ? [WXConvert CGFloat:item[@"iconSize"]] : 28.0;
         
         UIButton *customButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        customButton.tag = ++easyNavigationButtonTag;
         if (icon.length > 0) {
-            [customButton setImage:[DeviceUtil getIconText:icon font:SCALE(iconSize) color:iconColor] forState:UIControlStateNormal];
+            if ([icon containsString:@"//"] || [icon hasPrefix:@"data:"]) {
+                [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:icon] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
+                    if (image) {
+                        WXPerformBlockOnMainThread(^{
+                            [customButton setImage:[DeviceUtil imageResize:image andResizeTo:CGSizeMake(SCALE(iconSize), SCALE(iconSize)) icon:nil] forState:UIControlStateNormal];
+                            [customButton SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing: (icon.length > 0 && title.length > 0) ? 5 : 0];
+                        });
+                    }
+                }];
+            } else {
+                [customButton setImage:[DeviceUtil getIconText:icon font:SCALE(iconSize) color:iconColor] forState:UIControlStateNormal];
+            }
         }
         if (title.length > 0){
             customButton.titleLabel.font = [UIFont systemFontOfSize:SCALE(titleSize)];
@@ -774,22 +797,28 @@ static int easyNavigationButtonTag = 8000;
             [customButton.titleLabel sizeToFit];
         }
         [customButton SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing: (icon.length > 0 && title.length > 0) ? 5 : 0];
-        [customButton addTarget:self action:@selector(navigationItemClick:) forControlEvents:UIControlEventTouchUpInside];
         if (callback) {
+            customButton.tag = ++easyNavigationButtonTag;
+            [customButton addTarget:self action:@selector(navigationItemClick:) forControlEvents:UIControlEventTouchUpInside];
             [_navigationCallbackDictionary setObject:@{@"callback":[callback copy], @"params":[item copy]} forKey:@(customButton.tag)];
         }
         [customButton sizeToFit];
-        [buttonItems addObject:[[UIBarButtonItem alloc] initWithCustomView:customButton]];
+        CGFloat bWitdh = buttonItems.frame.size.width;
+        CGFloat cWitdh = MAX(self.navigationController.navigationBar.frame.size.height, customButton.frame.size.width);
+        CGFloat cHeight = self.navigationController.navigationBar.frame.size.height;
+        [customButton setFrame:CGRectMake(bWitdh, 0, cWitdh, cHeight)];
+        [buttonItems setFrame:CGRectMake(0, 0, bWitdh + cWitdh, cHeight)];
+        [buttonItems addSubview:customButton];
     }
     
     if ([position isEqualToString:@"right"]) {
-        self.navigationItem.rightBarButtonItems = buttonItems;
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:buttonItems];
     }else{
-        self.navigationItem.leftBarButtonItems = buttonItems;
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:buttonItems];
     }
 }
 
-//导航标题点击回调
+//标题栏标题点击回调
 - (void)navigationTitleClick:(UITapGestureRecognizer *)tapGesture
 {
     id item = [_navigationCallbackDictionary objectForKey:@(tapGesture.view.tag)];
@@ -801,7 +830,7 @@ static int easyNavigationButtonTag = 8000;
     }
 }
 
-//导航菜单点击回调
+//标题栏菜单点击回调
 -(void)navigationItemClick:(UIButton *) button
 {
     id item = [_navigationCallbackDictionary objectForKey:@(button.tag)];
@@ -811,6 +840,28 @@ static int easyNavigationButtonTag = 8000;
             callback([item[@"params"] isKindOfClass:[NSDictionary class]] ? item[@"params"] : @{}, YES);
         }
     }
+}
+
+//标题栏显示
+- (void)showNavigation
+{
+    if ([_statusBarType isEqualToString:@"fullscreen"] || [_statusBarType isEqualToString:@"immersion"]) {
+        return;
+    }
+    [self setFd_prefersNavigationBarHidden:NO];
+    [self.navigationController setNavigationBarHidden:NO];
+    [self.view setNeedsLayout];
+}
+
+//标题栏隐藏
+- (void)hideNavigation
+{
+    if ([_statusBarType isEqualToString:@"fullscreen"] || [_statusBarType isEqualToString:@"immersion"]) {
+        return;
+    }
+    [self setFd_prefersNavigationBarHidden:YES];
+    [self.navigationController setNavigationBarHidden:YES];
+    [self.view setNeedsLayout];
 }
 
 @end

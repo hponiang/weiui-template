@@ -35,6 +35,8 @@ import cc.weiui.framework.extend.module.weiuiMap;
 import cc.weiui.framework.extend.module.weiuiParse;
 import cc.weiui.framework.extend.view.webviewBridge.InjectedChromeClient;
 import cc.weiui.framework.ui.module.WebModule;
+import cc.weiui.framework.ui.module.WebNavigationBarModule;
+import cc.weiui.framework.ui.module.WebNavigatorModule;
 import cc.weiui.framework.ui.module.WebviewModule;
 
 import static android.app.Activity.RESULT_OK;
@@ -71,6 +73,8 @@ public class ExtendWebView extends WebView {
         //
         WebCallBean.addClassData("weiui", WebModule.class);
         WebCallBean.addClassData("webview", WebviewModule.class);
+        WebCallBean.addClassData("navigator", WebNavigatorModule.class);
+        WebCallBean.addClassData("navigationBar", WebNavigationBarModule.class);
         mWebChromeClient = new WebChromeClient(WebCallBean.getClassData());
         //
         Drawable drawable = context.getResources().getDrawable(R.drawable.progress_bar_states);

@@ -11,6 +11,8 @@
 #import "WeexInitManager.h"
 
 #import "WeiuiBridge.h"
+#import "NavigatorBridge.h"
+#import "NavigationBarBridge.h"
 
 @implementation JSCallCommon
 
@@ -165,7 +167,7 @@
         return;
     }
     
-    NSString *javaScript = @";(function(b){console.log('weiuiModel initialization begin');if(b.__weiuiModel===true){return}b.__weiuiModel=true;var a={queue:[],callback:function(){var d=Array.prototype.slice.call(arguments,0);var c=d.shift();var e=d.shift();this.queue[c].apply(this,d);if(!e){delete this.queue[c]}}};a.funcArray=function(){var f=Array.prototype.slice.call(arguments,0);if(f.length<1){throw'weiuiModel call error, message:miss method name'}var e=[];for(var h=1;h<f.length;h++){var c=f[h];var j=typeof c;e[e.length]=j;if(j=='function'){var d=a.queue.length;a.queue[d]=c;f[h]=d}}var g=JSON.parse(prompt(JSON.stringify({__identify:'weiuiModel',method:f.shift(),types:e,args:f})));if(g.code!=200){throw'weiui call error, code:'+g.code+', message:'+g.result}return g.result};Object.getOwnPropertyNames(a).forEach(function(d){var c=a[d];if(typeof c==='function'&&d!=='callback'){a[d]=function(){return c.apply(a,[d].concat(Array.prototype.slice.call(arguments,0)))}}});b.weiuiModel=a;console.log('weiuiModel initialization end')})(window);";
+    NSString *javaScript = @";(function(b){console.log('weiuiModel initialization begin');if(b.__weiuiModel===true){return}b.__weiuiModel=true;var a={queue:[],callback:function(){var d=Array.prototype.slice.call(arguments,0);var c=d.shift();var e=d.shift();this.queue[c].apply(this,d)/*;if(!e){delete this.queue[c]}*/}};a.funcArray=function(){var f=Array.prototype.slice.call(arguments,0);if(f.length<1){throw'weiuiModel call error, message:miss method name'}var e=[];for(var h=1;h<f.length;h++){var c=f[h];var j=typeof c;e[e.length]=j;if(j=='function'){var d=a.queue.length;a.queue[d]=c;f[h]=d}}var g=JSON.parse(prompt(JSON.stringify({__identify:'weiuiModel',method:f.shift(),types:e,args:f})));if(g.code!=200){throw'weiui call error, code:'+g.code+', message:'+g.result}return g.result};Object.getOwnPropertyNames(a).forEach(function(d){var c=a[d];if(typeof c==='function'&&d!=='callback'){a[d]=function(){return c.apply(a,[d].concat(Array.prototype.slice.call(arguments,0)))}}});b.weiuiModel=a;console.log('weiuiModel initialization end')})(window);";
     javaScript = [javaScript stringByReplacingOccurrencesOfString:@"weiuiModel" withString:name];
     javaScript = [javaScript stringByReplacingOccurrencesOfString:@"a.funcArray=" withString:funcString];
     
@@ -189,6 +191,8 @@
 {
     [self setJSCallAssign:webView name:@"weiui" bridge:[[WeiuiBridge alloc] init]];
     [self setJSCallAssign:webView name:@"webview" bridge:webBridge];
+    [self setJSCallAssign:webView name:@"navigator" bridge:[[NavigatorBridge alloc] init]];
+    [self setJSCallAssign:webView name:@"navigationBar" bridge:[[NavigationBarBridge alloc] init]];
     [WeexInitManager setJSCallModule:self webView:(WKWebView*)webView];
 }
 

@@ -58,6 +58,7 @@
     BOOL loading = params[@"loading"] ? [WXConvert BOOL:params[@"loading"]] : YES;
 
     BOOL swipeBack = params[@"swipeBack"] ? [WXConvert BOOL:params[@"swipeBack"]] : YES;
+    BOOL animated = params[@"animated"] ? [WXConvert BOOL:params[@"animated"]] : YES;
     NSString *statusBarType = params[@"statusBarType"] ? [WXConvert NSString:params[@"statusBarType"]] : @"normal";
     NSString *statusBarColor = params[@"statusBarColor"] ? [WXConvert NSString:params[@"statusBarColor"]] : @"#3EB4FF";
     NSInteger statusBarAlpha = params[@"statusBarAlpha"] ? [WXConvert NSInteger:params[@"statusBarAlpha"]] : 0;
@@ -105,9 +106,9 @@
     };
     
     if (self.weexInstance.viewController.navigationController) {
-        [self.weexInstance.viewController.navigationController pushViewController:mainVC animated:YES];
+        [self.weexInstance.viewController.navigationController pushViewController:mainVC animated:animated];
     } else if ([[DeviceUtil getTopviewControler] navigationController]) {
-        [[[DeviceUtil getTopviewControler] navigationController] pushViewController:mainVC animated:YES];
+        [[[DeviceUtil getTopviewControler] navigationController] pushViewController:mainVC animated:animated];
     } else {
         [[UIApplication sharedApplication] delegate].window.rootViewController =  [[WXRootViewController alloc] initWithRootViewController:mainVC];
     }
@@ -422,11 +423,13 @@
 - (void)closePage:(id)params
 {
     NSString *name = @"";
+    BOOL animated = YES;
     if (params) {
         if ([params isKindOfClass:[NSString class]]) {
             name = params;
         } else if ([params isKindOfClass:[NSDictionary class]]) {
             name = [WXConvert NSString:params[@"pageName"]];
+            animated = params[@"animated"] ? [WXConvert BOOL:params[@"animated"]] : YES;
         }
     } else {
         name = [(WXMainViewController*)[DeviceUtil getTopviewControler] pageName];
@@ -468,9 +471,9 @@
             [self removePageData:[(WXMainViewController*)array[i] pageName]];
             if (i + 1 == array.count) {
                 if (isDeviceUtil) {
-                    [[[DeviceUtil getTopviewControler] navigationController] popViewControllerAnimated:YES];
+                    [[[DeviceUtil getTopviewControler] navigationController] popViewControllerAnimated:animated];
                 } else {
-                    [self.weexInstance.viewController.navigationController popViewControllerAnimated:YES];
+                    [self.weexInstance.viewController.navigationController popViewControllerAnimated:animated];
                 }
             } else {
                 [array removeObjectAtIndex:i];
@@ -612,6 +615,22 @@
     WXMainViewController *vc = (WXMainViewController*)[DeviceUtil getTopviewControler];
     if (vc) {
         [vc setNavigationItems:params position:@"right" callback:callback];
+    }
+}
+
+- (void)showNavigation
+{
+    WXMainViewController *vc = (WXMainViewController*)[DeviceUtil getTopviewControler];
+    if (vc) {
+        [vc showNavigation];
+    }
+}
+
+- (void)hideNavigation
+{
+    WXMainViewController *vc = (WXMainViewController*)[DeviceUtil getTopviewControler];
+    if (vc) {
+        [vc hideNavigation];
     }
 }
 

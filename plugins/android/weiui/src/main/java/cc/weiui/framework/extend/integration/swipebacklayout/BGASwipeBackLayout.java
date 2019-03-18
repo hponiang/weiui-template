@@ -17,7 +17,6 @@
 
 package cc.weiui.framework.extend.integration.swipebacklayout;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -571,7 +570,6 @@ public class BGASwipeBackLayout extends ViewGroup {
         mPostedRunnables.clear();
     }
 
-    @SuppressLint("Range")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -1587,7 +1585,7 @@ public class BGASwipeBackLayout extends ViewGroup {
         }
     }
 
-    public static class LayoutParams extends ViewGroup.MarginLayoutParams {
+    public static class LayoutParams extends MarginLayoutParams {
         private static final int[] ATTRS = new int[]{
                 android.R.attr.layout_weight
         };
@@ -1619,7 +1617,7 @@ public class BGASwipeBackLayout extends ViewGroup {
             super(width, height);
         }
 
-        public LayoutParams(android.view.ViewGroup.LayoutParams source) {
+        public LayoutParams(ViewGroup.LayoutParams source) {
             super(source);
         }
 
@@ -1778,7 +1776,7 @@ public class BGASwipeBackLayout extends ViewGroup {
 
         @Override
         public boolean onRequestSendAccessibilityEvent(ViewGroup host, View child,
-                                                       AccessibilityEvent event) {
+                AccessibilityEvent event) {
             if (!filter(child)) {
                 return super.onRequestSendAccessibilityEvent(host, child, event);
             }
@@ -1795,7 +1793,7 @@ public class BGASwipeBackLayout extends ViewGroup {
          * Leave it private here as it's not general-purpose useful.
          */
         private void copyNodeInfoNoChildren(AccessibilityNodeInfoCompat dest,
-                                            AccessibilityNodeInfoCompat src) {
+                AccessibilityNodeInfoCompat src) {
             final Rect rect = mTmpRect;
 
             src.getBoundsInParent(rect);

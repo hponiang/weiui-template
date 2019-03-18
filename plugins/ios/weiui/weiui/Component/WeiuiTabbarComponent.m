@@ -496,12 +496,12 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             }
             
             //图片
-            if ([unSelectedIcon containsString:@"//"]) {
-                [btn setImage:[self imageResize:nil andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateNormal];
+            if ([unSelectedIcon containsString:@"//"] || [unSelectedIcon hasPrefix:@"data:"]) {
+                [btn setImage:[DeviceUtil imageResize:nil andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateNormal];
                 [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:unSelectedIcon] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
                     if (image) {
                         WXPerformBlockOnMainThread(^{
-                            [btn setImage:[self imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateNormal];
+                            [btn setImage:[DeviceUtil imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateNormal];
                             if (self->_iconVisible == NO) {
                                 [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:5];
                             } else if (self->_iconGravity) {
@@ -513,14 +513,14 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                     }
                 }];
             } else {
-                [btn setImage:[self imageResize:[DeviceUtil getIconText:unSelectedIcon font:0 color:@"#242424"] andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:unSelectedIcon] forState:UIControlStateNormal];
+                [btn setImage:[DeviceUtil imageResize:[DeviceUtil getIconText:unSelectedIcon font:0 color:@"#242424"] andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:unSelectedIcon] forState:UIControlStateNormal];
             }
             
-            if ([selectedIcon containsString:@"//"]) {
+            if ([selectedIcon containsString:@"//"] || [selectedIcon hasPrefix:@"data:"]) {
                 [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:selectedIcon] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
                     if (image) {
                         WXPerformBlockOnMainThread(^{
-                            [btn setImage:[self imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateSelected];
+                            [btn setImage:[DeviceUtil imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateSelected];
                             if (self->_iconVisible == NO) {
                                 [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:5];
                             } else if (self->_iconGravity) {
@@ -532,7 +532,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                     }
                 }];
             } else {
-                [btn setImage:[self imageResize:[DeviceUtil getIconText:selectedIcon font:0 color:_textSelectColor] andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:selectedIcon] forState:UIControlStateSelected];
+                [btn setImage:[DeviceUtil imageResize:[DeviceUtil getIconText:selectedIcon font:0 color:_textSelectColor] andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:selectedIcon] forState:UIControlStateSelected];
             }
             
             //字体加粗
@@ -712,21 +712,6 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
     
     self.underLineView.frame = CGRectMake(0, y, _tabView.frame.size.width, lineHeight);
     self.underLineView.backgroundColor = [WXConvert UIColor:_underlineColor];
-}
-
-- (UIImage *)imageResize:(UIImage*)img andResizeTo:(CGSize)newSize icon:(NSString *)icon
-{
-    CGFloat scale = [[UIScreen mainScreen]scale];
-    UIGraphicsBeginImageContextWithOptions(newSize, NO, scale);
-    NSInteger x = 0;
-    if (![icon containsString:@"//"]) {
-        x = -newSize.width * scale / 30;
-    }
-    [img drawInRect:CGRectMake(x, 0, newSize.width, newSize.height)];//有偏移，自己加了参数
-    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return newImage;
 }
 
 - (void)loadTabPagesView

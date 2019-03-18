@@ -1,20 +1,16 @@
 //
-//  WeiuiNavigatorModule.m
+//  NavigatorBridge.m
 //  Pods
 //
-//  Created by 高一 on 2019/3/13.
+//  Created by 高一 on 2019/3/16.
 //
 
-#import "WeiuiNavigatorModule.h"
+#import "NavigatorBridge.h"
 #import "WeiuiNewPageManager.h"
 #import "DeviceUtil.h"
+#import "WXConvert.h"
 
-@implementation WeiuiNavigatorModule
-
-@synthesize weexInstance;
-
-WX_EXPORT_METHOD(@selector(push:callback:))
-WX_EXPORT_METHOD(@selector(pop:callback:))
+@implementation NavigatorBridge
 
 - (void)push:(id)params callback:(WXModuleKeepAliveCallback)callback
 {
@@ -26,7 +22,7 @@ WX_EXPORT_METHOD(@selector(pop:callback:))
     }
     info = [params mutableCopy];
     info[@"pageTitle"] = info[@"pageTitle"] ? [WXConvert NSString:info[@"pageTitle"]] : @" ";
-    [WeiuiNewPageManager sharedIntstance].weexInstance = weexInstance;
+    [WeiuiNewPageManager sharedIntstance].weexInstance = [[WXSDKManager bridgeMgr] topInstance];
     [[WeiuiNewPageManager sharedIntstance] openPage:info callback:callback];
 }
 
@@ -49,3 +45,4 @@ WX_EXPORT_METHOD(@selector(pop:callback:))
 }
 
 @end
+

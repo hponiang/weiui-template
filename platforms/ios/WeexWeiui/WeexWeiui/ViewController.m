@@ -13,6 +13,7 @@
 #import "WeiuiNewPageManager.h"
 #import "Config.h"
 #import "Cloud.h"
+#import "UINavigationController+FDFullscreenPopGesture.h"
 
 @interface ViewController ()
 
@@ -26,6 +27,8 @@ WXMainViewController *homeController;
 
 - (void) viewDidLoad {
     [super viewDidLoad];
+    
+    [self setFd_prefersNavigationBarHidden:YES];
     
     NSString *bundleUrl = [Config getHome];
     

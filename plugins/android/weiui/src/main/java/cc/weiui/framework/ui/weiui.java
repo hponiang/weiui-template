@@ -70,6 +70,8 @@ import cc.weiui.framework.ui.component.tabbar.Tabbar;
 import cc.weiui.framework.ui.component.tabbar.TabbarPage;
 import cc.weiui.framework.ui.component.webView.WebView;
 import cc.weiui.framework.ui.module.WeexModule;
+import cc.weiui.framework.ui.module.WeexNavigationBarModule;
+import cc.weiui.framework.ui.module.WeexNavigatorModule;
 import dalvik.system.BaseDexClassLoader;
 import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
@@ -150,6 +152,9 @@ public class weiui {
 
         try {
             WXSDKEngine.registerModule("weiui", WeexModule.class);
+            WXSDKEngine.registerModule("navigator", WeexNavigatorModule.class);
+            WXSDKEngine.registerModule("navigationBar", WeexNavigationBarModule.class);
+            //
             WXSDKEngine.registerComponent("weiui_banner", Banner.class);
             WXSDKEngine.registerComponent("weiui_button", Button.class);
             WXSDKEngine.registerComponent("weiui_grid", Grid.class);
@@ -401,6 +406,10 @@ public class weiui {
         if (json.getString("pageName") != null) {
             mBean.setPageName(json.getString("pageName"));
         }
+        //标题
+        if (json.getString("pageTitle") != null) {
+            mBean.setPageTitle(json.getString("pageTitle"));
+        }
         //类型（默认：weex）
         if (json.getString("pageType") != null) {
             mBean.setPageType(json.getString("pageType"));
@@ -420,6 +429,10 @@ public class weiui {
         //是否支持滑动返回（默认：false）
         if (json.getBoolean("swipeBack") != null) {
             mBean.setSwipeBack(json.getBoolean("swipeBack"));
+        }
+        //是否进入页面需要动画效果（默认：true）
+        if (json.getBoolean("animated") != null) {
+            mBean.setAnimated(json.getBoolean("animated"));
         }
         //状态栏样式（可选，等于fullscreen|immersion时statusBarType、statusBarAlpha无效）
         if (json.getString("statusBarType") != null) {
@@ -441,7 +454,7 @@ public class weiui {
         if (json.getBoolean("translucent") != null) {
             mBean.setTranslucent(json.getBoolean("translucent"));
         }
-        //页面背景颜色（默认：#f4f8f9）
+        //页面背景颜色（默认：#ffffff）
         if (json.getString("backgroundColor") != null) {
             mBean.setBackgroundColor(json.getString("backgroundColor"));
         }
@@ -511,6 +524,10 @@ public class weiui {
      */
     public void closePage(Context context, String object) {
         String pageName = weiuiPage.getPageName(object);
+        if (context instanceof PageActivity) {
+            boolean animated = weiuiJson.getBoolean(weiuiJson.parseObject(object), "animated", true);
+            ((PageActivity) context).getPageInfo().setAnimatedClose(animated);
+        }
         if (pageName.isEmpty()) {
             BGAKeyboardUtil.closeKeyboard((Activity) context);
             weiuiPage.closeActivity((Activity) context);
@@ -576,9 +593,22 @@ public class weiui {
      * @param context
      * @param isLight 是否亮色
      */
+    public void setStatusBarStyle(Context context, boolean isLight) {
+        if (context instanceof PageActivity) {
+            ((PageActivity) context).setStatusBarStyle(isLight);
+        } else {
+            this.toast(context, "当前页面不支持状态栏字体变色");
+        }
+    }
+
+    /**
+     * 修改状态栏样式
+     * @param context
+     * @param isLight 是否亮色
+     */
     public void statusBarStyle(Context context, boolean isLight) {
         if (context instanceof PageActivity) {
-            ((PageActivity) context).statusBarStyle(isLight);
+            ((PageActivity) context).setStatusBarStyle(isLight);
         } else {
             this.toast(context, "当前页面不支持状态栏字体变色");
         }

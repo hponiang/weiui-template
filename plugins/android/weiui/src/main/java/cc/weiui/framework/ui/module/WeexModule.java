@@ -95,8 +95,17 @@ public class WeexModule extends WXModule {
      * @param isLight 是否亮色
      */
     @JSMethod
+    public void setStatusBarStyle(boolean isLight) {
+        myApp().setStatusBarStyle(mWXSDKInstance.getContext(), isLight);
+    }
+
+    /**
+     * 修改状态栏样式
+     * @param isLight 是否亮色
+     */
+    @JSMethod
     public void statusBarStyle(boolean isLight) {
-        myApp().statusBarStyle(mWXSDKInstance.getContext(), isLight);
+        myApp().setStatusBarStyle(mWXSDKInstance.getContext(), isLight);
     }
 
     /**

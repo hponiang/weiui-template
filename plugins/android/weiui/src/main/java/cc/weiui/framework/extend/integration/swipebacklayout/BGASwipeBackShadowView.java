@@ -164,7 +164,7 @@ class BGASwipeBackShadowView extends FrameLayout {
                     height = mPreDecorView.getHeight();
                 }
                 if (mPreDecorView instanceof FrameLayout) {
-                    lp = new FrameLayout.LayoutParams(width, height);
+                    lp = new LayoutParams(width, height);
                 } else if (mPreDecorView instanceof LinearLayout) {
                     lp = new LinearLayout.LayoutParams(width, height);
                 } else if (mPreDecorView instanceof RelativeLayout) {

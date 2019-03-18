@@ -79,6 +79,10 @@ public class weiuiPage {
         intent.putExtra("name", mBean.getPageName());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+        //
+        if (!mBean.isAnimated()) {
+            ((Activity) context).overridePendingTransition(0, 0);
+        }
     }
 
     /**
@@ -176,6 +180,19 @@ public class weiuiPage {
             pageName = "";
         }
         return pageName;
+    }
+
+    /**
+     * 获取页面名称
+     * @param activity
+     * @return
+     */
+    public static String getPageName(Activity activity) {
+        if (activity instanceof PageActivity) {
+            return ((PageActivity) activity).getPageInfo().getPageName();
+        }else{
+            return null;
+        }
     }
 
     /**

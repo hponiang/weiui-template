@@ -43,4 +43,6 @@ typedef NS_ENUM(NSInteger, SK_AUTOSCROLL_DIRECTION){
 
 - (void)alignmentText:(NSTextAlignment)textAlignment;
 
+- (UILabel *)scrollLabel;
+
 @end

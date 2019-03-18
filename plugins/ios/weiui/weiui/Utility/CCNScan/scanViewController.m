@@ -7,7 +7,6 @@
 //
 
 #import "scanViewController.h"
-#import "resultViewController.h"
 #import "DeviceUtil.h"
 #import "LBXScanView.h"
 #import "WXConvert.h"
@@ -44,7 +43,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.edgesForExtendedLayout = UIRectEdgeNone;
     self.extendedLayoutIncludesOpaqueBars = NO;
     self.modalPresentationCapturesStatusBarAppearance = NO;
     
@@ -111,14 +109,16 @@
 
 - (void)loadScanerView
 {
+    CGFloat plusY = self.navigationController.navigationBar.frame.size.height + [[UIApplication sharedApplication] statusBarFrame].size.height;
+    
     self.scanStyle = [[LBXScanViewStyle alloc] init];
     self.scanStyle.animationImage = [UIImage imageNamed:@"CodeScan.bundle/qrcode_scan_weixin_line"];
     self.scanStyle.colorAngle = [UIColor greenColor];
-    
-    self.scanView = [[LBXScanView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) style:self.scanStyle];
+    self.scanView = [[LBXScanView alloc] initWithFrame:CGRectMake(0, plusY, self.view.frame.size.width, self.view.frame.size.height) style:self.scanStyle];
     [self.view addSubview:self.scanView];
+    
     if (self.desc.length > 0) {
-        UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(25, self.view.frame.size.height - (iPhoneXSeries ? 284 : 248), self.view.frame.size.width - 50, 100)];
+        UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(25, self.view.frame.size.height - (iPhoneXSeries ? 284 : 248) + plusY, self.view.frame.size.width - 50, 100)];
         lab.textColor = [UIColor whiteColor];
         lab.lineBreakMode = NSLineBreakByWordWrapping;
         lab.numberOfLines = 0;
@@ -134,8 +134,9 @@
     if (_bottomItemsView) {
         return;
     }
+    CGFloat plusY = self.navigationController.navigationBar.frame.size.height + [[UIApplication sharedApplication] statusBarFrame].size.height;
     
-    self.bottomItemsView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.view.frame) - (iPhoneXSeries ? 200 : 164), CGRectGetWidth(self.view.frame), 84)];
+    self.bottomItemsView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.view.frame) - (iPhoneXSeries ? 200 : 164) + plusY, CGRectGetWidth(self.view.frame), 84)];
     _bottomItemsView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
     
     [self.view addSubview:_bottomItemsView];

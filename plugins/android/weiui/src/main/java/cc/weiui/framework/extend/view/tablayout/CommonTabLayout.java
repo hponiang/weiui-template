@@ -1065,6 +1065,6 @@ public class CommonTabLayout extends FrameLayout implements ValueAnimator.Animat
     }
 
     private boolean isFontIcon(String var) {
-        return var != null && !var.contains("//");
+        return var != null && !var.contains("//") && !var.startsWith("data:");
     }
 }

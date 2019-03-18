@@ -40,5 +40,7 @@
 - (void)setTitle:(id) params callback:(WXModuleKeepAliveCallback) callback;
 - (void)setLeftItems:(id) params callback:(WXModuleKeepAliveCallback) callback;
 - (void)setRightItems:(id) params callback:(WXModuleKeepAliveCallback) callback;
+- (void)showNavigation;
+- (void)hideNavigation;
 
 @end

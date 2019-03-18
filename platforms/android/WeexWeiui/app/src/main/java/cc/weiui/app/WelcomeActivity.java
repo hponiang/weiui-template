@@ -26,6 +26,7 @@ public class WelcomeActivity extends AppCompatActivity {
             PageBean mPageBean = new PageBean();
             mPageBean.setUrl(weiuiBase.config.getHome());
             mPageBean.setPageName(weiuiBase.config.getHomeParams("pageName", "firstPage"));
+            mPageBean.setPageTitle(weiuiBase.config.getHomeParams("pageTitle", ""));
             mPageBean.setPageType(weiuiBase.config.getHomeParams("pageType", "weex"));
             mPageBean.setParams(weiuiBase.config.getHomeParams("params", "{}"));
             mPageBean.setCache(weiuiParse.parseLong(weiuiBase.config.getHomeParams("cache", "0")));
@@ -38,7 +39,8 @@ public class WelcomeActivity extends AppCompatActivity {
                 mPageBean.setStatusBarStyle(weiuiParse.parseBool(statusBarStyle));
             }
             mPageBean.setSoftInputMode(weiuiBase.config.getHomeParams("softInputMode", "auto"));
-            mPageBean.setBackgroundColor(weiuiBase.config.getHomeParams("backgroundColor", "#f4f8f9"));
+            mPageBean.setBackgroundColor(weiuiBase.config.getHomeParams("backgroundColor", "#ffffff"));
+            mPageBean.setFirstPage(true);
             mPageBean.setCallback(new JSCallback() {
                 @Override
                 public void invoke(Object data) {

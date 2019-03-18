@@ -31,4 +31,6 @@
 
 + (NSString *)convertToCamelCaseFromSnakeCase:(NSString *)key;
 
++ (UIImage *)imageResize:(UIImage*)img andResizeTo:(CGSize)newSize icon:(NSString *)icon;
+
 @end
