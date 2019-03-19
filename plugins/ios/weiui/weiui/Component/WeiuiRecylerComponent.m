@@ -112,9 +112,11 @@ WX_EXPORT_METHOD(@selector(smoothScrollToPosition:))
     //collectionView.bounces = NO;
     _collectionView.scrollEnabled = _scrollEnabled;
     
+    #ifdef __IPHONE_11_0
     if (@available(iOS 11.0, *)) {
         _collectionView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     }
+    #endif
     
     __weak typeof(self) ws = self;
     if (_isRefreshListener) {
@@ -319,9 +321,9 @@ WX_EXPORT_METHOD(@selector(smoothScrollToPosition:))
     [self fireEvent:@"itemLongClick" params:@{@"position":@(index)}];
 }
 
-- (void)setRefreshing:(BOOL)refreshing
+- (void)setRefreshing:(id)refreshing
 {
-    if (refreshing) {
+    if ([WXConvert BOOL:refreshing]) {
         [_collectionView.mj_header beginRefreshing];
     } else {
         [_collectionView.mj_header endRefreshing];
@@ -333,19 +335,19 @@ WX_EXPORT_METHOD(@selector(smoothScrollToPosition:))
     [_collectionView.mj_header endRefreshing];
 }
 
-- (void)refreshEnabled:(BOOL)isEnabled
+- (void)refreshEnabled:(id)isEnabled
 {
-    if (isEnabled) {
+    if ([WXConvert BOOL:isEnabled]) {
         _collectionView.mj_header.hidden = NO;
     } else {
         _collectionView.mj_header.hidden = YES;
     }
 }
 
-- (void)setHasMore:(BOOL)hasMore
+- (void)setHasMore:(id)hasMore
 {
     [_collectionView.mj_footer endRefreshing];
-    _collectionView.mj_footer.hidden = !hasMore;
+    _collectionView.mj_footer.hidden = ![WXConvert BOOL:hasMore];
     MJRefreshAutoStateFooter *footer = (MJRefreshAutoStateFooter*)_collectionView.mj_footer;
     [footer setTitle:hasMore ? _pullTipsIdle : @"" forState:MJRefreshStateIdle];
 }
@@ -355,7 +357,8 @@ WX_EXPORT_METHOD(@selector(smoothScrollToPosition:))
     [_collectionView.mj_footer endRefreshing];
 }
 
-- (void)itemDefaultAnimator:(BOOL)animator
+// weiui ios 无
+- (void)itemDefaultAnimator:(id)animator
 {
     
 }

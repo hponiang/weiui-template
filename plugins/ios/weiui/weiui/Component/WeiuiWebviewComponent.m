@@ -27,12 +27,15 @@
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) NSString *userAgent;
 @property (nonatomic, strong) NSString *customUserAgent;
+@property (nonatomic, assign) CGFloat webContentHeight;
 @property (nonatomic, assign) BOOL isShowProgress;
 @property (nonatomic, assign) BOOL isScrollEnabled;
 @property (nonatomic, assign) BOOL isEnableApi;
 @property (nonatomic, assign) BOOL isHeightChanged;
 @property (nonatomic, strong) JSCallCommon* JSCall;
 @property (strong, nonatomic) YHWebViewProgressView *progressView;
+
+@property (nonatomic, assign) BOOL isRemoveObserver;
 
 @end
 
@@ -142,17 +145,30 @@ WX_EXPORT_METHOD(@selector(goForward:))
 - (void) viewWillUnload
 {
     [super viewWillUnload];
-    WeiuiWebView *webView = (WeiuiWebView*)self.view;
     if (self.JSCall != nil) {
         [self.JSCall viewDidUnload];
         self.JSCall = nil;
     }
-    if (_isHeightChanged) {
-        [webView.scrollView removeObserver:self forKeyPath:@"contentSize" context:nil];
+    [self removeObserver];
+}
+
+- (void) dealloc
+{
+    [self removeObserver];
+}
+
+- (void) removeObserver
+{
+    if (_isRemoveObserver != YES) {
+        _isRemoveObserver = YES;
+        WeiuiWebView *webView = (WeiuiWebView*)self.view;
+        if (_isHeightChanged) {
+            [webView.scrollView removeObserver:self forKeyPath:@"contentSize" context:nil];
+        }
+        [webView removeObserver:self forKeyPath:@"URL" context:nil];
+        [webView removeObserver:self forKeyPath:@"title" context:nil];
+        [self.progressView outWkWebView:webView];
     }
-    [webView removeObserver:self forKeyPath:@"URL" context:nil];
-    [webView removeObserver:self forKeyPath:@"title" context:nil];
-    [self.progressView outWkWebView:webView];
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -160,13 +176,17 @@ WX_EXPORT_METHOD(@selector(goForward:))
     WeiuiWebView *webView = (WeiuiWebView*) self.view;
     if ([keyPath isEqualToString:@"contentSize"]) {
         CGFloat webViewHeight = webView.scrollView.contentSize.height;
-        [self fireEvent:@"heightChanged" params:@{@"height":@(750 * 1.0 / [UIScreen mainScreen].bounds.size.width * webViewHeight)}];
+        CGFloat contentHeight = 750 * 1.0 / [UIScreen mainScreen].bounds.size.width * webViewHeight;
+        if (contentHeight != _webContentHeight) {
+            _webContentHeight = contentHeight;
+            [self fireEvent:@"heightChanged" params:@{@"height":@(contentHeight)}];
+        }
     }else if ([keyPath isEqualToString:@"URL"]) {
         NSString *url = webView.URL.absoluteString;
-        [self fireEvent:@"stateChanged" params:@{@"status":@"url", @"title":@"", @"url":url, @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
+        [self fireEvent:@"stateChanged" params:@{@"status":@"url", @"title":@"", @"url":(url==nil?@"":url), @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
     }else if ([keyPath isEqualToString:@"title"]) {
         NSString *title = webView.title;
-        [self fireEvent:@"stateChanged" params:@{@"status":@"title", @"title":title, @"url":@"", @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
+        [self fireEvent:@"stateChanged" params:@{@"status":@"title", @"title":(title==nil?@"":title), @"url":@"", @"errCode":@"", @"errMsg":@"", @"errUrl":@""}];
     }
 }
 
