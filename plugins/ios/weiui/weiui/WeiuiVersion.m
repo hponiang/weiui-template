@@ -12,12 +12,12 @@
 
 + (NSString*)weiuiVersion
 {
-    return @"33";
+    return @"34";
 }
 
 + (NSString*)weiuiVersionName
 {
-    return @"0.0.33";
+    return @"0.0.34";
 }
 
 @end
