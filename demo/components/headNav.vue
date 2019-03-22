@@ -3,10 +3,10 @@
     <div class="nav" :style="{backgroundColor:backgroundColor}">
         <div class="title">
             <text class="title-text" :style="{color:color}">{{title}}</text>
-            <weiui_icon v-if="loading" class="title-load" :style="{color:color}"></weiui_icon>
+            <icon v-if="loading" class="title-load" :style="{color:color}"></icon>
         </div>
         <text v-if="rightTitle !== ''" class="title-right" @click="rightClick">{{rightTitle}}</text>
-        <weiui_icon v-if="back" class="back" @click="goBack" :content="backIcon"></weiui_icon>
+        <icon v-if="back" class="back" @click="goBack" :content="backIcon"></icon>
     </div>
 
 </template>

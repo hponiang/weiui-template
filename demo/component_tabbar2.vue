@@ -1,11 +1,11 @@
 <template>
     <div class="app">
 
-        <weiui_tabbar
+        <tabbar
                 ref="reflectName"
                 class="tabbar"
                 :weiui="{ tabType: 'top', textBold:2 }"
-                :tabPages="tabPages"></weiui_tabbar>
+                :tabPages="tabPages"></tabbar>
 
     </div>
 </template>

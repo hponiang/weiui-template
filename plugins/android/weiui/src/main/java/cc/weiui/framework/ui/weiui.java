@@ -155,23 +155,21 @@ public class weiui {
             WXSDKEngine.registerModule("navigator", WeexNavigatorModule.class);
             WXSDKEngine.registerModule("navigationBar", WeexNavigationBarModule.class);
             //
-            WXSDKEngine.registerComponent("weiui_banner", Banner.class);
-            WXSDKEngine.registerComponent("weiui_button", Button.class);
-            WXSDKEngine.registerComponent("weiui_grid", Grid.class);
-            WXSDKEngine.registerComponent("weiui_icon", Icon.class);
-            WXSDKEngine.registerComponent("weiui_marquee", Marquee.class);
-            WXSDKEngine.registerComponent("weiui_navbar", Navbar.class);
-            WXSDKEngine.registerComponent("weiui_navbar_item", NavbarItem.class);
-            WXSDKEngine.registerComponent("weiui_recyler", Recyler.class);
-            WXSDKEngine.registerComponent("weiui_list", Recyler.class);
-            WXSDKEngine.registerComponent("weiui_ripple", Ripple.class);
+            WXSDKEngine.registerComponent("banner", Banner.class);
+            WXSDKEngine.registerComponent("button", Button.class);
+            WXSDKEngine.registerComponent("grid", Grid.class);
+            WXSDKEngine.registerComponent("icon", Icon.class);
+            WXSDKEngine.registerComponent("marquee", Marquee.class);
+            WXSDKEngine.registerComponent("navbar", Navbar.class);
+            WXSDKEngine.registerComponent("navbar-item", NavbarItem.class);
             WXSDKEngine.registerComponent("ripple", Ripple.class);
-            WXSDKEngine.registerComponent("weiui_scroll_text", ScrollText.class);
-            WXSDKEngine.registerComponent("weiui_side_panel", SidePanel.class);
-            WXSDKEngine.registerComponent("weiui_side_panel_menu", SidePanelMenu.class);
-            WXSDKEngine.registerComponent("weiui_tabbar", Tabbar.class);
-            WXSDKEngine.registerComponent("weiui_tabbar_page", TabbarPage.class);
-            WXSDKEngine.registerComponent("weiui_webview", WebView.class);
+            WXSDKEngine.registerComponent("scroll-text", ScrollText.class);
+            WXSDKEngine.registerComponent("scroll-view", Recyler.class);
+            WXSDKEngine.registerComponent("side-panel", SidePanel.class);
+            WXSDKEngine.registerComponent("side-panel-menu", SidePanelMenu.class);
+            WXSDKEngine.registerComponent("tabbar", Tabbar.class);
+            WXSDKEngine.registerComponent("tabbar-page", TabbarPage.class);
+            WXSDKEngine.registerComponent("web-view", WebView.class);
         } catch (WXException e) {
             e.printStackTrace();
         }

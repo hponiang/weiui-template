@@ -2,12 +2,12 @@
 
     <div class="app">
 
-        <weiui_navbar class="navbar">
-            <weiui_navbar_item type="back"></weiui_navbar_item>
-            <weiui_navbar_item type="title">
+        <navbar class="navbar">
+            <navbar-item type="back"></navbar-item>
+            <navbar-item type="title">
                 <text class="title">拓展模块</text>
-            </weiui_navbar_item>
-        </weiui_navbar>
+            </navbar-item>
+        </navbar>
 
 
         <scroller class="list">
@@ -19,12 +19,12 @@
 
             <div class="list-item" v-for="(item, key) in expand_module" :key="key" @click="expandModuleClick(item.url)">
                 <div class="list-item-left">
-                    <weiui_icon class="list-left-icon" :weiui="{content: item.icon}"></weiui_icon>
+                    <icon class="list-left-icon" :weiui="{content: item.icon}"></icon>
                     <text class="list-left-title">{{item.title}}</text>
                 </div>
                 <div class="list-item-right">
                     <text class="list-right-title">{{item.title_en}}</text>
-                    <weiui_icon class="list-right-icon" :weiui="{content: 'tb-right'}"></weiui_icon>
+                    <icon class="list-right-icon" :weiui="{content: 'tb-right'}"></icon>
                 </div>
             </div>
 

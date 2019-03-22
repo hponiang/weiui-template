@@ -1,15 +1,15 @@
 <template>
     <div class="app">
 
-        <weiui_navbar class="navbar">
-            <weiui_navbar_item type="back"></weiui_navbar_item>
-            <weiui_navbar_item type="title">
+        <navbar class="navbar">
+            <navbar-item type="back"></navbar-item>
+            <navbar-item type="title">
                 <text class="title">广告弹窗</text>
-            </weiui_navbar_item>
-            <weiui_navbar_item type="right" @click="viewCode('module/adDialog')">
-                <weiui_icon content="md-code-working" class="iconr"></weiui_icon>
-            </weiui_navbar_item>
-        </weiui_navbar>
+            </navbar-item>
+            <navbar-item type="right" @click="viewCode('module/adDialog')">
+                <icon content="md-code-working" class="iconr"></icon>
+            </navbar-item>
+        </navbar>
 
         <div class="content">
             <text class="button" @click="openAdDialog">打开广告弹窗</text>

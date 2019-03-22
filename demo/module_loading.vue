@@ -1,23 +1,23 @@
 <template>
     <div class="app">
 
-        <weiui_navbar class="navbar">
-            <weiui_navbar_item type="back"></weiui_navbar_item>
-            <weiui_navbar_item type="title">
+        <navbar class="navbar">
+            <navbar-item type="back"></navbar-item>
+            <navbar-item type="title">
                 <text class="title">等待弹窗</text>
-            </weiui_navbar_item>
-            <weiui_navbar_item type="right" @click="viewCode('module/loading')">
-                <weiui_icon content="md-code-working" class="iconr"></weiui_icon>
-            </weiui_navbar_item>
-        </weiui_navbar>
+            </navbar-item>
+            <navbar-item type="right" @click="viewCode('module/loading')">
+                <icon content="md-code-working" class="iconr"></icon>
+            </navbar-item>
+        </navbar>
 
-        <weiui_list class="content" :weiui="{ pullTips:false }">
+        <scroll-view class="content" :weiui="{ pullTips:false }">
             <div v-for="list in sliceLists(lists, 2)" class="list">
                 <div class="item" v-for="(item, index) in list" :key="index">
                     <text class="button" @click="loading(item)">样式:{{item}}</text>
                 </div>
             </div>
-        </weiui_list>
+        </scroll-view>
 
     </div>
 </template>

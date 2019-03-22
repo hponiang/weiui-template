@@ -1,17 +1,17 @@
 <template>
     <div class="app">
 
-        <weiui_navbar class="navbar">
-            <weiui_navbar_item type="back"></weiui_navbar_item>
-            <weiui_navbar_item type="title">
+        <navbar class="navbar">
+            <navbar-item type="back"></navbar-item>
+            <navbar-item type="title">
                 <text class="title">即时通讯</text>
-            </weiui_navbar_item>
-            <weiui_navbar_item type="right" @click="viewCode('plugin/websocket')">
-                <weiui_icon content="md-code-working" class="iconr"></weiui_icon>
-            </weiui_navbar_item>
-        </weiui_navbar>
+            </navbar-item>
+            <navbar-item type="right" @click="viewCode('plugin/websocket')">
+                <icon content="md-code-working" class="iconr"></icon>
+            </navbar-item>
+        </navbar>
 
-        <weiui_list ref="myLists" class="lists">
+        <scroll-view ref="myLists" class="lists">
             <div v-for="(detail, index) in msgLists" :key="index">
                 <div v-if="detail.type==='left'" class="left">
                     <image class="photo" resize="cover" src="http://weiui.cc/assets/grid/grid_7.jpg"></image>
@@ -26,7 +26,7 @@
                     <image class="photo" resize="cover" src="http://weiui.cc/assets/grid/grid_10.jpg"></image>
                 </div>
             </div>
-        </weiui_list>
+        </scroll-view>
 
         <div class="bottom">
             <input v-model="sendText" class="bottom-input" :hideDoneButton="true" :upriseOffset="9" placeholder="输入要发送的内容" return-key-type="send" @return="returnSend">

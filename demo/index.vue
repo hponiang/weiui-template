@@ -2,32 +2,32 @@
 
     <div class="app">
 
-        <weiui_navbar class="navbar">
-            <weiui_navbar_item type="left" @click="scaner">
-                <weiui_icon class="navbar-icon" :weiui="{content: 'tb-scan'}"></weiui_icon>
-            </weiui_navbar_item>
+        <navbar class="navbar">
+            <navbar-item type="left" @click="scaner">
+                <icon class="navbar-icon" :weiui="{content: 'tb-scan'}"></icon>
+            </navbar-item>
 
-            <weiui_navbar_item type="title">
+            <navbar-item type="title">
                 <text class="navbar-title">WEIUI</text>
-            </weiui_navbar_item>
+            </navbar-item>
 
-            <weiui_navbar_item type="right" @click="refresh">
-                <weiui_icon class="navbar-icon" :weiui="{content: 'md-refresh'}"></weiui_icon>
-            </weiui_navbar_item>
-        </weiui_navbar>
+            <navbar-item type="right" @click="refresh">
+                <icon class="navbar-icon" :weiui="{content: 'md-refresh'}"></icon>
+            </navbar-item>
+        </navbar>
 
-        <weiui_list class="list">
+        <scroll-view class="list">
 
             <text class="list-title">组件 Components</text>
 
             <div class="list-item" v-for="(item, index) in components" :key="index" @click="openUrl(item.url)">
                 <div class="list-item-left">
-                    <weiui_icon class="list-left-icon" :weiui="{content: item.icon}"></weiui_icon>
+                    <icon class="list-left-icon" :weiui="{content: item.icon}"></icon>
                     <text class="list-left-title">{{item.title}}</text>
                 </div>
                 <div class="list-item-right">
                     <text class="list-right-title"><{{item.title_en}}></text>
-                    <weiui_icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></weiui_icon>
+                    <icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></icon>
                 </div>
             </div>
 
@@ -35,12 +35,12 @@
 
             <div class="list-item" v-for="(item, index) in module" :key="index" @click="openUrl(item.url)">
                 <div class="list-item-left">
-                    <weiui_icon class="list-left-icon" :weiui="{content: item.icon}"></weiui_icon>
+                    <icon class="list-left-icon" :weiui="{content: item.icon}"></icon>
                     <text class="list-left-title">{{item.title}}</text>
                 </div>
                 <div class="list-item-right">
                     <text class="list-right-title">{{item.title_en}}</text>
-                    <weiui_icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></weiui_icon>
+                    <icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></icon>
                 </div>
             </div>
 
@@ -48,12 +48,12 @@
 
             <div class="list-item" v-for="(item, index) in plugin" :key="index" @click="openUrl(item.url)">
                 <div class="list-item-left">
-                    <weiui_icon class="list-left-icon" :weiui="{content: item.icon}"></weiui_icon>
+                    <icon class="list-left-icon" :weiui="{content: item.icon}"></icon>
                     <text class="list-left-title">{{item.title}}</text>
                 </div>
                 <div class="list-item-right">
                     <text class="list-right-title">{{item.title_en}}</text>
-                    <weiui_icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></weiui_icon>
+                    <icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></icon>
                 </div>
             </div>
 
@@ -61,12 +61,12 @@
 
             <div class="list-item" v-for="(item, index) in about_lists" :key="index" @click="openWeb(item.url)">
                 <div class="list-item-left">
-                    <weiui_icon class="list-left-icon" :weiui="{content: item.icon}"></weiui_icon>
+                    <icon class="list-left-icon" :weiui="{content: item.icon}"></icon>
                     <text class="list-left-title">{{item.title}}</text>
                 </div>
                 <div class="list-item-right">
                     <text class="list-right-title">{{item.title_en}}</text>
-                    <weiui_icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></weiui_icon>
+                    <icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></icon>
                 </div>
             </div>
 
@@ -81,12 +81,12 @@
                         <text class="list-left-title-history">{{text}}</text>
                     </div>
                     <div class="list-item-right">
-                        <weiui_icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></weiui_icon>
+                        <icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></icon>
                     </div>
                 </div>
             </div>
 
-        </weiui_list>
+        </scroll-view>
 
     </div>
 
@@ -217,54 +217,54 @@
             return {
                 components: [{
                     title: '轮播控件',
-                    title_en: 'weiui_banner',
+                    title_en: 'banner',
                     icon: 'md-easel',
                     url: jshome + 'component_banner.js',
                 }, {
                     title: '常用按钮',
-                    title_en: 'weiui_button',
+                    title_en: 'button',
                     icon: 'logo-youtube',
                     url: jshome + 'component_button.js',
                 }, {
                     title: '网格容器',
-                    title_en: 'weiui_grid',
+                    title_en: 'grid',
                     icon: 'md-grid',
                     url: jshome + 'component_grid.js',
                 }, {
                     title: '字体图标',
-                    title_en: 'weiui_icon',
+                    title_en: 'icon',
                     icon: 'logo-ionic',
                     url: jshome + 'component_icon.js',
                 }, {
                     title: '跑马文字',
-                    title_en: 'weiui_marquee',
+                    title_en: 'marquee',
                     icon: 'md-code-working',
                     url: jshome + 'component_marquee.js',
                 }, {
                     title: '导航栏',
-                    title_en: 'weiui_navbar',
+                    title_en: 'navbar',
                     icon: 'md-menu',
                     url: jshome + 'component_navbar.js',
                 }, {
                     title: '列表容器',
-                    title_en: 'weiui_list',
+                    title_en: 'scroll-view',
                     icon: 'md-list',
                     url: jshome + 'component_list.js',
                 }, {
                     title: '滚动文字',
-                    title_en: 'weiui_scroll_text',
+                    title_en: 'scroll-text',
                     icon: 'ios-more',
                     url: jshome + 'component_scroll_text.js',
                 }, {
                     title: '侧边栏',
-                    title_en: 'weiui_side_panel',
+                    title_en: 'side-panel',
                     icon: 'md-albums',
                     url: jshome + 'component_side_panel.js',
                 }, {
                     title: '标签页面',
-                    title_en: 'weiui_tabbar',
+                    title_en: 'tabbar',
                     icon: 'md-filing',
-                    url: jshome + 'component_tabbar3.js',
+                    url: jshome + 'component_tabbar.js',
                 }],
 
                 module: [{
@@ -282,12 +282,12 @@
                     title_en: 'caches',
                     icon: 'md-beaker',
                     url: jshome + 'module_caches.js',
-                }, {
+                }, /*{
                     title: '单位转换',
                     title_en: 'weex px',
                     icon: 'md-calculator',
                     url: jshome + 'module_weexpx.js',
-                }, {
+                }, */{
                     title: '确认对话框',
                     title_en: 'alert',
                     icon: 'md-alert',

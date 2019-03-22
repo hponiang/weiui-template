@@ -2,17 +2,17 @@
 
     <div class="app">
 
-        <weiui_navbar class="navbar">
-            <weiui_navbar_item type="back"></weiui_navbar_item>
-            <weiui_navbar_item type="title">
+        <navbar class="navbar">
+            <navbar-item type="back"></navbar-item>
+            <navbar-item type="title">
                 <text class="title">分页网格容器</text>
-            </weiui_navbar_item>
-            <weiui_navbar_item type="right" @click="viewCode('component/weiui_grid')">
-                <weiui_icon content="md-code-working" class="iconr"></weiui_icon>
-            </weiui_navbar_item>
-        </weiui_navbar>
+            </navbar-item>
+            <navbar-item type="right" @click="viewCode('component/grid')">
+                <icon content="md-code-working" class="iconr"></icon>
+            </navbar-item>
+        </navbar>
 
-        <weiui_grid class="grid">
+        <grid class="grid">
 
             <div class="grid-item" v-for="item in gridLists">
                 <image class="item-image" resize="cover"
@@ -20,7 +20,7 @@
                 <text class="item-title">{{item}}</text>
             </div>
 
-        </weiui_grid>
+        </grid>
 
     </div>
 

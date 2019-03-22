@@ -22,14 +22,13 @@ let global = {
 
     getObject(obj, keys) {
         let object = obj;
-        if (global.count(obj) > 0 && global.count(keys) > 0) {
-            let arr = keys.replace(/,/g, "|").replace(/\./g, "|").split("|");
-            global.each(arr, (index, key) => {
-                if (typeof object[key] !== "undefined") {
-                    object = object[key];
-                }
-            });
+        if (global.count(obj) === 0 || global.count(keys) === 0) {
+            return "";
         }
+        let arr = keys.replace(/,/g, "|").replace(/\./g, "|").split("|");
+        global.each(arr, (index, key) => {
+            object = typeof object[key] === "undefined" ? "" : object[key];
+        });
         return object;
     },
 

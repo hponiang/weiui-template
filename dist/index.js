@@ -98,14 +98,13 @@ var global = {
     },
     getObject: function getObject(obj, keys) {
         var object = obj;
-        if (global.count(obj) > 0 && global.count(keys) > 0) {
-            var arr = keys.replace(/,/g, "|").replace(/\./g, "|").split("|");
-            global.each(arr, function (index, key) {
-                if (typeof object[key] !== "undefined") {
-                    object = object[key];
-                }
-            });
+        if (global.count(obj) === 0 || global.count(keys) === 0) {
+            return "";
         }
+        var arr = keys.replace(/,/g, "|").replace(/\./g, "|").split("|");
+        global.each(arr, function (index, key) {
+            object = typeof object[key] === "undefined" ? "" : object[key];
+        });
         return object;
     },
 
@@ -984,54 +983,54 @@ exports.default = {
         return {
             components: [{
                 title: '轮播控件',
-                title_en: 'weiui_banner',
+                title_en: 'banner',
                 icon: 'md-easel',
                 url: _app.jshome + 'component_banner.js'
             }, {
                 title: '常用按钮',
-                title_en: 'weiui_button',
+                title_en: 'button',
                 icon: 'logo-youtube',
                 url: _app.jshome + 'component_button.js'
             }, {
                 title: '网格容器',
-                title_en: 'weiui_grid',
+                title_en: 'grid',
                 icon: 'md-grid',
                 url: _app.jshome + 'component_grid.js'
             }, {
                 title: '字体图标',
-                title_en: 'weiui_icon',
+                title_en: 'icon',
                 icon: 'logo-ionic',
                 url: _app.jshome + 'component_icon.js'
             }, {
                 title: '跑马文字',
-                title_en: 'weiui_marquee',
+                title_en: 'marquee',
                 icon: 'md-code-working',
                 url: _app.jshome + 'component_marquee.js'
             }, {
                 title: '导航栏',
-                title_en: 'weiui_navbar',
+                title_en: 'navbar',
                 icon: 'md-menu',
                 url: _app.jshome + 'component_navbar.js'
             }, {
                 title: '列表容器',
-                title_en: 'weiui_list',
+                title_en: 'scroll-view',
                 icon: 'md-list',
                 url: _app.jshome + 'component_list.js'
             }, {
                 title: '滚动文字',
-                title_en: 'weiui_scroll_text',
+                title_en: 'scroll-text',
                 icon: 'ios-more',
                 url: _app.jshome + 'component_scroll_text.js'
             }, {
                 title: '侧边栏',
-                title_en: 'weiui_side_panel',
+                title_en: 'side-panel',
                 icon: 'md-albums',
                 url: _app.jshome + 'component_side_panel.js'
             }, {
                 title: '标签页面',
-                title_en: 'weiui_tabbar',
+                title_en: 'tabbar',
                 icon: 'md-filing',
-                url: _app.jshome + 'component_tabbar3.js'
+                url: _app.jshome + 'component_tabbar.js'
             }],
 
             module: [{
@@ -1049,12 +1048,12 @@ exports.default = {
                 title_en: 'caches',
                 icon: 'md-beaker',
                 url: _app.jshome + 'module_caches.js'
-            }, {
+            }, /*{
                 title: '单位转换',
                 title_en: 'weex px',
                 icon: 'md-calculator',
-                url: _app.jshome + 'module_weexpx.js'
-            }, {
+                url: jshome + 'module_weexpx.js',
+               }, */{
                 title: '确认对话框',
                 title_en: 'alert',
                 icon: 'md-alert',
@@ -1242,7 +1241,7 @@ var weiui = weex.requireModule('weiui');
 
 var app = {
 
-    jshome: 'http://weiui.cc/dist/',
+    jshome: 'http://weiui.cc/dist/0.2.0/',
 
     openViewCode: function openViewCode(str) {
         app.openViewUrl("http://weiui.cc/#/" + str);
@@ -1275,43 +1274,43 @@ module.exports = app;
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: ["app"]
-  }, [_c('weiui_navbar', {
+  }, [_c('navbar', {
     staticClass: ["navbar"]
-  }, [_c('weiui_navbar_item', {
+  }, [_c('navbar-item', {
     attrs: {
       "type": "left"
     },
     on: {
       "click": _vm.scaner
     }
-  }, [_c('weiui_icon', {
+  }, [_c('icon', {
     staticClass: ["navbar-icon"],
     attrs: {
       "weiui": {
         content: 'tb-scan'
       }
     }
-  })], 1), _c('weiui_navbar_item', {
+  })], 1), _c('navbar-item', {
     attrs: {
       "type": "title"
     }
   }, [_c('text', {
     staticClass: ["navbar-title"]
-  }, [_vm._v("WEIUI")])]), _c('weiui_navbar_item', {
+  }, [_vm._v("WEIUI")])]), _c('navbar-item', {
     attrs: {
       "type": "right"
     },
     on: {
       "click": _vm.refresh
     }
-  }, [_c('weiui_icon', {
+  }, [_c('icon', {
     staticClass: ["navbar-icon"],
     attrs: {
       "weiui": {
         content: 'md-refresh'
       }
     }
-  })], 1)], 1), _c('weiui_list', {
+  })], 1)], 1), _c('scroll-view', {
     staticClass: ["list"]
   }, [_c('text', {
     staticClass: ["list-title"]
@@ -1326,7 +1325,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('div', {
       staticClass: ["list-item-left"]
-    }, [_c('weiui_icon', {
+    }, [_c('icon', {
       staticClass: ["list-left-icon"],
       attrs: {
         "weiui": {
@@ -1339,7 +1338,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: ["list-item-right"]
     }, [_c('text', {
       staticClass: ["list-right-title"]
-    }, [_vm._v("<" + _vm._s(item.title_en) + ">")]), _c('weiui_icon', {
+    }, [_vm._v("<" + _vm._s(item.title_en) + ">")]), _c('icon', {
       staticClass: ["list-right-icon"],
       attrs: {
         "weiui": {
@@ -1360,7 +1359,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('div', {
       staticClass: ["list-item-left"]
-    }, [_c('weiui_icon', {
+    }, [_c('icon', {
       staticClass: ["list-left-icon"],
       attrs: {
         "weiui": {
@@ -1373,7 +1372,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: ["list-item-right"]
     }, [_c('text', {
       staticClass: ["list-right-title"]
-    }, [_vm._v(_vm._s(item.title_en))]), _c('weiui_icon', {
+    }, [_vm._v(_vm._s(item.title_en))]), _c('icon', {
       staticClass: ["list-right-icon"],
       attrs: {
         "weiui": {
@@ -1394,7 +1393,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('div', {
       staticClass: ["list-item-left"]
-    }, [_c('weiui_icon', {
+    }, [_c('icon', {
       staticClass: ["list-left-icon"],
       attrs: {
         "weiui": {
@@ -1407,7 +1406,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: ["list-item-right"]
     }, [_c('text', {
       staticClass: ["list-right-title"]
-    }, [_vm._v(_vm._s(item.title_en))]), _c('weiui_icon', {
+    }, [_vm._v(_vm._s(item.title_en))]), _c('icon', {
       staticClass: ["list-right-icon"],
       attrs: {
         "weiui": {
@@ -1428,7 +1427,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('div', {
       staticClass: ["list-item-left"]
-    }, [_c('weiui_icon', {
+    }, [_c('icon', {
       staticClass: ["list-left-icon"],
       attrs: {
         "weiui": {
@@ -1441,7 +1440,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: ["list-item-right"]
     }, [_c('text', {
       staticClass: ["list-right-title"]
-    }, [_vm._v(_vm._s(item.title_en))]), _c('weiui_icon', {
+    }, [_vm._v(_vm._s(item.title_en))]), _c('icon', {
       staticClass: ["list-right-icon"],
       attrs: {
         "weiui": {
@@ -1475,7 +1474,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: ["list-left-title-history"]
     }, [_vm._v(_vm._s(text))])]), _c('div', {
       staticClass: ["list-item-right"]
-    }, [_c('weiui_icon', {
+    }, [_c('icon', {
       staticClass: ["list-right-icon"],
       attrs: {
         "weiui": {

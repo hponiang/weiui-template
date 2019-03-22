@@ -42,9 +42,14 @@
             };
         },
 
+        created() {
+            this.inited();
+        },
+
         mounted() {
             this.wRatio = this.$refs.wSwitch.style.width / 144;
             this.hRatio = this.$refs.wSwitch.style.height / 72;
+            this.$nextTick(() => { this.inited(); });
         },
 
         computed: {
@@ -123,19 +128,19 @@
                     timingFunction: 'ease',
                     duration: animated ? 260 : 0.00001
                 });
-            }
-        },
+            },
 
-        created() {
-            this.value ? (this._ballStyle = {
-                backgroundColor: this.focusColor || (this.solid ? '#FFFFFF' : this.backgroundColor),
-                transform: 'scale(0.8) translate(' + (144 * this.wRatio - (72 * this.hRatio - 5 * this.hRatio * 2) - 5 * this.hRatio * 2) + 'px, 0)'
-            }) : (this._ballStyle = {
-                backgroundColor: this.blurColor || (this.solid ? '#FFFFFF' : this.borderColor),
-                transform: 'scale(0.6)'
-            });
-            this._checked = this.value;
-            this.toggleState(this._checked, false);
+            inited() {
+                this.value ? (this._ballStyle = {
+                    backgroundColor: this.focusColor || (this.solid ? '#FFFFFF' : this.backgroundColor),
+                    transform: 'scale(0.8) translate(' + (144 * this.wRatio - (72 * this.hRatio - 5 * this.hRatio * 2) - 5 * this.hRatio * 2) + 'px, 0)'
+                }) : (this._ballStyle = {
+                    backgroundColor: this.blurColor || (this.solid ? '#FFFFFF' : this.borderColor),
+                    transform: 'scale(0.6)'
+                });
+                this._checked = this.value;
+                this.toggleState(this._checked, false);
+            }
         }
     };
 </script>

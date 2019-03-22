@@ -1,48 +1,48 @@
 <template>
     <div class="app">
 
-        <weiui_navbar class="navbar">
-            <weiui_navbar_item type="back"></weiui_navbar_item>
-            <weiui_navbar_item type="title">
+        <navbar class="navbar">
+            <navbar-item type="back"></navbar-item>
+            <navbar-item type="title">
                 <text class="title">常用按钮</text>
-            </weiui_navbar_item>
-            <weiui_navbar_item type="right" @click="viewCode('component/weiui_button')">
-                <weiui_icon content="md-code-working" class="iconr"></weiui_icon>
-            </weiui_navbar_item>
-        </weiui_navbar>
+            </navbar-item>
+            <navbar-item type="right" @click="viewCode('component/button')">
+                <icon content="md-code-working" class="iconr"></icon>
+            </navbar-item>
+        </navbar>
 
         <scroller class="list">
 
             <text class="list-title">预设样式</text>
 
             <div class="list-item">
-                <weiui_button class="button" :weiui="{text:'默认'}"></weiui_button>
-                <weiui_button class="button" :weiui="{text:'红色', model:'red'}"></weiui_button>
+                <button class="button" :weiui="{text:'默认'}"></button>
+                <button class="button" :weiui="{text:'红色', model:'red'}"></button>
             </div>
 
             <div class="list-item">
-                <weiui_button class="button" :weiui="{text:'绿色', model:'green'}"></weiui_button>
-                <weiui_button class="button" :weiui="{text:'蓝色', model:'blue'}"></weiui_button>
+                <button class="button" :weiui="{text:'绿色', model:'green'}"></button>
+                <button class="button" :weiui="{text:'蓝色', model:'blue'}"></button>
             </div>
 
             <div class="list-item">
-                <weiui_button class="button" :weiui="{text:'粉红', model:'pink'}"></weiui_button>
-                <weiui_button class="button" :weiui="{text:'黄色', model:'yellow'}"></weiui_button>
+                <button class="button" :weiui="{text:'粉红', model:'pink'}"></button>
+                <button class="button" :weiui="{text:'黄色', model:'yellow'}"></button>
             </div>
 
             <div class="list-item">
-                <weiui_button class="button" :weiui="{text:'橙色', model:'orange'}"></weiui_button>
-                <weiui_button class="button" :weiui="{text:'灰色', model:'gray'}"></weiui_button>
+                <button class="button" :weiui="{text:'橙色', model:'orange'}"></button>
+                <button class="button" :weiui="{text:'灰色', model:'gray'}"></button>
             </div>
 
             <div class="list-item">
-                <weiui_button class="button" :weiui="{text:'黑色', model:'black'}"></weiui_button>
-                <weiui_button class="button" :weiui="{text:'白色', model:'white'}"></weiui_button>
+                <button class="button" :weiui="{text:'黑色', model:'black'}"></button>
+                <button class="button" :weiui="{text:'白色', model:'white'}"></button>
             </div>
 
             <div class="list-item">
-                <weiui_button class="button" :weiui="{text:'加载中', loading:true}"></weiui_button>
-                <weiui_button class="button" :weiui="{text:'禁用', disabled:true}"></weiui_button>
+                <button class="button" :weiui="{text:'加载中', loading:true}"></button>
+                <button class="button" :weiui="{text:'禁用', disabled:true}"></button>
             </div>
 
             <text class="list-title">自定义样式</text>
@@ -89,7 +89,7 @@
             </div>
 
             <div class="demo-item">
-                <weiui_button class="demoButton" :weiui="weiuiStyle" :style="demoStyle"></weiui_button>
+                <button class="demoButton" :weiui="weiuiStyle" :style="demoStyle"></button>
             </div>
 
         </scroller>

@@ -4,11 +4,11 @@
 
         <head-nav :title="title" :loading="loadIng > 0" back-icon="tb-close"></head-nav>
 
-        <weiui_webview ref="myWebview" class="app" @ready="apiReady" @stateChanged="stateChanged"></weiui_webview>
+        <web-view ref="myWebview" class="app" @ready="apiReady" @stateChanged="stateChanged"></web-view>
 
         <div v-if="!hideBottomNav && (canGoBack || canGoForward)" class="bottom">
-            <weiui_icon @click="webLeft" :class="[canGoBack?'bottom-icon':'bottom-icon-gray']" content="tb-back"></weiui_icon>
-            <weiui_icon @click="webRight" :class="[canGoForward?'bottom-icon':'bottom-icon-gray']" content="tb-right"></weiui_icon>
+            <icon @click="webLeft" :class="[canGoBack?'bottom-icon':'bottom-icon-gray']" content="tb-back"></icon>
+            <icon @click="webRight" :class="[canGoForward?'bottom-icon':'bottom-icon-gray']" content="tb-right"></icon>
         </div>
 
     </div>

@@ -1,7 +1,7 @@
 <template>
     <div class="app">
 
-        <weiui_side_panel
+        <side-panel
                 ref="reflectName"
                 class="side_panel"
                 :weiui="{
@@ -13,26 +13,26 @@
                 @switchListener="switchListener">
 
             <!--侧滑菜单部分-->
-            <weiui_side_panel_menu class="panel_menu" name="菜单1">
+            <side-panel-menu class="panel_menu" name="菜单1">
                 <text class="menu-text">菜单①</text>
-            </weiui_side_panel_menu>
+            </side-panel-menu>
 
-            <weiui_side_panel_menu class="panel_menu" name="菜单2">
+            <side-panel-menu class="panel_menu" name="菜单2">
                 <text class="menu-text">菜单②</text>
-            </weiui_side_panel_menu>
+            </side-panel-menu>
 
             <!--正文内容部分-->
             <div class="content">
                 <!--正文标题栏-->
-                <weiui_navbar class="content-navbar">
-                    <weiui_navbar_item type="back"></weiui_navbar_item>
-                    <weiui_navbar_item type="title">
+                <navbar class="content-navbar">
+                    <navbar-item type="back"></navbar-item>
+                    <navbar-item type="title">
                         <text class="title">侧边栏</text>
-                    </weiui_navbar_item>
-                    <weiui_navbar_item type="right" @click="viewCode('component/weiui_side_panel')">
-                        <weiui_icon content="md-code-working" class="iconr"></weiui_icon>
-                    </weiui_navbar_item>
-                </weiui_navbar>
+                    </navbar-item>
+                    <navbar-item type="right" @click="viewCode('component/side-panel')">
+                        <icon content="md-code-working" class="iconr"></icon>
+                    </navbar-item>
+                </navbar>
                 <!--正文内容-->
                 <div class="content-body">
                     <text style="font-size:24px">正文内容，屏幕右划试试看。</text>
@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-        </weiui_side_panel>
+        </side-panel>
 
     </div>
 </template>

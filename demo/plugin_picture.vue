@@ -1,19 +1,19 @@
 <template>
     <div class="app">
 
-        <weiui_navbar class="navbar">
-            <weiui_navbar_item type="back"></weiui_navbar_item>
-            <weiui_navbar_item type="title">
+        <navbar class="navbar">
+            <navbar-item type="back"></navbar-item>
+            <navbar-item type="title">
                 <text class="title">图片选择器</text>
-            </weiui_navbar_item>
-            <weiui_navbar_item type="right" @click="viewCode('module/plugin/picture')">
-                <weiui_icon content="md-code-working" class="iconr"></weiui_icon>
-            </weiui_navbar_item>
-        </weiui_navbar>
+            </navbar-item>
+            <navbar-item type="right" @click="viewCode('module/plugin/picture')">
+                <icon content="md-code-working" class="iconr"></icon>
+            </navbar-item>
+        </navbar>
 
         <div class="content">
 
-            <weiui_list v-if="lists.length > 0"
+            <scroll-view v-if="lists.length > 0"
                         :style="{width:'750px', height: (Math.ceil(lists.length / 5) * 150) + 'px'}"
                         :weiui="{pullTips:false}">
                 <div v-for="list in sliceLists(lists, 5)" class="list">
@@ -21,7 +21,7 @@
                         <image :src="'file://' + item.path" class="image" resize="cover"></image>
                     </div>
                 </div>
-            </weiui_list>
+            </scroll-view>
 
             <text class="button" @click="openPicture">选择照片</text>
             <text v-if="lists.length > 0" class="button2" @click="lists=[]">清空选择</text>

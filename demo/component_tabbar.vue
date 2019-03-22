@@ -1,7 +1,7 @@
 <template>
     <div class="app">
 
-        <weiui_tabbar
+        <tabbar
                 ref="reflectName"
                 class="tabbar"
                 :weiui="{ tabType: 'bottom' }"
@@ -10,61 +10,61 @@
                 @refreshListener="refreshListener">
 
             <!--页签①-->
-            <weiui_tabbar_page :weiui="{ tabName: 'name_1', title:'首页', selectedIcon:'md-home 80%' }">
-                <weiui_navbar class="page-navbar">
-                    <weiui_navbar_item type="back"></weiui_navbar_item>
-                    <weiui_navbar_item type="title">
+            <tabbar-page :weiui="{ tabName: 'name_1', title:'首页', selectedIcon:'md-home 80%' }">
+                <navbar class="page-navbar">
+                    <navbar-item type="back"></navbar-item>
+                    <navbar-item type="title">
                         <text class="page-navbar-title">首页</text>
-                    </weiui_navbar_item>
-                    <weiui_navbar_item type="right" @click="viewCode('component/weiui_tabbar')">
-                        <weiui_icon content="md-code-working" class="iconr"></weiui_icon>
-                    </weiui_navbar_item>
-                </weiui_navbar>
+                    </navbar-item>
+                    <navbar-item type="right" @click="viewCode('component/tabbar')">
+                        <icon content="md-code-working" class="iconr"></icon>
+                    </navbar-item>
+                </navbar>
                 <div class="page-content">
                     <text style="font-size:24px">页签里面可以放任何子组件，感谢你对weiui的支持</text>
                     <image src="http://demo.sc.chinaz.com/Files/pic/icons/6430/m2.png"
                            class="page-content-image"></image>
                 </div>
-            </weiui_tabbar_page>
+            </tabbar-page>
 
             <!--页签②-->
-            <weiui_tabbar_page
+            <tabbar-page
                     :weiui="{ tabName: 'name_2', title:'好友', message:3, selectedIcon:'http://demo.sc.chinaz.com/Files/pic/icons/6749/g7.png' , unSelectedIcon:'http://demo.sc.chinaz.com/Files/pic/icons/6749/g4.png' }">
-                <weiui_navbar class="page-navbar">
-                    <weiui_navbar_item type="title">
+                <navbar class="page-navbar">
+                    <navbar-item type="title">
                         <text class="page-navbar-title">好友</text>
-                    </weiui_navbar_item>
-                </weiui_navbar>
+                    </navbar-item>
+                </navbar>
                 <div class="page-content">
                     <text style="font-size:24px">page 2，图标支持网络图片</text>
                 </div>
-            </weiui_tabbar_page>
+            </tabbar-page>
 
             <!--页签③-->
-            <weiui_tabbar_page :weiui="{ tabName: 'name_3', title:'圈子', message:99, selectedIcon:'md-aperture 80%' }">
-                <weiui_navbar class="page-navbar">
-                    <weiui_navbar_item type="title">
+            <tabbar-page :weiui="{ tabName: 'name_3', title:'圈子', message:99, selectedIcon:'md-aperture 80%' }">
+                <navbar class="page-navbar">
+                    <navbar-item type="title">
                         <text class="page-navbar-title">圈子</text>
-                    </weiui_navbar_item>
-                </weiui_navbar>
+                    </navbar-item>
+                </navbar>
                 <div class="page-content">
                     <text style="font-size:24px">page 3</text>
                 </div>
-            </weiui_tabbar_page>
+            </tabbar-page>
 
             <!--页签④-->
-            <weiui_tabbar_page :weiui="{ tabName: 'name_4', title:'设置', dot:true, selectedIcon:'md-cog 80%' }">
-                <weiui_navbar class="page-navbar">
-                    <weiui_navbar_item type="title">
+            <tabbar-page :weiui="{ tabName: 'name_4', title:'设置', dot:true, selectedIcon:'md-cog 80%' }">
+                <navbar class="page-navbar">
+                    <navbar-item type="title">
                         <text class="page-navbar-title">设置</text>
-                    </weiui_navbar_item>
-                </weiui_navbar>
+                    </navbar-item>
+                </navbar>
                 <div class="page-content">
                     <text style="font-size:24px">page 4</text>
                 </div>
-            </weiui_tabbar_page>
+            </tabbar-page>
 
-        </weiui_tabbar>
+        </tabbar>
 
     </div>
 </template>

@@ -1,15 +1,15 @@
 <template>
     <div class="app">
 
-        <weiui_navbar class="navbar">
-            <weiui_navbar_item type="back"></weiui_navbar_item>
-            <weiui_navbar_item type="title">
+        <navbar class="navbar">
+            <navbar-item type="back"></navbar-item>
+            <navbar-item type="title">
                 <text class="title">字体图标</text>
-            </weiui_navbar_item>
-            <weiui_navbar_item type="right" @click="viewCode('component/weiui_icon')">
-                <weiui_icon content="md-code-working" class="iconr"></weiui_icon>
-            </weiui_navbar_item>
-        </weiui_navbar>
+            </navbar-item>
+            <navbar-item type="right" @click="viewCode('component/icon')">
+                <icon content="md-code-working" class="iconr"></icon>
+            </navbar-item>
+        </navbar>
 
         <div class="tabs">
             <text @click="active='ionicons_md'" :class="[active==='ionicons_md'?'tab-item-active':'tab-item']">md</text>
@@ -21,7 +21,7 @@
         <scroller v-if="active==='ionicons_md'" class="lists">
             <div v-for="list in ionicons_md" class="list">
                 <div v-for="item in list" class="item" @click="copyIcon(item)">
-                    <weiui_icon class="icon" :weiui="{ content: item }"></weiui_icon>
+                    <icon class="icon" :weiui="{ content: item }"></icon>
                     <text class="text">{{item}}</text>
                 </div>
             </div>
@@ -29,7 +29,7 @@
         <scroller v-else-if="active==='ionicons_ios'" class="lists">
             <div v-for="list in ionicons_ios" class="list">
                 <div v-for="item in list" class="item" @click="copyIcon(item)">
-                    <weiui_icon class="icon" :weiui="{ content: item }"></weiui_icon>
+                    <icon class="icon" :weiui="{ content: item }"></icon>
                     <text class="text">{{item}}</text>
                 </div>
             </div>
@@ -37,7 +37,7 @@
         <scroller v-else-if="active==='ionicons_logo'" class="lists">
             <div v-for="list in ionicons_logo" class="list">
                 <div v-for="item in list" class="item" @click="copyIcon(item)">
-                    <weiui_icon class="icon" :weiui="{ content: item }"></weiui_icon>
+                    <icon class="icon" :weiui="{ content: item }"></icon>
                     <text class="text">{{item}}</text>
                 </div>
             </div>
@@ -45,7 +45,7 @@
         <scroller v-else-if="active==='taobao'" class="lists">
             <div v-for="list in taobao" class="list">
                 <div v-for="item in list" class="item" @click="copyIcon(item)">
-                    <weiui_icon class="icon" :weiui="{ content: item }"></weiui_icon>
+                    <icon class="icon" :weiui="{ content: item }"></icon>
                     <text class="text">{{item}}</text>
                 </div>
             </div>

@@ -38,9 +38,8 @@
 
 - (void)initWeexSDK
 {
-    [WXAppConfiguration setAppGroup:@"AliApp"];
-    [WXAppConfiguration setAppName:@"WeexTestDemo"];
-    [WXAppConfiguration setAppVersion:@"1.0.0"];
+    [WXAppConfiguration setAppName:@"WEIUI"];
+    [WXAppConfiguration setAppGroup:@"WEIUI"];
     
     [WXSDKEngine initSDKEnvironment];
     
@@ -53,23 +52,21 @@
     [WXSDKEngine registerModule:@"navigationBar" withClass:NSClassFromString(@"WeiuiNavigationBarModule")];
 
     //Component
-    [WXSDKEngine registerComponent:@"weiui_button" withClass:NSClassFromString(@"WeiuiButtonComponent")];
-    [WXSDKEngine registerComponent:@"weiui_navbar_item" withClass:NSClassFromString(@"WeiuiNavbarItemComponent")];
-    [WXSDKEngine registerComponent:@"weiui_navbar" withClass:NSClassFromString(@"WeiuiNavbarComponent")];
-    [WXSDKEngine registerComponent:@"weiui_banner" withClass:NSClassFromString(@"WeiuiBannerComponent")];
-    [WXSDKEngine registerComponent:@"weiui_icon" withClass:NSClassFromString(@"WeiuiIconComponent")];
-    [WXSDKEngine registerComponent:@"weiui_marquee" withClass:NSClassFromString(@"WeiuiMarqueeComponent")];
-    [WXSDKEngine registerComponent:@"weiui_scroll_text" withClass:NSClassFromString(@"WeiuiScrollTextComponent")];
-    [WXSDKEngine registerComponent:@"weiui_webview" withClass:NSClassFromString(@"WeiuiWebviewComponent")];
-    [WXSDKEngine registerComponent:@"weiui_tabbar" withClass:NSClassFromString(@"WeiuiTabbarComponent")];
-    [WXSDKEngine registerComponent:@"weiui_tabbar_page" withClass:NSClassFromString(@"WeiuiTabbarPageComponent")];
-    [WXSDKEngine registerComponent:@"weiui_side_panel" withClass:NSClassFromString(@"WeiuiSidePanelComponent")];
-    [WXSDKEngine registerComponent:@"weiui_side_panel_menu" withClass:NSClassFromString(@"WeiuiSidePanelItemComponent")];
-    [WXSDKEngine registerComponent:@"weiui_grid" withClass:NSClassFromString(@"WeiuiGridComponent")];
-    [WXSDKEngine registerComponent:@"weiui_recyler" withClass:NSClassFromString(@"WeiuiRecylerComponent")];
-    [WXSDKEngine registerComponent:@"weiui_list" withClass:NSClassFromString(@"WeiuiRecylerComponent")];
-    [WXSDKEngine registerComponent:@"weiui_ripple" withClass:NSClassFromString(@"WeiuiRippleComponent")];
+    [WXSDKEngine registerComponent:@"banner" withClass:NSClassFromString(@"WeiuiBannerComponent")];
+    [WXSDKEngine registerComponent:@"button" withClass:NSClassFromString(@"WeiuiButtonComponent")];
+    [WXSDKEngine registerComponent:@"grid" withClass:NSClassFromString(@"WeiuiGridComponent")];
+    [WXSDKEngine registerComponent:@"icon" withClass:NSClassFromString(@"WeiuiIconComponent")];
+    [WXSDKEngine registerComponent:@"marquee" withClass:NSClassFromString(@"WeiuiMarqueeComponent")];
+    [WXSDKEngine registerComponent:@"navbar" withClass:NSClassFromString(@"WeiuiNavbarComponent")];
+    [WXSDKEngine registerComponent:@"navbar-item" withClass:NSClassFromString(@"WeiuiNavbarItemComponent")];
     [WXSDKEngine registerComponent:@"ripple" withClass:NSClassFromString(@"WeiuiRippleComponent")];
+    [WXSDKEngine registerComponent:@"scroll-text" withClass:NSClassFromString(@"WeiuiScrollTextComponent")];
+    [WXSDKEngine registerComponent:@"scroll-view" withClass:NSClassFromString(@"WeiuiRecylerComponent")];
+    [WXSDKEngine registerComponent:@"side-panel" withClass:NSClassFromString(@"WeiuiSidePanelComponent")];
+    [WXSDKEngine registerComponent:@"side-panel-menu" withClass:NSClassFromString(@"WeiuiSidePanelItemComponent")];
+    [WXSDKEngine registerComponent:@"tabbar" withClass:NSClassFromString(@"WeiuiTabbarComponent")];
+    [WXSDKEngine registerComponent:@"tabbar-page" withClass:NSClassFromString(@"WeiuiTabbarPageComponent")];
+    [WXSDKEngine registerComponent:@"web-view" withClass:NSClassFromString(@"WeiuiWebviewComponent")];
     
 #ifdef DEBUG
     [WXLog setLogLevel:WXLogLevelLog];
