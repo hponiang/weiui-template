@@ -5,9 +5,11 @@ const webpack = require('webpack');
 const weexConfig = commonConfig[1];
 
 webpack(weexConfig, (err, stats) => {
-    if (!err) {
-        utils.copySrcToDist(true);
-        utils.syncFolderEvent();
+    if (err) {
+        console.err('COMPILE ERROR:', err.stack);
+    } else {
+        utils.copySrcToDist();
+        utils.syncFolderEvent(null, null, null, true);
     }
 });
 

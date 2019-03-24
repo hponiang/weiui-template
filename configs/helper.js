@@ -100,14 +100,13 @@ module.exports = {
 
     getObject(obj, keys) {
         let object = obj;
-        if (this.count(obj) > 0 && this.count(keys) > 0) {
-            let arr = keys.replace(/,/g, "|").replace(/\./g, "|").split("|");
-            this.each(arr, (index, key) => {
-                if (typeof object[key] !== "undefined") {
-                    object = object[key];
-                }
-            });
+        if (this.count(obj) === 0 || this.count(keys) === 0) {
+            return "";
         }
+        let arr = keys.replace(/,/g, "|").replace(/\./g, "|").split("|");
+        this.each(arr, (index, key) => {
+            object = typeof object[key] === "undefined" ? "" : object[key];
+        });
         return object;
     },
 };

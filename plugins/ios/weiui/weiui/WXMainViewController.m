@@ -114,6 +114,11 @@ static int easyNavigationButtonTag = 8000;
     [super viewDidAppear:animated];
     [self updateInstanceState:WeexInstanceAppear];
     
+    if (_resumeUrl.length > 0) {
+        [self setResumeUrl:@""];
+        [self refreshPage];
+    }
+    
     [self updateStatus:@"resume"];
     [self liftCycleEvent:LifeCycleResume];
     
@@ -550,6 +555,11 @@ static int easyNavigationButtonTag = 8000;
 {
     self.url = url;
     self.URL = [NSURL URLWithString:_url];
+}
+
+- (void)setResumeUrl:(NSString *)url
+{
+    _resumeUrl = url;
 }
 
 - (void)addStatusListener:(NSString*)name

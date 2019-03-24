@@ -40,6 +40,8 @@ typedef NS_ENUM(NSInteger, LifeCycleType) {
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, assign) NSInteger cache;//缓存时长，0则不缓存
 
+@property (nonatomic, strong) NSString *resumeUrl;
+
 @property (nonatomic, copy) void (^statusBlock)(NSString*);
 @property (nonatomic, copy) void (^listenerBlock)(id);
 @property (nonatomic, copy) void (^webBlock)(NSDictionary*);
@@ -56,6 +58,8 @@ typedef NS_ENUM(NSInteger, LifeCycleType) {
 - (void)refreshPage;
 
 - (void)setHomeUrl:(NSString *)url;
+
+- (void)setResumeUrl:(NSString *)url;
 
 - (void)addStatusListener:(NSString*)name;
 - (void)clearStatusListener:(NSString*)name;

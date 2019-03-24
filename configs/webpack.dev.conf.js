@@ -8,23 +8,29 @@ weexConfig.watch = true;
 
 let serverStatus = 0;
 let serverPort = config.dev.portOnlyDev;
+let socketPort = config.dev.portOnlyDev + 1;
 
 webpack(weexConfig, (err, stats) => {
-    if (!err) {
+    if (err) {
+        console.err('COMPILE ERROR:', err.stack);
+    } else {
         if (serverStatus === 0) {
             serverStatus = 1;
             utils.portIsOccupied(serverPort, (err, port) => {
-                if (err == null) {
+                if (err) throw err;
+                utils.portIsOccupied(socketPort, (err, sPort) => {
+                    if (err) throw err;
                     serverStatus = 200;
                     serverPort = port;
+                    socketPort = sPort;
                     utils.createServer(config.dev.contentBase, serverPort);
-                    utils.copySrcToDist(false);
-                    utils.syncFolderEvent(config.dev.host, serverPort, serverPort + 1);
-                }
+                    utils.copySrcToDist();
+                    utils.syncFolderEvent(config.dev.host, serverPort, socketPort, true);
+                });
             });
         } else if (serverStatus === 200) {
-            utils.copySrcToDist(false);
-            utils.syncFolderEvent(config.dev.host, serverPort, serverPort + 1);
+            utils.copySrcToDist();
+            utils.syncFolderEvent(config.dev.host, serverPort, socketPort, false);
         }
     }
 });

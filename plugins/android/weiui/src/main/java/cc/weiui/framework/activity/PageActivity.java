@@ -20,6 +20,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AndroidRuntimeException;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
@@ -386,6 +387,11 @@ public class PageActivity extends AppCompatActivity {
                 });
                 surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
             }
+        }
+        if (!"".equals(mPageInfo.getResumeUrl())) {
+            mPageInfo.setUrl(mPageInfo.getResumeUrl());
+            mPageInfo.setResumeUrl("");
+            reload();
         }
         invokeAndKeepAlive("resume", null);
     }
@@ -1863,6 +1869,7 @@ public class PageActivity extends AppCompatActivity {
         public void onMessage(String text) {
             super.onMessage(text);
             //
+            Log.d("[socket]", "onMessage: " + text);
             if (text.startsWith("HOMEPAGE:")) {
                 List<Activity> activityList = weiui.getActivityList();
                 if (activityList.size() >= 2 && activityList.get(0).getClass().getName().endsWith(".WelcomeActivity")) {
@@ -1897,12 +1904,23 @@ public class PageActivity extends AppCompatActivity {
                     mActivity.reload();
                     BGAKeyboardUtil.closeKeyboard(PageActivity.this);
                 }
-            }else if (text.equals("RELOADPAGE")) {
+            }else if (text.startsWith("RELOADPAGE:")) {
+                String url = text.substring(11);
                 List<Activity> activityList = weiui.getActivityList();
-                Activity activity = activityList.get(activityList.size() - 1);
-                if (activity instanceof PageActivity) {
-                    ((PageActivity) activity).reload();
-                    BGAKeyboardUtil.closeKeyboard(PageActivity.this);
+                int size = activityList.size() - 1;
+                for (int i = size; i >= 0; --i) {
+                    Activity activity = activityList.get(i);
+                    if (activity instanceof PageActivity) {
+                        PageActivity mActivity = ((PageActivity) activity);
+                        if (mActivity.mPageInfo.getUrl().startsWith(url)) {
+                            if (i == size) {
+                                mActivity.reload();
+                                BGAKeyboardUtil.closeKeyboard(PageActivity.this);
+                            }else{
+                                mActivity.getPageInfo().setResumeUrl(url);
+                            }
+                        }
+                    }
                 }
             }
         }

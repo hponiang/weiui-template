@@ -36,6 +36,7 @@
 - (void)goDesktop;
 - (void)removePageData:(NSString*)pageName;
 - (void)setPageData:(NSString*)pageName vc:(WXMainViewController *)vc;
+- (NSDictionary *)getViewData;
 
 - (void)setTitle:(id) params callback:(WXModuleKeepAliveCallback) callback;
 - (void)setLeftItems:(id) params callback:(WXModuleKeepAliveCallback) callback;

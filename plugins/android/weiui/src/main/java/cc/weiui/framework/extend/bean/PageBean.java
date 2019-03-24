@@ -62,6 +62,7 @@ public class PageBean {
      * callback :           JS回调事件（可选）
      *
      * firstPage :          是否为启动页（可选，默认：false，内部使用）
+     * resumeUrl :          页面恢复时访问的网址（可选，默认：空，内部使用）
      *
      * context :            上下文
      */
@@ -85,6 +86,7 @@ public class PageBean {
     private String backgroundColor = "#ffffff";
     private boolean backPressedClose = true;
     private boolean firstPage = false;
+    private String resumeUrl = "";
     private JSCallback callback;
     private Context context;
     private JSONObject otherObject;
@@ -243,6 +245,14 @@ public class PageBean {
 
     public void setFirstPage(boolean firstPage) {
         this.firstPage = firstPage;
+    }
+
+    public void setResumeUrl(String resumeUrl) {
+        this.resumeUrl = resumeUrl;
+    }
+
+    public String getResumeUrl() {
+        return resumeUrl;
     }
 
     public JSCallback getCallback() {

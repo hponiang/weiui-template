@@ -8,9 +8,11 @@ const weiuiConfig = require('../weiui.config');
 const uuid = require('node-uuid');
 const http = require('http');
 const net = require('net');
+const crypto = require('crypto');
 
 let socketAlready = false;
 let socketClients = [];
+let fileMd5Lists = {};
 
 exports.cssLoaders = function (options) {
     options = options || {};
@@ -102,6 +104,7 @@ exports.replaceDictString = (path, key, value) => {
     let matchs = content.match(/<dict>(.*?)<\/dict>/gs);
     if (matchs) {
         matchs.forEach(function (oldText) {
+            oldText = oldText.substring(oldText.lastIndexOf('<dict>'), oldText.length);
             if (helper.strExists(oldText, '<string>' + key + '</string>', true)) {
                 let searchValue = helper.getMiddle(oldText, '<array>', '</array>');
                 if (searchValue) {
@@ -122,8 +125,8 @@ exports.replaceDictString = (path, key, value) => {
 /**
  * 复制src其他资源到dist
  */
-exports.copySrcToDist = (cover) => {
-    let copyJsEvent = (originDir, newDir) => {
+exports.copySrcToDist = () => {
+    let _copyEvent = (originDir, newDir) => {
         let lists = fs.readdirSync(originDir);
         lists.forEach((item) => {
             let originPath = originDir + "/" + item;
@@ -132,18 +135,39 @@ exports.copySrcToDist = (cover) => {
                 if (typeof stats === 'object') {
                     if (stats.isFile()) {
                         if (/(\.(png|jpe?g|gif)$|^((?!font).)*\.svg$)/.test(originPath)) {
-                            if (cover || !fs.existsSync(newPath)) {
+                            if (!fs.existsSync(newPath)) {
                                 fsEx.copy(originPath, newPath);
                             }
                         }
                     } else if (stats.isDirectory()) {
-                        copyJsEvent(originPath, newPath)
+                        _copyEvent(originPath, newPath)
                     }
                 }
             });
         });
     };
-    copyJsEvent(helper.rootNode('src'), helper.rootNode('dist'));
+    _copyEvent(helper.rootNode('src'), helper.rootNode('dist'));
+};
+
+/**
+ * 复制文件，md5原文件是否已复制
+ * @param originPath
+ * @param newPath
+ * @param callback
+ */
+exports.copyFileMd5 = (originPath, newPath, callback) => {
+    let stream = fs.createReadStream(originPath);
+    let md5sum = crypto.createHash('md5');
+    stream.on('data', (chunk) => {
+        md5sum.update(chunk);
+    });
+    stream.on('end', () => {
+        let str = md5sum.digest("hex").toUpperCase();
+        if (fileMd5Lists[newPath] !== str) {
+            fileMd5Lists[newPath] = str;
+            fsEx.copy(originPath, newPath, callback);
+        }
+    });
 };
 
 /**
@@ -151,34 +175,40 @@ exports.copySrcToDist = (cover) => {
  * @param host
  * @param port
  * @param socketPort
+ * @param removeBundlejs
  */
-exports.syncFolderEvent = (host, port, socketPort) => {
+exports.syncFolderEvent = (host, port, socketPort, removeBundlejs) => {
     let jsonData = weiuiConfig;
     jsonData.socketHost = host ? host : '';
     jsonData.socketPort = socketPort ? socketPort : '';
+    jsonData.wxpay.appid = helper.getObject(jsonData, 'wxpay.appid');
     //
     let isSocket = !!(host && socketPort);
-    if (isSocket) {
-        jsonData.homePage = 'http://' + host + ':' + port + '/dist/index.js';
-    }
-    jsonData.wxpay.appid = helper.getObject(jsonData, 'wxpay.appid');
+    let hostUrl = 'http://' + host + ':' + port + '/dist';
     //
     let copyJsEvent = (originDir, newDir) => {
         let lists = fs.readdirSync(originDir);
         lists.forEach((item) => {
             let originPath = originDir + "/" + item;
             let newPath = newDir + "/" + item;
-            fs.stat(originPath, (err, stats) => {
-                if (typeof stats === 'object') {
-                    if (stats.isFile()) {
-                        if (originPath.substr(-7) !== ".web.js" && originPath.substr(-8) !== ".web.map") {
-                            fsEx.copy(originPath, newPath);
+            if (!/(\.web\.js|\.web\.map|\.DS_Store|__MACOSX)$/.exec(originPath)) {
+                fs.stat(originPath, (err, stats) => {
+                    if (typeof stats === 'object') {
+                        if (stats.isFile()) {
+                            this.copyFileMd5(originPath, newPath, (err) => {
+                                //!err && console.log(newPath);
+                                if (!err && socketAlready) {
+                                    socketClients.map((client) => {
+                                        (client.ws.readyState !== 2) && client.ws.send('RELOADPAGE:' + hostUrl + '/' + item)
+                                    });
+                                }
+                            });
+                        } else if (stats.isDirectory()) {
+                            copyJsEvent(originPath, newPath)
                         }
-                    } else if (stats.isDirectory()) {
-                        copyJsEvent(originPath, newPath)
                     }
-                }
-            });
+                });
+            }
         });
     };
     //syncFile Android
@@ -190,14 +220,15 @@ exports.syncFolderEvent = (host, port, socketPort) => {
                 let assetsPath = path + '/assets/weiui';
                 fs.stat(helper.rootNode(path), (err, stats) => {
                     if (typeof stats === 'object' && stats.isDirectory()) {
-                        fsEx.remove(helper.rootNode(assetsPath), function (err) {
-                            if (!err) {
+                        if (removeBundlejs) {
+                            fsEx.remove(helper.rootNode(assetsPath), function (err) {
+                                if (err) throw err;
                                 fsEx.outputFile(helper.rootNode(assetsPath + '/config.json'), JSON.stringify(jsonData));
-                                if (!jsonData.homePage) {
-                                    copyJsEvent(helper.rootNode('dist'), helper.rootNode(assetsPath));
-                                }
-                            }
-                        });
+                                copyJsEvent(helper.rootNode('dist'), helper.rootNode(assetsPath));
+                            });
+                        }else{
+                            copyJsEvent(helper.rootNode('dist'), helper.rootNode(assetsPath));
+                        }
                     }
                 });
             });
@@ -212,14 +243,15 @@ exports.syncFolderEvent = (host, port, socketPort) => {
                 let bundlejsPath = path + '/bundlejs/weiui';
                 fs.stat(helper.rootNode(path), (err, stats) => {
                     if (typeof stats === 'object' && stats.isDirectory()) {
-                        fsEx.remove(helper.rootNode(bundlejsPath), function (err) {
-                            if (!err) {
+                        if (removeBundlejs) {
+                            fsEx.remove(helper.rootNode(bundlejsPath), function (err) {
+                                if (err) throw err;
                                 fsEx.outputFile(helper.rootNode(bundlejsPath + '/config.json'), JSON.stringify(jsonData));
-                                if (!jsonData.homePage) {
-                                    copyJsEvent(helper.rootNode('dist'), helper.rootNode(bundlejsPath));
-                                }
-                            }
-                        });
+                                copyJsEvent(helper.rootNode('dist'), helper.rootNode(bundlejsPath));
+                            });
+                        }else{
+                            copyJsEvent(helper.rootNode('dist'), helper.rootNode(bundlejsPath));
+                        }
                     }
                 });
                 let plistPath = 'platforms/ios/' + item + '/WeexWeiui/Info.plist';
@@ -236,34 +268,25 @@ exports.syncFolderEvent = (host, port, socketPort) => {
             wss.on('connection', (ws, info) => {
                 let deviceId = uuid.v4();
                 socketClients.push({deviceId, ws});
-                //console.log("[WebSocketServer]", `Your device ${deviceId} had been connected to the socket server.`);
                 ws.on('close', () => {
                     for (let i = 0, len = socketClients.length; i < len; i++) {
                         if (socketClients[i].deviceId === deviceId) {
                             socketClients.splice(i, 1);
-                            //console.log("[WebSocketServer]", `Your device ${deviceId} had left this socket.`);
                             break;
                         }
                     }
-                });
-                ws.on('error', (e) => {
-                    //console.log("[WebSocketServer]", 'Socket error:' + e);
                 });
                 //
                 let mode = helper.getQueryString(info.url, "mode");
                 switch (mode) {
                     case "initialize":
-                        ws.send('HOMEPAGE:' + jsonData.homePage);
+                        ws.send('HOMEPAGE:' + hostUrl + '/index.js');
                         break;
 
                     case "back":
-                        ws.send('HOMEPAGEBACK:' + jsonData.homePage);
+                        ws.send('HOMEPAGEBACK:' + hostUrl + '/index.js');
                         break;
                 }
-            });
-        } else {
-            socketClients.map((client) => {
-                (client.ws.readyState !== 2) && client.ws.send('RELOADPAGE')
             });
         }
         notifier.notify({

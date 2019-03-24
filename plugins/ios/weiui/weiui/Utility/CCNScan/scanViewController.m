@@ -47,7 +47,9 @@
     self.modalPresentationCapturesStatusBarAppearance = NO;
     
     UIBarButtonItem *navRightButton = [[UIBarButtonItem alloc]initWithTitle:@"相册" style:UIBarButtonItemStylePlain target:self action:@selector(choicePhoto)];
-    self.navigationItem.rightBarButtonItem = navRightButton;
+    UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    space.width = 20;
+    self.navigationItem.rightBarButtonItems = @[space, navRightButton];
     self.navigationItem.title = @"二维码/条码";
     self.navigationController.navigationBar.barTintColor = [WXConvert UIColor:@"#93c0ff"];
     
@@ -82,7 +84,7 @@
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear: animated];
     
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    //[self.navigationController setNavigationBarHidden:NO animated:YES];
 
     if (_session != nil) {
         [self.session startRunning];
@@ -101,7 +103,7 @@
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear: animated];
     
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    //[self.navigationController setNavigationBarHidden:YES animated:YES];
 
     [self.session stopRunning];
     [self.scanView stopScanAnimation];

@@ -594,6 +594,11 @@
     }
 }
 
+- (NSDictionary *)getViewData
+{
+    return self.viewData;
+}
+
 - (void)setTitle:(id) params callback:(WXModuleKeepAliveCallback) callback
 {
     WXMainViewController *vc = (WXMainViewController*)[DeviceUtil getTopviewControler];

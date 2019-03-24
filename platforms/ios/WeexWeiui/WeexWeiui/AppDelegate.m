@@ -407,6 +407,7 @@ NSDictionary *mLaunchOptions;
 //长链接收到消息
 - (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message{
     NSString *msg = (NSString *)message;
+    NSLog(@"[socket]: receiveMessage: %@", msg);
     if ([msg hasPrefix:@"HOMEPAGE:"]) {
         [[[DeviceUtil getTopviewControler] navigationController] popToRootViewControllerAnimated:NO];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -414,8 +415,23 @@ NSDictionary *mLaunchOptions;
         });
     }else if ([msg hasPrefix:@"HOMEPAGEBACK:"]) {
         [mController loadUrl:[msg substringFromIndex:13]];
-    }else if ([msg isEqualToString:@"RELOADPAGE"]) {
-        [self refresh];
+    }else if ([msg hasPrefix:@"RELOADPAGE:"]) {
+        NSString *url = [msg substringFromIndex:11];
+        NSString *nowUrl = [(WXMainViewController*)[DeviceUtil getTopviewControler] url];
+        if ([nowUrl hasPrefix:url]) {
+            [self refresh];
+            return;
+        }
+        NSDictionary *viewData = [[WeiuiNewPageManager sharedIntstance] getViewData];
+        for (NSString *pageName in viewData) {
+            id view = [viewData objectForKey:pageName];
+            if ([view isKindOfClass:[WXMainViewController class]]) {
+                WXMainViewController *vc = (WXMainViewController*)view;
+                if ([[vc url] hasPrefix:url]) {
+                    [vc setResumeUrl:url];
+                }
+            }
+        }
     }
 }
 
