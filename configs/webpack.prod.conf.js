@@ -9,21 +9,6 @@ const config = require('./config');
 const helper = require('./helper');
 const utils = require('./utils');
 
-const weexConfig = webpackMerge(commonConfig[1], {
-    plugins: [
-        new UglifyJsparallelPlugin({
-            workers: os.cpus().length,
-            mangle: true,
-            compressor: {
-                warnings: false,
-                drop_console: true,
-                drop_debugger: true
-            }
-        }),
-        ...commonConfig[1].plugins
-    ]
-});
-
 const webConfig = webpackMerge(commonConfig[0], {
     devtool: config.prod.devtool,
     output: {
@@ -49,13 +34,25 @@ const webConfig = webpackMerge(commonConfig[0], {
     ]
 });
 
-webpack(webConfig, (err, stats) => {
-    if (err) {
-        console.err('COMPILE ERROR:', err.stack);
-    } else {
-        utils.copySrcToDist();
-        utils.syncFolderEvent(null, null, null, true);
-    }
+const weexConfig = webpackMerge(commonConfig[1], {
+    plugins: [
+        new UglifyJsparallelPlugin({
+            workers: os.cpus().length,
+            mangle: true,
+            compressor: {
+                warnings: false,
+                drop_console: true,
+                drop_debugger: true
+            }
+        }),
+        new webpack.ProgressPlugin(function handler(percentage, msg) {
+            if (percentage === 1) {
+                utils.copySrcToDist();
+                utils.syncFolderEvent(null, null, null, true);
+            }
+        }),
+        ...commonConfig[1].plugins
+    ]
 });
 
-module.exports = [weexConfig, webConfig];
+module.exports = [webConfig, weexConfig];

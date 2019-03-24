@@ -8,8 +8,7 @@
         "serve": "webpack-dev-server --env.NODE_ENV=serve --progress",
         "dev": "webpack --env.NODE_ENV=dev --progress --watch",
         "build": "webpack --env.NODE_ENV=build",
-        "build:prod": "webpack --env.NODE_ENV=prod",
-        "build:prod:web": "webpack --env.NODE_ENV=release"
+        "build:prod": "webpack --env.NODE_ENV=prod"
     },
     "keywords": [
         "weex"

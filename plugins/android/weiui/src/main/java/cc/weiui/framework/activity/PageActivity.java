@@ -1612,6 +1612,10 @@ public class PageActivity extends AppCompatActivity {
     private WsManager deBugSocketWsManager;
     private int deBugButtonSize = 128;
 
+    public boolean isDeBugPage() {
+        return deBugButton != null;
+    }
+
     /**
      * 创建debug按钮
      */
@@ -1784,27 +1788,32 @@ public class PageActivity extends AppCompatActivity {
                                         if (weiuiParse.parseStr(retData.get("status")).equals("success")) {
                                             String text = weiuiParse.parseStr(retData.get("text"));
                                             if (text.startsWith("http")) {
-                                                String url = text, host = "", port = "";
-                                                if (text.contains("?socket=")) {
-                                                    url = weiuiCommon.getMiddle(text, null, "?socket=");
-                                                    host = weiuiCommon.getMiddle(text, "?socket=", ":");
-                                                    port = weiuiCommon.getMiddle(text, "?socket=" + host + ":", "&");
-                                                }
-                                                //
-                                                PageBean mPageBean = new PageBean();
-                                                mPageBean.setUrl(url);
-                                                mPageBean.setPageType("weex");
-                                                weiuiPage.openWin(PageActivity.this, mPageBean);
-                                                //
-                                                if (host.length() > 0 && port.length() > 0) {
-                                                    weiuiCommon.setVariate("__deBugSocket:Host", host);
-                                                    weiuiCommon.setVariate("__deBugSocket:Port", port);
-                                                    List<Activity> activityList = weiui.getActivityList();
-                                                    Activity activity = activityList.get(0);
-                                                    if (activity instanceof PageActivity) {
-                                                        ((PageActivity) activity).deBugSocketConnect("back");
+                                                new Handler().postDelayed(() -> {
+                                                    String url = text, host = "", port = "";
+                                                    if (text.contains("?socket=")) {
+                                                        url = weiuiCommon.getMiddle(text, null, "?socket=");
+                                                        host = weiuiCommon.getMiddle(text, "?socket=", ":");
+                                                        port = weiuiCommon.getMiddle(text, "?socket=" + host + ":", "&");
                                                     }
-                                                }
+                                                    //
+                                                    PageBean mPageBean = new PageBean();
+                                                    mPageBean.setUrl(url);
+                                                    mPageBean.setPageType("weex");
+                                                    weiuiPage.openWin(PageActivity.this, mPageBean);
+                                                    //
+                                                    if (host.length() > 0 && port.length() > 0) {
+                                                        weiuiCommon.setVariate("__deBugSocket:Host", host);
+                                                        weiuiCommon.setVariate("__deBugSocket:Port", port);
+                                                        List<Activity> activityList = weiui.getActivityList();
+                                                        for (int i = activityList.size() - 1; i >= 0; --i) {
+                                                            Activity activity = activityList.get(i);
+                                                            if (activity instanceof PageActivity && ((PageActivity) activity).isDeBugPage()) {
+                                                                ((PageActivity) activity).deBugSocketConnect("back");
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }, 300);
                                             } else {
                                                 Toast.makeText(PageActivity.this, "识别内容：" + text, LENGTH_SHORT).show();
                                             }
