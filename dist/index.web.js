@@ -1,4 +1,4 @@
-// { "framework": "Vue", "author": "https://weiui.cc", "create": 1553521356360 } 
+// { "framework": "Vue", "author": "https://weiui.cc", "create": 1553528148364 } 
 
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -21312,7 +21312,7 @@ var app = {
     jshome: 'http://weiui.cc/dist/0.2.0/',
 
     openViewCode: function openViewCode(str) {
-        app.openViewUrl("http://weiui.cc/" + str);
+        app.openViewUrl("http://weiui.cc/" + str + ".html");
     },
     openViewUrl: function openViewUrl(url) {
         weiui.openPage({

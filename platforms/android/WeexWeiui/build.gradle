@@ -44,7 +44,7 @@ subprojects {
         applicationId = "cc.weiui.playground"
 
         versionCode = 1
-        versionName = "1.0.1"
+        versionName = "1.0.35"
 
         weiuiVersionCode = 35
         weiuiVersionName = "0.0.35"
