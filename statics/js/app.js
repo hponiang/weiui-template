@@ -7,7 +7,7 @@ let app = {
     jshome: 'http://weiui.cc/dist/0.2.0/',
 
     openViewCode(str) {
-        app.openViewUrl("http://weiui.cc/#/" + str);
+        app.openViewUrl("http://weiui.cc/" + str);
     },
 
     openViewUrl(url) {

@@ -48,6 +48,8 @@ static int easyNavigationButtonTag = 8000;
     [super viewDidLoad];
 
     [self setFd_prefersNavigationBarHidden:YES];
+    [self setFd_interactivePopMaxAllowedInitialDistanceToLeftEdge:35.0f];
+    
     if (_isDisSwipeBack) {
         [self setFd_interactivePopDisabled:YES];
     }
