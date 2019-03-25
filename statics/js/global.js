@@ -251,7 +251,7 @@ let global = {
     isDate(string) {
         let reg = /^(\d{4})-(\d{2})-(\d{2})$/;
         let str = string + "";
-        if (str == "") return false;
+        if (str === "") return false;
         return !(!reg.test(str) && RegExp.$2 <= 12 && RegExp.$3 <= 31);
     },
 
@@ -278,20 +278,34 @@ let global = {
 
     /**
      * 克隆对象
-     * @param myObj
+     * @param obj
      * @returns {*}
      */
-    clone(myObj) {
-        if (typeof(myObj) !== 'object') return myObj;
-        if (myObj === null) return myObj;
-        //
-        if (global.likeArray(myObj)) {
-            let [...myNewObj] = myObj;
-            return myNewObj;
+    clone(obj) {
+        let o, i, j;
+        if (typeof (obj) !== "object" || obj === null) return obj;
+        if (obj instanceof Array) {
+            o = [];
+            i = 0;
+            j = obj.length;
+            for (; i < j; i++) {
+                if (typeof (obj[i]) === "object" && obj[i] != null) {
+                    o[i] = global.clone(obj[i]);
+                } else {
+                    o[i] = obj[i];
+                }
+            }
         } else {
-            let {...myNewObj} = myObj;
-            return myNewObj;
+            o = {};
+            for (i in obj) {
+                if (typeof (obj[i]) === "object" && obj[i] !== null) {
+                    o[i] = global.clone(obj[i]);
+                } else {
+                    o[i] = obj[i];
+                }
+            }
         }
+        return o;
     },
 
     /**
