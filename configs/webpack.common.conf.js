@@ -82,7 +82,7 @@ const plugins = [
      * See: https://webpack.js.org/plugins/banner-plugin/
      */
     new webpack.BannerPlugin({
-        banner: `// { "framework": "Vue", "author": "https://weiui.cc", "create": ${new Date().getTime()} } \n`,
+        banner: `// { "framework": "Vue" } \n`,
         raw: true,
         exclude: 'Vue'
     })
