@@ -8,6 +8,7 @@
 
 #import "WeiuiButtonComponent.h"
 #import "DeviceUtil.h"
+#import "UIButton+SGImagePosition.h"
 
 @interface WeiuiButtonComponent ()
 
@@ -15,16 +16,18 @@
 
 @property (nonatomic, strong) NSString *ktext;//按钮文字
 @property (nonatomic, strong) NSString *color;//按钮文字颜色    #FFFFFF
-@property (nonatomic, assign) NSInteger fontSize;//字体大小    -
+@property (nonatomic, assign) CGFloat fontSize;//字体大小    -
 @property (nonatomic, strong) NSString *kbackgroundColor;//按钮背景颜色    #3EB4FF
-@property (nonatomic, assign) NSInteger borderRadius;//圆角半径    8
-@property (nonatomic, assign) NSInteger borderWidth;//边框大小    0
+@property (nonatomic, assign) CGFloat borderRadius;//圆角半径    8
+@property (nonatomic, assign) CGFloat borderWidth;//边框大小    0
 @property (nonatomic, strong) NSString *borderColor;//边框颜色    -
 @property (nonatomic, assign) BOOL kdisabled;//是否禁用    false
 @property (nonatomic, assign) BOOL kloading;//是否加载中    false
 @property (nonatomic, strong) NSString *kmodel;//预设风格，详细注①    -
 
 @property (nonatomic, assign) BOOL isBackgroundColor;//初始化是否存在背景色
+
+@property (nonatomic, assign) BOOL isRemoveObserver;
 
 @end
 
@@ -82,6 +85,7 @@ WX_EXPORT_METHOD(@selector(setLoading:))
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self.view addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
     
     UIButton *btn = (UIButton*)self.view;
     [btn setTitle:_ktext forState:UIControlStateNormal];
@@ -99,17 +103,51 @@ WX_EXPORT_METHOD(@selector(setLoading:))
     //加载风火轮
     CGFloat width = [_ktext boundingRectWithSize:CGSizeMake(1000, 1000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : btn.titleLabel.font} context:nil].size.width;
     self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-    self.activityIndicatorView.center = CGPointMake((btn.frame.size.width - width - 35)/2, btn.frame.size.height/2);
+    self.activityIndicatorView.center = CGPointMake((btn.frame.size.width - width - 35)/2 + 30/2, btn.frame.size.height/2);
     [self.activityIndicatorView setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhite];
     [btn addSubview:self.activityIndicatorView];
     
     if (_kloading) {
+        [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:35];
         [self.activityIndicatorView startAnimating];
     } else {
+        [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:0];
         [self.activityIndicatorView setHidden:YES];
     }
     
     [self fireEvent:@"ready" params:nil];
+}
+
+- (void) viewWillUnload
+{
+    [super viewWillUnload];
+    [self removeObserver];
+}
+
+- (void)dealloc
+{
+    [self removeObserver];
+}
+
+- (void) removeObserver
+{
+    if (_isRemoveObserver != YES) {
+        _isRemoveObserver = YES;
+        [self.view removeObserver:self forKeyPath:@"frame" context:nil];
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"frame"]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIButton *btn = (UIButton*)self.view;
+            btn.layer.cornerRadius = self.borderRadius;
+            CGFloat width = [self.ktext boundingRectWithSize:CGSizeMake(1000, 1000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : btn.titleLabel.font} context:nil].size.width;
+            self.activityIndicatorView.center = CGPointMake((btn.frame.size.width - width - 35)/2 + 30/2, btn.frame.size.height/2);
+        });
+        
+    }
 }
 
 - (UIImage *)imageWithColor:(UIColor *)color {
@@ -153,9 +191,8 @@ WX_EXPORT_METHOD(@selector(setLoading:))
         if (isUpdate) {
             UIButton *btn = (UIButton*)self.view;
             [btn setTitle:_ktext forState:UIControlStateNormal];
-            
             CGFloat width = [_ktext boundingRectWithSize:CGSizeMake(1000, 1000) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : btn.titleLabel.font} context:nil].size.width;
-            self.activityIndicatorView.center = CGPointMake((btn.frame.size.width - width - 35)/2, btn.frame.size.height/2);
+            self.activityIndicatorView.center = CGPointMake((btn.frame.size.width - width - 35)/2 + 30/2, btn.frame.size.height/2);
         }
     } else if ([key isEqualToString:@"color"]) {
         _color = [WXConvert NSString:value];
@@ -204,10 +241,13 @@ WX_EXPORT_METHOD(@selector(setLoading:))
     } else if ([key isEqualToString:@"loading"]) {
         _kloading = [WXConvert BOOL:value];
         if (isUpdate) {
+            UIButton *btn = (UIButton*)self.view;
             if (_kloading) {
+                [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:35];
                 [self.activityIndicatorView setHidden:NO];
                 [self.activityIndicatorView startAnimating];
             } else {
+                [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:0];
                 [self.activityIndicatorView setHidden:YES];
                 [self.activityIndicatorView stopAnimating];
             }
@@ -306,11 +346,14 @@ WX_EXPORT_METHOD(@selector(setLoading:))
 
 - (void)setLoading:(BOOL)loading
 {
+    UIButton *btn = (UIButton*)self.view;
     _kloading = loading;
     if (_kloading) {
+        [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:35];
         [self.activityIndicatorView setHidden:NO];
         [self.activityIndicatorView startAnimating];
     } else {
+        [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:0];
         [self.activityIndicatorView setHidden:YES];
         [self.activityIndicatorView stopAnimating];
     }
