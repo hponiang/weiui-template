@@ -9,8 +9,10 @@ const uuid = require('node-uuid');
 const http = require('http');
 const net = require('net');
 const crypto = require('crypto');
+const chalk = require('chalk');
 
 let socketAlready = false;
+let socketTimeout = null;
 let socketClients = [];
 let fileMd5Lists = {};
 
@@ -294,6 +296,16 @@ exports.syncFolderEvent = (host, port, socketPort, removeBundlejs) => {
             message: jsonData.socketHost + ':' + jsonData.socketPort,
             contentImage: path.join(__dirname, 'logo.png')
         });
+        socketTimeout && clearInterval(socketTimeout);
+        socketTimeout = setTimeout(() => {
+            let msg = '    ';
+            msg+= chalk.bgBlue.bold.black(`【WiFI真机同步】`);
+            msg+= chalk.bgBlue.black(`IP地址: `);
+            msg+= chalk.bgBlue.bold.black.underline(`${jsonData.socketHost}`);
+            msg+= chalk.bgBlue.black(`、端口号: `);
+            msg+= chalk.bgBlue.bold.black.underline(`${jsonData.socketPort}`);
+            console.log(); console.log(msg); console.log();
+        }, 1800);
     } else {
         notifier.notify({
             title: 'Weex Weiui',
