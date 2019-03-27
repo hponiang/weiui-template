@@ -759,15 +759,29 @@ public class PageActivity extends AppCompatActivity {
                 }
                 mAuto = findViewById(R.id.v_auto);
                 mAuto.setVisibility(View.VISIBLE);
-                weiuiIhttp.getContentType(mPageInfo.getUrl(), result -> {
-                    if (result == null) {
-                        finish();
-                        return;
+                weiuiIhttp.get("pageAuto", mPageInfo.getUrl(), null, new weiuiIhttp.ResultCallback() {
+                    @Override
+                    public void success(String resData, boolean isCache) {
+                        String[] temp = resData.split("\n");
+                        String html = "";
+                        if (temp.length > 0) {
+                            html = temp[0];
+                            html = html.replaceAll(" ", "");
+                        }
+                        mPageInfo.setPageType(html.startsWith("//{\"framework\":\"Vue\"") ? "weex" : "web");
+                        initDefaultPageView();
+                        mAuto.setVisibility(View.GONE);
                     }
-                    String res = result.toLowerCase();
-                    mPageInfo.setPageType(res.contains("javascript") ? "weex" : "web");
-                    initDefaultPageView();
-                    mAuto.setVisibility(View.GONE);
+
+                    @Override
+                    public void error(String error) {
+                        finish();
+                    }
+
+                    @Override
+                    public void complete() {
+
+                    }
                 });
                 break;
 

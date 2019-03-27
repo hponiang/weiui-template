@@ -75,6 +75,37 @@ static int easyNavigationButtonTag = 8000;
     
     [self setupUI];
     
+    if ([_pageType isEqualToString:@"auto"]) {
+        _pageType = @"web";
+        if ([_url hasSuffix:@".bundle.wx"]) {
+            _pageType = @"weex";
+        }else if ([_url containsString:@"?_wx_tpl="]) {
+            NSRange range = [_url rangeOfString:@"?_wx_tpl="];
+            _pageType = @"weex";
+            _url = [_url substringToIndex:range.location];
+        }else {
+            [self setupActivityView];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSString *html = [NSString stringWithContentsOfURL:[NSURL URLWithString:self.url] encoding:NSUTF8StringEncoding error:nil];
+                NSRange range = [html rangeOfString:@"\n"];
+                if (range.location != NSNotFound) {
+                    html = [html substringToIndex:range.location];
+                    html = [html stringByReplacingOccurrencesOfString:@" " withString:@""];
+                }
+                if ([html hasPrefix:@"//{\"framework\":\"Vue\""]) {
+                    self.pageType = @"weex";
+                }
+                [self loadBegin];
+            });
+            return;
+        }
+    }
+    
+    [self loadBegin];
+}
+
+- (void) loadBegin
+{
     if ([_pageType isEqualToString:@"web"]) {
         [self loadWebPage];
     } else {

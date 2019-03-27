@@ -25,7 +25,7 @@ WX_EXPORT_METHOD(@selector(pop:callback:))
         return;
     }
     info = [params mutableCopy];
-    info[@"pageTitle"] = info[@"pageTitle"] ? [WXConvert NSString:info[@"pageTitle"]] : @" ";
+    info[@"pageTitle"] = [info objectForKey:@"pageTitle"] ? [WXConvert NSString:info[@"pageTitle"]] : @" ";
     [WeiuiNewPageManager sharedIntstance].weexInstance = weexInstance;
     [[WeiuiNewPageManager sharedIntstance] openPage:info callback:callback];
 }

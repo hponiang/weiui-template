@@ -11,6 +11,8 @@
 #import "DeviceUtil.h"
 #import "AFNetworking.h"
 #import "WeiuiStorageManager.h"
+#import "WeiuiNewPageManager.h"
+#import "WeexSDKManager.h"
 #import "UIImageView+WebCache.h"
 
 @implementation Cloud
@@ -179,6 +181,25 @@ static UIImageView *welcomeView;
         [alertWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
     }else{
         [self checkUpdateLists:lists number:number+1 isReboot:isReboot];
+    }
+}
+
+//重启APP
++ (void) reboot
+{
+    [Config clear];
+    [[[DeviceUtil getTopviewControler] navigationController] popToRootViewControllerAnimated:NO];
+    NSDictionary *viewData = [[WeiuiNewPageManager sharedIntstance] getViewData];
+    for (NSString *pageName in viewData) {
+        id view = [viewData objectForKey:pageName];
+        if ([view isKindOfClass:[WXMainViewController class]]) {
+            WXMainViewController *vc = (WXMainViewController*)view;
+            if (vc.isFirstPage) {
+                [WeexSDKManager sharedIntstance].weexUrl = [Config getHome];
+                [vc setHomeUrl: [Config getHome]];
+                [vc refreshPage];
+            }
+        }
     }
 }
 
