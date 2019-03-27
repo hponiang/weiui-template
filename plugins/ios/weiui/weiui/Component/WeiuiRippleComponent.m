@@ -7,6 +7,14 @@
 //
 
 #import "WeiuiRippleComponent.h"
+#import "ZYCRippleButton.h"
+
+@interface WeiuiRippleComponent ()
+
+@property (nonatomic, strong) ZYCRippleButton *rippleButton;
+@property (nonatomic, assign) BOOL isRemoveObserver;
+
+@end
 
 @implementation WeiuiRippleComponent
 
@@ -24,22 +32,60 @@
 {
     [super viewDidLoad];
     
-    // 单击的 Recognizer
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(itemClick)];
-    tap.numberOfTapsRequired = 1;
-    [self.view addGestureRecognizer:tap];
+    [self.view addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+    
+    [self loadRippleView];
     
     [self fireEvent:@"ready" params:nil];
-}
-
-- (void)itemClick
-{
-    [self fireEvent:@"itemClick" params:nil];
 }
 
 - (void)insertSubview:(WXComponent *)subcomponent atIndex:(NSInteger)index
 {
     [super insertSubview:subcomponent atIndex:index];
+}
+
+- (void) viewWillUnload
+{
+    [super viewWillUnload];
+    [self removeObserver];
+}
+
+- (void)dealloc
+{
+    [self removeObserver];
+}
+
+- (void) removeObserver
+{
+    if (_isRemoveObserver != YES) {
+        _isRemoveObserver = YES;
+        [self.view removeObserver:self forKeyPath:@"frame" context:nil];
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"frame"]) {
+        [self loadRippleView];
+    }
+}
+
+- (void) loadRippleView
+{
+    CGRect frame = self.view.frame;
+    if (_rippleButton == nil) {
+        __block typeof(self) bself = self;
+        _rippleButton = [[ZYCRippleButton alloc]initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+        _rippleButton.rippleLineWidth = 1;
+        _rippleButton.rippleColor = [UIColor darkGrayColor];
+        _rippleButton.backgroundColor = [UIColor clearColor];
+        _rippleButton.rippleBlock = ^(void){
+            [bself fireEvent:@"itemClick" params:nil];
+        };
+        [self.view addSubview:_rippleButton];
+    }else{
+        _rippleButton.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
+    }
 }
 
 @end

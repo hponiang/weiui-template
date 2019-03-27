@@ -23,7 +23,7 @@ public class Ripple extends WXVContainer<ViewGroup> {
 
     private View mView;
 
-    private FrameLayout v_container;
+    private FrameLayout v_container, v_click;
 
     public Ripple(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
         super(instance, parent, basicComponentData);
@@ -55,8 +55,9 @@ public class Ripple extends WXVContainer<ViewGroup> {
 
     private void initPagerView() {
         v_container = mView.findViewById(R.id.v_container);
+        v_click = mView.findViewById(R.id.v_click);
         if (getEvents().contains(weiuiConstants.Event.ITEM_CLICK)) {
-            v_container.setOnClickListener(v -> fireEvent(weiuiConstants.Event.ITEM_CLICK, null));
+            v_click.setOnClickListener(v -> fireEvent(weiuiConstants.Event.ITEM_CLICK, null));
         }
     }
 }
