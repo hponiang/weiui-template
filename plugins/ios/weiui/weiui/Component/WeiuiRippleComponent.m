@@ -80,6 +80,7 @@
         _rippleButton.rippleColor = [UIColor darkGrayColor];
         _rippleButton.backgroundColor = [UIColor clearColor];
         _rippleButton.rippleBlock = ^(void){
+            [bself fireEvent:@"click" params:nil];
             [bself fireEvent:@"itemClick" params:nil];
         };
         [self.view addSubview:_rippleButton];
