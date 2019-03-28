@@ -1,6 +1,6 @@
 ## Android 运行项目
 
-确保您已经安装完成 [Android 所需环境](http://weiui.cc/#/start/create?id=android-%E8%BF%90%E8%A1%8C%E9%A1%B9%E7%9B%AE)。
+确保您已经安装完成 [Android 所需环境](https://weiui.app/guide/env.html#%E5%BC%80%E5%8F%91-android)。
 
 1.打开`AndroidStudio`软件然后`Open`Android工程目录`WeexWeiui`。
 2.待项目构建完成，点击 AndroidStudio 上方工具栏的 `Run`，即可运行项目。

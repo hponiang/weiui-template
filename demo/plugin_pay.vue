@@ -88,13 +88,13 @@
                 if (typeof pay === 'undefined') {
                     weiui.alert({
                         title: '温馨提示',
-                        message: "检测到未安装pay插件，安装详细请登录http://weiui.cc/",
+                        message: "检测到未安装pay插件，安装详细请登录https://weiui.app/",
                     });
                     return;
                 }
                 weiui.loading();
                 weiui.ajax({
-                    url: 'https://app.weiui.cc/api/wxpay'
+                    url: 'https://console.weiui.app/api/wxpay'
                 }, (result) => {
                     if (result.status === 'complete') {
                         weiui.loadingClose();
@@ -117,13 +117,13 @@
                 if (typeof pay === 'undefined') {
                     weiui.alert({
                         title: '温馨提示',
-                        message: "检测到未安装pay插件，安装详细请登录http://weiui.cc/",
+                        message: "检测到未安装pay插件，安装详细请登录https://weiui.app/",
                     });
                     return;
                 }
                 weiui.loading();
                 weiui.ajax({
-                    url: 'https://app.weiui.cc/api/alipay'
+                    url: 'https://console.weiui.app/api/alipay'
                 }, (result) => {
                     if (result.status === 'complete') {
                         weiui.loadingClose();

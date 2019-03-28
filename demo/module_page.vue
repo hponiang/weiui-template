@@ -143,7 +143,7 @@
             },
             openPage4() {
                 weiui.openPage({
-                    url: 'http://weiui.cc',
+                    url: 'https://weiui.app',
                     pageType: 'web',
                 });
             },

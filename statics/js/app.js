@@ -4,10 +4,10 @@ let weiui = weex.requireModule('weiui');
 
 let app = {
 
-    jshome: 'http://weiui.cc/dist/0.2.0/',
+    jshome: 'https://weiui.app/dist/0.2.0/',
 
     openViewCode(str) {
-        app.openViewUrl("http://weiui.cc/" + str + ".html");
+        app.openViewUrl("https://weiui.app/" + str + ".html");
     },
 
     openViewUrl(url) {

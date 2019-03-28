@@ -93,7 +93,7 @@
                 if (typeof screenshots === 'undefined') {
                     weiui.alert({
                         title: '温馨提示',
-                        message: "检测到未安装screenshots插件，安装详细请登录http://weiui.cc/",
+                        message: "检测到未安装screenshots插件，安装详细请登录https://weiui.app/",
                     });
                     return;
                 }

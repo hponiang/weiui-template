@@ -14,7 +14,7 @@
         <scroll-view ref="myLists" class="lists">
             <div v-for="(detail, index) in msgLists" :key="index">
                 <div v-if="detail.type==='left'" class="left">
-                    <image class="photo" resize="cover" src="http://weiui.cc/assets/grid/grid_7.jpg"></image>
+                    <image class="photo" resize="cover" src="https://weiui.app/assets/grid/grid_7.jpg"></image>
                     <div class="detail">
                         <text class="text">{{detail.msg}}</text>
                     </div>
@@ -23,7 +23,7 @@
                     <div class="detail detail-right">
                         <text class="text">{{detail.msg}}</text>
                     </div>
-                    <image class="photo" resize="cover" src="http://weiui.cc/assets/grid/grid_10.jpg"></image>
+                    <image class="photo" resize="cover" src="https://weiui.app/assets/grid/grid_10.jpg"></image>
                 </div>
             </div>
         </scroll-view>
@@ -166,7 +166,7 @@
             if (typeof websocket === 'undefined') {
                 weiui.alert({
                     title: '温馨提示',
-                    message: "检测到未安装websocket插件，安装详细请登录http://weiui.cc/",
+                    message: "检测到未安装websocket插件，安装详细请登录https://weiui.app/",
                 }, () => {
                     weiui.closePage();
                 });

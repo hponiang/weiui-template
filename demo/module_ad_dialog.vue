@@ -71,7 +71,7 @@
                 openViewCode(str);
             },
             openAdDialog() {
-                weiui.adDialog("http://weiui.cc/assets/images/testImage1.png", (res) => {
+                weiui.adDialog("https://weiui.app/assets/images/testImage1.png", (res) => {
                     weiui.toast("状态：" + res.status);
                 });
             },

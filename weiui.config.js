@@ -1,6 +1,6 @@
 /**
  * 配置文件
- * 参数详细说明：http://weiui.cc/#/start/config
+ * 参数详细说明：https://weiui.app/guide/config.html
  */
 module.exports = {
 

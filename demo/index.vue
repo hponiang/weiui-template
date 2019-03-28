@@ -375,7 +375,7 @@
                     title: '开发文档',
                     title_en: 'document',
                     icon: 'md-code-working',
-                    url: 'http://weiui.cc',
+                    url: 'https://weiui.app',
                 }, {
                     title: '托管平台',
                     title_en: 'github',
@@ -390,7 +390,7 @@
                     title: 'WEIUI版本',
                     title_en: weiui.getVersionName(),
                     icon: 'md-information-circle',
-                    url: 'http://weiui.cc',
+                    url: 'https://weiui.app',
                 }],
 
                 history: [],

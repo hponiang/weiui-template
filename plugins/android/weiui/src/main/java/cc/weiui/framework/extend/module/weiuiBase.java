@@ -287,7 +287,7 @@ public class weiuiBase {
      */
     public static class cloud {
 
-        private static String apiUrl = "https://app.weiui.cc/";
+        private static String apiUrl = "https://console.weiui.app/";
 
         /**
          * 加载启动图

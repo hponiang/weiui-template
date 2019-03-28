@@ -16,7 +16,7 @@
 
             <div class="grid-item" v-for="item in gridLists">
                 <image class="item-image" resize="cover"
-                       :src="'http://weiui.cc/assets/grid/' + item + '.jpg'"></image>
+                       :src="'https://weiui.app/assets/grid/' + item + '.jpg'"></image>
                 <text class="item-title">{{item}}</text>
             </div>
 
