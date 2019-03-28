@@ -1641,9 +1641,6 @@ public class PageActivity extends AppCompatActivity {
         if (deBugButton != null) {
             return;
         }
-        if (!mPageInfo.getPageType().equals("weex")) {
-            return;
-        }
         deBugButton = new TextView(this);
         deBugButton.setText("DEV");
         deBugButton.setTextColor(Color.WHITE);
@@ -1812,7 +1809,7 @@ public class PageActivity extends AppCompatActivity {
                                                     //
                                                     PageBean mPageBean = new PageBean();
                                                     mPageBean.setUrl(url);
-                                                    mPageBean.setPageType("weex");
+                                                    mPageBean.setPageType("auto");
                                                     weiuiPage.openWin(PageActivity.this, mPageBean);
                                                     //
                                                     if (host.length() > 0 && port.length() > 0) {

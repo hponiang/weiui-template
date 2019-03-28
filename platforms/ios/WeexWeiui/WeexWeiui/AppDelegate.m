@@ -301,7 +301,7 @@ NSDictionary *mLaunchOptions;
                 
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [WeiuiNewPageManager sharedIntstance].weexInstance = [[WXSDKManager bridgeMgr] topInstance];
-                    [[WeiuiNewPageManager sharedIntstance] openPage:@{@"url": url} callback:^(NSDictionary *result, BOOL keepAlive) {
+                    [[WeiuiNewPageManager sharedIntstance] openPage:@{@"url": url, @"pageType": @"auto"} callback:^(NSDictionary *result, BOOL keepAlive) {
                         if ([result[@"status"] isEqualToString:@"create"]) {
                             if (host.length && port.length) {
                                 socketHost = host;
