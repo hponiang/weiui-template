@@ -278,34 +278,20 @@ let global = {
 
     /**
      * 克隆对象
-     * @param obj
+     * @param myObj
      * @returns {*}
      */
-    clone(obj) {
-        let o, i, j;
-        if (typeof (obj) !== "object" || obj === null) return obj;
-        if (obj instanceof Array) {
-            o = [];
-            i = 0;
-            j = obj.length;
-            for (; i < j; i++) {
-                if (typeof (obj[i]) === "object" && obj[i] != null) {
-                    o[i] = global.clone(obj[i]);
-                } else {
-                    o[i] = obj[i];
-                }
-            }
+    clone(myObj) {
+        if (typeof(myObj) !== 'object') return myObj;
+        if (myObj === null) return myObj;
+        //
+        if (global.likeArray(myObj)) {
+            let [...myNewObj] = myObj;
+            return myNewObj;
         } else {
-            o = {};
-            for (i in obj) {
-                if (typeof (obj[i]) === "object" && obj[i] !== null) {
-                    o[i] = global.clone(obj[i]);
-                } else {
-                    o[i] = obj[i];
-                }
-            }
+            let {...myNewObj} = myObj;
+            return myNewObj;
         }
-        return o;
     },
 
     /**
