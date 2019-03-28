@@ -1,6 +1,6 @@
 //
-//  SKAutoScrollLabel.h
-//  SKAutoScrollLabel
+//  SKAutoScrollLabel1.h
+//  SKAutoScrollLabel1
 //
 //  Created by shevchenko on 17/4/10.
 //  Copyright © 2017年 shevchenko. All rights reserved.
@@ -15,7 +15,7 @@ typedef NS_ENUM(NSInteger, SK_AUTOSCROLL_DIRECTION){
     SK_AUTOSCROLL_DIRECTION_BOTTOM// 向下滚动
 };
 
-@interface SKAutoScrollLabel : UIView
+@interface SKAutoScrollLabel1 : UIView
 
 @property (nonatomic, assign) SK_AUTOSCROLL_DIRECTION direction;
 @property (nonatomic, assign) CGFloat scrollSpeed;// 滚动速度, 默认30

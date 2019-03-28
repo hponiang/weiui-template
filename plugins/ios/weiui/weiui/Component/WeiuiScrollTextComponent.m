@@ -20,6 +20,7 @@
 @property (nonatomic, strong) NSString *kbackgroundColor;
 
 @property (nonatomic, strong) SKAutoScrollLabel *skLab;
+@property (nonatomic, assign) BOOL isRemoveObserver;
 @property (nonatomic, assign) BOOL isItemClick;
 
 @end
@@ -60,18 +61,9 @@ WX_EXPORT_METHOD(@selector(setBackgroundColor:))
 
 - (void)viewDidLoad
 {
-    _skLab = [[SKAutoScrollLabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    _skLab.text = _content;
-    _skLab.textColor = [WXConvert UIColor:_color];
-    _skLab.font = [UIFont systemFontOfSize:_fontSize];
-    _skLab.scrollSpeed = _kspeed * 10;
-    _skLab.direction = SK_AUTOSCROLL_DIRECTION_LEFT;
-    _skLab.textAlignment = NSTextAlignmentLeft;
-    [self.view addSubview:_skLab];
+    [self.view addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
     
-    if (_kbackgroundColor.length > 0) {
-        _skLab.backgroundColor = [WXConvert UIColor:_kbackgroundColor];
-    }
+    [self loadLabView];
     
     UIButton *tapBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     tapBtn.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
@@ -80,6 +72,53 @@ WX_EXPORT_METHOD(@selector(setBackgroundColor:))
     [self.view addSubview:tapBtn];
     
     [self fireEvent:@"ready" params:nil];
+}
+
+- (void) viewWillUnload
+{
+    [super viewWillUnload];
+    [self removeObserver];
+}
+
+- (void)dealloc
+{
+    [self removeObserver];
+}
+
+- (void) removeObserver
+{
+    if (_isRemoveObserver != YES) {
+        _isRemoveObserver = YES;
+        [self.view removeObserver:self forKeyPath:@"frame" context:nil];
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"frame"]) {
+        [self loadLabView];
+    }
+}
+
+- (void) loadLabView
+{
+    CGRect frame = self.view.frame;
+    if (_skLab == nil) {
+        _skLab = [[SKAutoScrollLabel alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+        _skLab.textContent = _content;
+        _skLab.textColor = [WXConvert UIColor:_color];
+        _skLab.font = [UIFont systemFontOfSize:_fontSize];
+        _skLab.pointsPerFrame = _kspeed / 2.2;
+        _skLab.direction = SK_AUTOSCROLL_DIRECTION_LEFT;
+        _skLab.textAlignment = NSTextAlignmentLeft;
+        [self.view addSubview:_skLab];
+        
+        if (_kbackgroundColor.length > 0) {
+            _skLab.backgroundColor = [WXConvert UIColor:_kbackgroundColor];
+        }
+    }else{
+        _skLab.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
+    }
 }
 
 - (void)updateStyles:(NSDictionary *)styles
@@ -121,17 +160,17 @@ WX_EXPORT_METHOD(@selector(setBackgroundColor:))
     } else if ([key isEqualToString:@"content"]) {
         _content = [WXConvert NSString:value];
         if (isUpdate) {
-            _skLab.text = _content;
+            _skLab.textContent = _content;
         }
     } else if ([key isEqualToString:@"text"]) {
         _content = [WXConvert NSString:value];
         if (isUpdate) {
-            _skLab.text = _content;
+            _skLab.textContent = _content;
         }
     } else if ([key isEqualToString:@"speed"]) {
         _kspeed = [WXConvert CGFloat:value];
         if (isUpdate) {
-            _skLab.scrollSpeed = _kspeed * 10;
+            _skLab.pointsPerFrame = _kspeed / 2.2;
         }
     } else if ([key isEqualToString:@"fontSize"]) {
         _fontSize = FONT( [WXConvert NSInteger:value]);
@@ -157,7 +196,7 @@ WX_EXPORT_METHOD(@selector(setBackgroundColor:))
 {
     if (value) {
         _content = [WXConvert NSString:value];
-        _skLab.text = _content;
+        _skLab.textContent = _content;
     }
 }
 
@@ -165,30 +204,32 @@ WX_EXPORT_METHOD(@selector(setBackgroundColor:))
 {
     if (value) {
         _content = [_content stringByAppendingString:[WXConvert NSString:value]];
-        _skLab.text = _content;
+        _skLab.textContent = _content;
     }
 }
 
 - (void)startScroll
 {
-    [_skLab startScroll];
+    [_skLab continueScroll];
+    [_skLab setEnableFade:YES];
 }
 
 - (void)stopScroll
 {
-    [_skLab stopScroll];
+    [_skLab pauseScroll];
+    [_skLab setEnableFade:NO];
 }
 
 - (BOOL)isStarting
 {
-    return _skLab.scrolling;
+    return [_skLab isScroll];
 }
 
 - (void)setSpeed:(id)value
 {
     if (value) {
         _kspeed = [WXConvert CGFloat:value];
-        _skLab.scrollSpeed = _kspeed;
+        _skLab.pointsPerFrame = _kspeed / 2.2;
     }
 }
 
@@ -220,14 +261,14 @@ WX_EXPORT_METHOD(@selector(setBackgroundColor:))
 
 - (void)itemPanClick
 {
-    if (_skLab.scrolling) {
+    if ([_skLab isScroll]) {
         [self stopScroll];
     } else {
         [self startScroll];
     }
     
     if (_isItemClick) {
-        [self fireEvent:@"itemClick" params:@{@"position":@(_skLab.scrolling)}];
+        [self fireEvent:@"itemClick" params:@{@"isStarting":@([_skLab isScroll])}];
     }
 }
 

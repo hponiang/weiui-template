@@ -1,12 +1,12 @@
 
-//  SKAutoScrollLabel.m
-//  SKAutoScrollLabel
+//  SKAutoScrollLabel1.m
+//  SKAutoScrollLabel1
 //
 //  Created by shevchenko on 17/4/10.
 //  Copyright © 2017年 shevchenko. All rights reserved.
 //
 
-#import "SKAutoScrollLabel.h"
+#import "SKAutoScrollLabel1.h"
 #import <QuartzCore/QuartzCore.h>
 
 static const NSUInteger kLabelCount = 2;
@@ -22,14 +22,14 @@ static void each_object(NSArray *objects, void (^block)(UILabel * label)) {
 }
 #define EACH_LABEL(ATTR, VALUE) each_object(self.labels, ^(UILabel *label) { label.ATTR = VALUE; });
 
-@interface SKAutoScrollLabel ()<UIScrollViewDelegate>
+@interface SKAutoScrollLabel1 ()<UIScrollViewDelegate>
 @property (nonatomic, strong) NSArray * labels;
 @property (nonatomic, strong, readonly) UILabel * scrollLabel;
 @property (nonatomic, strong) UIScrollView * scrollView;
 
 @end
 
-@implementation SKAutoScrollLabel
+@implementation SKAutoScrollLabel1
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {

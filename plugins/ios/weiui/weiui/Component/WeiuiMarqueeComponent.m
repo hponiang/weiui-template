@@ -7,7 +7,7 @@
 //
 
 #import "WeiuiMarqueeComponent.h"
-#import "SKAutoScrollLabel.h"
+#import "SKAutoScrollLabel1.h"
 #import "DeviceUtil.h"
 
 @interface WeiuiMarqueeComponent()
@@ -19,7 +19,8 @@
 @property (nonatomic, strong) NSString *textAlign;
 @property (nonatomic, strong) NSString *kbackgroundColor;
 
-@property (nonatomic, strong) SKAutoScrollLabel *skLab;
+@property (nonatomic, strong) SKAutoScrollLabel1 *skLab;
+@property (nonatomic, assign) BOOL isRemoveObserver;
 
 @end
 
@@ -56,26 +57,64 @@ WX_EXPORT_METHOD(@selector(setTextSize:))
 
 - (void)viewDidLoad
 {
-    _skLab = [[SKAutoScrollLabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    _skLab.text = _content;
-    _skLab.textColor = [WXConvert UIColor:_color];
-    _skLab.font = [UIFont systemFontOfSize:_fontSize];
-    _skLab.direction = SK_AUTOSCROLL_DIRECTION_LEFT;
-    [self.view addSubview:_skLab];
+    [self.view addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
     
-    if (_kbackgroundColor.length > 0) {
-        _skLab.backgroundColor = [WXConvert UIColor:_kbackgroundColor];
-    }
-    
-    if ([_textAlign isEqualToString:@"right"]) {
-        [_skLab alignmentText:NSTextAlignmentRight];
-    } else if ([_textAlign isEqualToString:@"center"]) {
-        [_skLab alignmentText:NSTextAlignmentCenter];
-    } else if ([_textAlign isEqualToString:@"left"]) {
-        _skLab.textAlignment = NSTextAlignmentLeft;
-    }
+    [self loadLabView];
     
     [self fireEvent:@"ready" params:nil];
+}
+
+- (void) viewWillUnload
+{
+    [super viewWillUnload];
+    [self removeObserver];
+}
+
+- (void)dealloc
+{
+    [self removeObserver];
+}
+
+- (void) removeObserver
+{
+    if (_isRemoveObserver != YES) {
+        _isRemoveObserver = YES;
+        [self.view removeObserver:self forKeyPath:@"frame" context:nil];
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"frame"]) {
+        [self loadLabView];
+    }
+}
+
+- (void) loadLabView
+{
+    CGRect frame = self.view.frame;
+    if (_skLab == nil) {
+        _skLab = [[SKAutoScrollLabel1 alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+        _skLab.text = _content;
+        _skLab.textColor = [WXConvert UIColor:_color];
+        _skLab.font = [UIFont systemFontOfSize:_fontSize];
+        _skLab.direction = SK_AUTOSCROLL_DIRECTION_LEFT;
+        [self.view addSubview:_skLab];
+        
+        if (_kbackgroundColor.length > 0) {
+            _skLab.backgroundColor = [WXConvert UIColor:_kbackgroundColor];
+        }
+        
+        if ([_textAlign isEqualToString:@"right"]) {
+            [_skLab alignmentText:NSTextAlignmentRight];
+        } else if ([_textAlign isEqualToString:@"center"]) {
+            [_skLab alignmentText:NSTextAlignmentCenter];
+        } else if ([_textAlign isEqualToString:@"left"]) {
+            _skLab.textAlignment = NSTextAlignmentLeft;
+        }
+    }else{
+        _skLab.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
+    }
 }
 
 - (void)updateStyles:(NSDictionary *)styles
