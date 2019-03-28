@@ -17,7 +17,7 @@
 
 @implementation Cloud
 
-static NSString *apiUrl = @"https://app.weiui.cc/";
+static NSString *apiUrl = @"https://console.weiui.app/";
 static UIImageView *welcomeView;
 
 //加载启动图
