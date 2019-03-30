@@ -87,8 +87,10 @@ import com.taobao.weex.dom.WXEvent;
 import com.taobao.weex.ui.component.WXComponent;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -128,6 +130,7 @@ public class PageActivity extends AppCompatActivity {
     public interface OnRefreshListener { void refresh(String pageName); }
 
     private Map<String, JSCallback> mOnPageStatusListeners = new HashMap<>();
+    private static List<ResultCallback<String>> tabViewDebug = new LinkedList<>();
 
     //模板部分
     private ViewGroup mBody, mWeb, mAuto, mError;
@@ -752,8 +755,14 @@ public class PageActivity extends AppCompatActivity {
                     break;
                 }
                 if (mPageInfo.getUrl().contains("?_wx_tpl=")) {
+                    String outurl = weiuiCommon.getMiddle(mPageInfo.getUrl(), "?_wx_tpl=", null);
+                    try {
+                        outurl = java.net.URLDecoder.decode(outurl, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                     mPageInfo.setPageType("weex");
-                    mPageInfo.setUrl(weiuiCommon.getMiddle(mPageInfo.getUrl(), "?_wx_tpl=", null));
+                    mPageInfo.setUrl(outurl);
                     initDefaultPageView();
                     break;
                 }
@@ -1258,6 +1267,7 @@ public class PageActivity extends AppCompatActivity {
         }
         //
         hideNavigation();
+        titleBarLeftNull = true;
         titleBarLeft.removeAllViews();
         titleBarRight.removeAllViews();
         //
@@ -1869,6 +1879,22 @@ public class PageActivity extends AppCompatActivity {
     };
 
     /**
+     * 添加tabbar监听
+     * @param callback
+     */
+    public static void setTabViewDebug(ResultCallback<String> callback) {
+        tabViewDebug.add(callback);
+    }
+
+    /**
+     * 移除tabbar监听
+     * @param callback
+     */
+    public static void removeTabViewDebug(ResultCallback<String> callback) {
+        tabViewDebug.remove(callback);
+    }
+
+    /**
      * deBugSocket事件
      */
     private WsStatusListener deBugWsStatusListener = new WsStatusListener() {
@@ -1927,6 +1953,7 @@ public class PageActivity extends AppCompatActivity {
             }else if (text.startsWith("RELOADPAGE:")) {
                 String url = text.substring(11);
                 List<Activity> activityList = weiui.getActivityList();
+                boolean already = false;
                 int size = activityList.size() - 1;
                 for (int i = size; i >= 0; --i) {
                     Activity activity = activityList.get(i);
@@ -1939,6 +1966,15 @@ public class PageActivity extends AppCompatActivity {
                             }else{
                                 mActivity.getPageInfo().setResumeUrl(url);
                             }
+                            already = true;
+                        }
+                    }
+                }
+                if (!already) {
+                    for (int i = 0; i < tabViewDebug.size(); i++) {
+                        ResultCallback<String> call = tabViewDebug.get(i);
+                        if (call != null) {
+                            call.onReceiveResult(url);
                         }
                     }
                 }

@@ -11,6 +11,7 @@
 #import "UIImage+TBCityIconFont.h"
 #import "TriangleIndicatorView.h"
 #import "WXMainViewController.h"
+#import "WeiuiNewPageManager.h"
 #import "WeiuiTabbarPageComponent.h"
 #import "MJRefresh.h"
 #import "SDWebImageDownloader.h"
@@ -743,7 +744,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
 {
     if (_selectedIndex < _tabPages.count) {
         NSDictionary *dic = self.tabPages[_selectedIndex];
-        NSString *tabName = dic[@"tabName"] ? [WXConvert NSString:dic[@"tabName"]] : @"";
+        NSString *tabName = dic[@"tabName"] ? [WXConvert NSString:dic[@"tabName"]] : [NSString stringWithFormat:@"TabPage-%d", (arc4random() % 100) + 1000];
         NSString *title = dic[@"title"] ? [WXConvert NSString:dic[@"title"]] : @"New Page";
         NSString *url = dic[@"url"] ? [WXConvert NSString:dic[@"url"]] : @"";
         NSInteger cache = dic[@"cache"] ? [WXConvert NSInteger:dic[@"cache"]] : 0;
@@ -767,10 +768,20 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
         vc.pageName = tabName;
         vc.title = title;
         
-        if ([url containsString:@"index-home-page.js"]) {
-            //self.bodyView.frame = CGRectMake(0, 0, self.bodyView.frame.size.width, 1800);
-            //scoView.frame = CGRectMake(0, 0, self.bodyView.frame.size.width, 1800);
-        }
+        #if DEBUG
+        vc.statusBlock = ^(NSString *status) {
+            if ([status isEqualToString:@"stop"]) {
+                [WeiuiNewPageManager removeTabViewDebug:tabName];
+            }
+        };
+        
+        [WeiuiNewPageManager setTabViewDebug:tabName callback:^(id result, BOOL keepAlive) {
+            NSString *url = [WXConvert NSString:result];
+            if ([[vc url] hasPrefix:url]) {
+                [vc refreshPage];
+            }
+        }];
+        #endif
         
         [_tabInstance.viewController addChildViewController:vc];
         [scoView addSubview:vc.view];
@@ -1109,8 +1120,23 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                 vc.cache = cache;
                 vc.params = params;
                 vc.isChildSubview = YES;
-                vc.pageName = @"";
+                vc.pageName = [NSString stringWithFormat:@"TabPage-%d", (arc4random() % 100) + 1000];
                 vc.title = title;
+                
+                #if DEBUG
+                vc.statusBlock = ^(NSString *status) {
+                    if ([status isEqualToString:@"stop"]) {
+                        [WeiuiNewPageManager removeTabViewDebug:tabName];
+                    }
+                };
+                
+                [WeiuiNewPageManager setTabViewDebug:tabName callback:^(id result, BOOL keepAlive) {
+                    NSString *url = [WXConvert NSString:result];
+                    if ([[vc url] hasPrefix:url]) {
+                        [vc refreshPage];
+                    }
+                }];
+                #endif
                 
                 [_tabInstance.viewController addChildViewController:vc];
                 [scoView addSubview:vc.view];

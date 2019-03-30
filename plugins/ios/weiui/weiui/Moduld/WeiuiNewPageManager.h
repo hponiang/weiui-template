@@ -10,6 +10,8 @@
 #import "WeexSDK.h"
 #import "WXMainViewController.h"
 
+static NSMutableDictionary *tabViewDebug;
+
 @interface WeiuiNewPageManager : NSObject
 
 @property (nonatomic, strong) WXSDKInstance *weexInstance;
@@ -43,5 +45,9 @@
 - (void)setRightItems:(id) params callback:(WXModuleKeepAliveCallback) callback;
 - (void)showNavigation;
 - (void)hideNavigation;
+
++ (void)setTabViewDebug:(NSString*)pageName callback:(WXModuleKeepAliveCallback) callback;
++ (void)removeTabViewDebug:(NSString*)pageName;
++ (NSMutableDictionary *)getTabViewDebug;
 
 @end

@@ -44,10 +44,10 @@ subprojects {
         applicationId = "cc.weiui.playground"
 
         versionCode = 1
-        versionName = "1.0.35"
+        versionName = "1.0.36"
 
-        weiuiVersionCode = 35
-        weiuiVersionName = "0.0.35"
+        weiuiVersionCode = 36
+        weiuiVersionName = "0.0.36"
 
         compileSdkVersion = 28
         appMinSdkVersion = 16

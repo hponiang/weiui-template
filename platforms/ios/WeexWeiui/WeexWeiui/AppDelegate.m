@@ -422,6 +422,7 @@ NSDictionary *mLaunchOptions;
             [self refresh];
             return;
         }
+        BOOL already = NO;
         NSDictionary *viewData = [[WeiuiNewPageManager sharedIntstance] getViewData];
         for (NSString *pageName in viewData) {
             id view = [viewData objectForKey:pageName];
@@ -429,6 +430,16 @@ NSDictionary *mLaunchOptions;
                 WXMainViewController *vc = (WXMainViewController*)view;
                 if ([[vc url] hasPrefix:url]) {
                     [vc setResumeUrl:url];
+                    already = YES;
+                }
+            }
+        }
+        if (already == NO) {
+            NSDictionary *tabViewDebug = [WeiuiNewPageManager getTabViewDebug];
+            for (NSString *pageName in tabViewDebug) {
+                WXModuleKeepAliveCallback call = (WXModuleKeepAliveCallback) [tabViewDebug objectForKey:pageName];
+                if (call != nil) {
+                    call(url, true);
                 }
             }
         }

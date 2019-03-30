@@ -639,4 +639,28 @@
     }
 }
 
++ (void)setTabViewDebug:(NSString*)pageName callback:(WXModuleKeepAliveCallback) callback
+{
+    if (tabViewDebug == nil) {
+        tabViewDebug = [NSMutableDictionary new];
+    }
+    if (pageName.length > 0) {
+        [tabViewDebug setObject:callback forKey:pageName];
+    }
+}
+
++ (void)removeTabViewDebug:(NSString*)pageName
+{
+    if (tabViewDebug == nil) {
+        tabViewDebug = [NSMutableDictionary new];
+    }
+    if (pageName.length > 0) {
+        [tabViewDebug removeObjectForKey:pageName];
+    }
+}
+
++ (NSMutableDictionary *)getTabViewDebug {
+    return tabViewDebug;
+}
+
 @end

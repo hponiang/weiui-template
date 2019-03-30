@@ -34,10 +34,10 @@ WXMainViewController *homeController;
     NSString *bundleUrl = [Config getHome];
     
     [WeexSDKManager sharedIntstance].weexUrl = bundleUrl;
+    [[WeexSDKManager sharedIntstance] setup];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)([Cloud welcome:nil] * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.ready = YES;
-        [[WeexSDKManager sharedIntstance] setup];
         homeController = [[WXMainViewController alloc] init];
         homeController.url = bundleUrl;
         homeController.pageName = [Config getHomeParams:@"pageName" defaultVal:@"firstPage"];

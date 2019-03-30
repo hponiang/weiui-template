@@ -188,6 +188,9 @@ exports.syncFolderEvent = (host, port, socketPort, removeBundlejs) => {
     let isSocket = !!(host && socketPort);
     let hostUrl = 'http://' + host + ':' + port + '/dist';
     //
+    let random = Math.random();
+    let deviceIds = {};
+    //
     let copyJsEvent = (originDir, newDir) => {
         let lists = fs.readdirSync(originDir);
         lists.forEach((item) => {
@@ -201,7 +204,10 @@ exports.syncFolderEvent = (host, port, socketPort, removeBundlejs) => {
                                 //!err && console.log(newPath);
                                 if (!err && socketAlready) {
                                     socketClients.map((client) => {
-                                        (client.ws.readyState !== 2) && client.ws.send('RELOADPAGE:' + hostUrl + '/' + item)
+                                        if (client.ws.readyState !== 2 && deviceIds[socketClients.deviceId] !== random) {
+                                            deviceIds[socketClients.deviceId] = random;
+                                            client.ws.send('RELOADPAGE:' + hostUrl + '/' + item);
+                                        }
                                     });
                                 }
                             });

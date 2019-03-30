@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.FrameLayout;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import cc.weiui.framework.BuildConfig;
 import cc.weiui.framework.activity.PageActivity;
 import cc.weiui.framework.extend.module.weiuiConstants;
 
@@ -29,6 +31,7 @@ import cc.weiui.framework.extend.view.tablayout.listener.OnTabSelectListener;
 import com.taobao.weex.IWXRenderListener;
 import com.taobao.weex.annotation.JSMethod;
 import com.taobao.weex.bridge.JSCallback;
+import com.taobao.weex.bridge.ResultCallback;
 import com.taobao.weex.common.Constants;
 import com.taobao.weex.common.OnWXScrollListener;
 import com.taobao.weex.common.WXRenderStrategy;
@@ -75,6 +78,17 @@ public class Tabbar extends WXVContainer<ViewGroup> {
 
     private CommonTabLayout mTabLayoutBottom;
 
+    private ResultCallback<String> resultCallback = result -> {
+        for (Map.Entry<String, WXSDKBean> entry : mViewPager.WXSDKList.entrySet()) {
+            if (entry.getValue().isLoaded()) {
+                String url = String.valueOf(entry.getValue().getView());
+                if (url.startsWith(result)) {
+                    addWXSDKView(entry.getKey());
+                }
+            }
+        }
+    };
+
     public Tabbar(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
         super(instance, parent, basicComponentData);
         updateNativeStyle(Constants.Name.FLEX_DIRECTION, "row");
@@ -105,11 +119,18 @@ public class Tabbar extends WXVContainer<ViewGroup> {
             });
         }
         //
+        if (BuildConfig.DEBUG) {
+            PageActivity.setTabViewDebug(resultCallback);
+        }
+        //
         return (ViewGroup) mView;
     }
 
     @Override
     public void destroy() {
+        if (BuildConfig.DEBUG) {
+            PageActivity.removeTabViewDebug(resultCallback);
+        }
         for (WXSDKBean item : mViewPager.WXSDKList.values()) {
             WXSDKInstance mSdk = item.getInstance();
             if (mSdk != null) mSdk.destroy();

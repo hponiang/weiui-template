@@ -52,7 +52,7 @@ WX_EXPORT_METHOD(@selector(setLoading:))
         _color = @"#FFFFFF";
         _fontSize = FONT(24);
         _kbackgroundColor = @"#3EB4FF";
-        _borderRadius = 8;
+        _borderRadius = SCALE(8);
         _borderWidth = 0;
         _borderColor = @"#ffffff";
         _kdisabled = NO;
@@ -214,7 +214,7 @@ WX_EXPORT_METHOD(@selector(setLoading:))
             btn.backgroundColor = [WXConvert UIColor:_kbackgroundColor];
         }
     } else if ([key isEqualToString:@"borderRadius"]) {
-        _borderRadius = [WXConvert NSInteger:value];
+        _borderRadius = SCALE([WXConvert NSInteger:value]);
         if (isUpdate) {
             UIButton *btn = (UIButton*)self.view;
             btn.layer.cornerRadius = _borderRadius;
