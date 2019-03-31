@@ -740,7 +740,7 @@ static int easyNavigationButtonTag = 8000;
     [titleLabel setBackgroundColor:[UIColor clearColor]];
     [titleLabel setTextColor:[WXConvert UIColor:titleColor]];
     [titleLabel setText:[[NSString alloc] initWithFormat:@"  %@  ", title]];
-    [titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:SCALE(titleSize)]];
+    [titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:SCALEFLOAT(titleSize)]];
     [titleLabel sizeToFit];
     
     if (subtitle.length > 0) {
@@ -748,7 +748,7 @@ static int easyNavigationButtonTag = 8000;
         [subtitleLabel setBackgroundColor:[UIColor clearColor]];
         [subtitleLabel setTextColor:[WXConvert UIColor:subtitleColor]];
         [subtitleLabel setText:[[NSString alloc] initWithFormat:@"  %@  ", subtitle]];
-        [subtitleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:SCALE(subtitleSize)]];
+        [subtitleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:SCALEFLOAT(subtitleSize)]];
         [subtitleLabel sizeToFit];
         
         UIView *twoLineTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, MAX(subtitleLabel.frame.size.width, titleLabel.frame.size.width), 30)];
@@ -824,17 +824,17 @@ static int easyNavigationButtonTag = 8000;
                 [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:icon] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
                     if (image) {
                         WXPerformBlockOnMainThread(^{
-                            [customButton setImage:[DeviceUtil imageResize:image andResizeTo:CGSizeMake(SCALE(iconSize), SCALE(iconSize)) icon:nil] forState:UIControlStateNormal];
+                            [customButton setImage:[DeviceUtil imageResize:image andResizeTo:CGSizeMake(SCALEFLOAT(iconSize), SCALEFLOAT(iconSize)) icon:nil] forState:UIControlStateNormal];
                             [customButton SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing: (icon.length > 0 && title.length > 0) ? 5 : 0];
                         });
                     }
                 }];
             } else {
-                [customButton setImage:[DeviceUtil getIconText:icon font:SCALE(iconSize) color:iconColor] forState:UIControlStateNormal];
+                [customButton setImage:[DeviceUtil getIconText:icon font:FONT(iconSize) color:iconColor] forState:UIControlStateNormal];
             }
         }
         if (title.length > 0){
-            customButton.titleLabel.font = [UIFont systemFontOfSize:SCALE(titleSize)];
+            customButton.titleLabel.font = [UIFont systemFontOfSize:SCALEFLOAT(titleSize)];
             [customButton setTitle:title forState:UIControlStateNormal];
             [customButton setTitleColor:[WXConvert UIColor:titleColor] forState:UIControlStateNormal];
             [customButton.titleLabel sizeToFit];

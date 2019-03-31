@@ -41,7 +41,7 @@
 @property (nonatomic, assign) NSInteger indicatorGravity;
 @property (nonatomic, assign) CGFloat indicatorHeight;
 @property (nonatomic, assign) CGFloat indicatorWidth;
-@property (nonatomic, assign) NSInteger indicatorCornerRadius;
+@property (nonatomic, assign) CGFloat indicatorCornerRadius;
 @property (nonatomic, assign) NSInteger indicatorAnimDuration;
 @property (nonatomic, assign) NSInteger underlineGravity;
 @property (nonatomic, assign) CGFloat underlineHeight;
@@ -53,7 +53,7 @@
 @property (nonatomic, assign) NSInteger iconGravity;
 @property (nonatomic, assign) CGFloat iconWidth;
 @property (nonatomic, assign) CGFloat iconHeight;
-@property (nonatomic, assign) NSInteger iconMargin;
+@property (nonatomic, assign) CGFloat iconMargin;
 
 @property (nonatomic, assign) NSInteger ksideLine;
 
@@ -124,31 +124,28 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
         _tabInstance = weexInstance;
         
         _ktabType = @"bottom";
-        _ktabBackgroundColor = @"#FFFFFF";
-        //        _indicatorColor = @"#FFFFFF";
+        _indicatorColor = @"#FFFFFF";
         _underlineColor = @"#FFFFFF";
         _dividerColor = @"#FFFFFF";
-        _textSelectColor = @"#3EB4FF";
-        _textUnselectColor = @"#999999";
-        _ktabHeight = SCALE(100);
-        _tabPadding = SCALE(20);
+        _ktabHeight = SCALEFLOAT(100);
+        _tabPadding = 0;
         _tabWidth = 0;
         _indicatorStyle = 0;
         _indicatorGravity = 0;
-        _indicatorHeight = SCALE(4);
-        _indicatorWidth = SCALE(60);
-        _indicatorCornerRadius = 0;
+        _indicatorHeight = SCALEFLOAT(4);
+        _indicatorWidth = SCALEFLOAT(20);
+        _indicatorCornerRadius = SCALEFLOAT(2);
         _indicatorAnimDuration = 300;
         _underlineGravity = 0;
         _underlineHeight = 0;
         _dividerWidth = 0;
-        _dividerPadding = 0;
-        _textBold = 1;
-        _textSize = FONT(24);
+        _dividerPadding = SCALEFLOAT(12);
+        _textBold = 0;
+        _textSize = FONT(26);
         _iconGravity = 1;
         _iconWidth = 0;
         _iconHeight = 0;
-        _iconMargin = SCALE(10);
+        _iconMargin = SCALEFLOAT(10);
         _ksideLine = 1;
         _tabPageAnimated = YES;
         _tabSpaceEqual = YES;
@@ -162,11 +159,27 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             [self dataKey:key value:attributes[key] isUpdate:NO];
         }
         
-        if (!_indicatorColor) {
-            if (_indicatorStyle == 2) {
-                _indicatorColor = @"#4B6A87";
+        if (!_ktabBackgroundColor) {
+            if ([_ktabType isEqualToString:@"bottom"]) {
+                _ktabBackgroundColor = @"#ffffff";
             } else {
-                _indicatorColor = @"#FFFFFF";
+                _ktabBackgroundColor = @"#3EB4FF";
+            }
+        }
+        
+        if (!_textSelectColor) {
+            if ([_ktabType isEqualToString:@"bottom"]) {
+                _textSelectColor = @"#2C97DE";
+            } else {
+                _textSelectColor = @"#ffffff";
+            }
+        }
+        
+        if (!_textUnselectColor) {
+            if ([_ktabType isEqualToString:@"bottom"]) {
+                _textUnselectColor = @"#333333";
+            } else {
+                _textUnselectColor = @"#eeeeee";
             }
         }
         
@@ -177,6 +190,11 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                 _iconVisible = NO;
             }
         }
+        
+        if ([_ktabType isEqualToString:@"slidingTop"]) {
+            _iconVisible = NO;
+        }
+        
         _isRefreshListener = [events containsObject:@"refreshListener"];        
     }
     return self;
@@ -352,7 +370,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
     } else if ([key isEqualToString:@"indicatorWidth"]) {
         _indicatorWidth = SCALEFLOAT([WXConvert CGFloat:value]);
     } else if ([key isEqualToString:@"indicatorCornerRadius"]) {
-        _indicatorCornerRadius = [WXConvert NSInteger:value];
+        _indicatorCornerRadius = SCALEFLOAT([WXConvert NSInteger:value]);
     } else if ([key isEqualToString:@"indicatorAnimDuration"]) {
         _indicatorAnimDuration = [WXConvert NSInteger:value];
     } else if ([key isEqualToString:@"underlineGravity"]) {
@@ -374,9 +392,9 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
     } else if ([key isEqualToString:@"iconWidth"]) {
         _iconWidth = SCALEFLOAT([WXConvert CGFloat:value]);
     } else if ([key isEqualToString:@"iconHeight"]) {
-        _iconHeight = [WXConvert NSInteger:value];
+        _iconHeight = SCALEFLOAT([WXConvert NSInteger:value]);
     } else if ([key isEqualToString:@"iconMargin"]) {
-        _iconMargin = [WXConvert NSInteger:value];
+        _iconMargin = SCALEFLOAT([WXConvert NSInteger:value]);
     } else if ([key isEqualToString:@"sideLine"]) {
         _ksideLine = [WXConvert NSInteger:value];
     } else if ([key isEqualToString:@"tabSpaceEqual"]) {
@@ -448,9 +466,22 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                 tabName = data[@"tabName"] ? [WXConvert NSString:data[@"tabName"]] : @"";
                 title = data[@"title"] ? [WXConvert NSString:data[@"title"]] : @"";
                 message = data[@"message"] ? [WXConvert NSInteger:data[@"message"]] : 0;
-                unSelectedIcon = data[@"unSelectedIcon"] ? [WXConvert NSString:data[@"unSelectedIcon"]] : @"tb-home-light";
-                selectedIcon = data[@"selectedIcon"] ? [WXConvert NSString:data[@"selectedIcon"]] : @"tb-home-fill-light";
                 dot = data[@"dot"] ? [WXConvert BOOL:data[@"dot"]] : NO;
+                unSelectedIcon = data[@"unSelectedIcon"] ? [WXConvert NSString:data[@"unSelectedIcon"]] : @"";
+                selectedIcon = data[@"selectedIcon"] ? [WXConvert NSString:data[@"selectedIcon"]] : @"";
+                if ([selectedIcon isEqual: @""]) {
+                    if ([unSelectedIcon isEqual: @""]) {
+                        selectedIcon = @"tb-home-fill-light";
+                    }else{
+                        selectedIcon = unSelectedIcon;
+                    }
+                }else if ([unSelectedIcon isEqual: @""]) {
+                    if ([selectedIcon isEqual: @""]) {
+                        unSelectedIcon = @"tb-home-light";
+                    }else{
+                        unSelectedIcon = selectedIcon;
+                    }
+                }
             }
             
             NSDictionary *nameData = @{@"tabName":tabName, @"position":@(i)};
@@ -464,25 +495,28 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             CGFloat iconWidth = 0;
             CGFloat iconHeight = 0;
             CGFloat iconMargin = 0;
+            CGFloat titleWidth = 0;
             if (_iconVisible) {
-                iconWidth = _iconWidth ? _iconWidth : SCALE(40);
-                iconHeight = _iconHeight ? _iconHeight : SCALE(40);
+                iconWidth = _iconWidth ? _iconWidth : SCALEFLOAT(40);
+                iconHeight = _iconHeight ? _iconHeight : SCALEFLOAT(40);
                 iconMargin = _iconMargin;
             }
+            titleWidth = [title boundingRectWithSize:CGSizeMake(1000,30) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:_textSize]}context:nil].size.width + 12 + _tabPadding * 2;
             
             if (_tabWidth > 0) {
                 tabWidth = _tabWidth;
             } else {
                 if ([_ktabType isEqualToString:@"slidingTop"]) {
-                    tabWidth = [title boundingRectWithSize:CGSizeMake(1000,30)options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName:[UIFont systemFontOfSize:_textSize]}context:nil].size.width + 8 + _tabPadding*2;
+                    tabWidth = titleWidth + 10;
                 } else {
                     tabWidth = (self.calculatedFrame.size.width - _tabPadding*2) / dataList.count;
                 }
             }
             
+            CGRect btnRect = CGRectMake(allWidth, 0, tabWidth, _ktabHeight);
             UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
             btn.backgroundColor = [UIColor clearColor];
-            btn.frame = CGRectMake(allWidth, 0, tabWidth, _ktabHeight);
+            btn.frame = btnRect;
             [btn setTitle:title forState:UIControlStateNormal];
             [btn setTitleColor:[WXConvert UIColor:_textUnselectColor] forState:UIControlStateNormal];
             [btn setTitleColor:[WXConvert UIColor:_textSelectColor] forState:UIControlStateSelected];
@@ -508,13 +542,13 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             
             //图片
             if ([unSelectedIcon containsString:@"//"]) {
-                [btn setImage:[self imageResize:nil andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateNormal];
+                [btn setImage:[DeviceUtil imageResize:nil andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateNormal];
                 [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:unSelectedIcon] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
                     if (image) {
                         WXPerformBlockOnMainThread(^{
-                            [btn setImage:[self imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateNormal];
+                            [btn setImage:[DeviceUtil imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateNormal];
                             if (self->_iconVisible == NO) {
-                                [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:5];
+                                [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:0];
                             } else if (self->_iconGravity) {
                                 [btn SG_imagePositionStyle:(SGImagePositionStyleTop) spacing:5];
                             } else {
@@ -524,16 +558,16 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                     }
                 }];
             } else {
-                [btn setImage:[self imageResize:[DeviceUtil getIconText:unSelectedIcon font:0 color:@"#242424"] andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:unSelectedIcon] forState:UIControlStateNormal];
+                [btn setImage:[DeviceUtil imageResize:[DeviceUtil getIconText:unSelectedIcon font:0 color:@"#242424"] andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:unSelectedIcon] forState:UIControlStateNormal];
             }
             
             if ([selectedIcon containsString:@"//"]) {
                 [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:selectedIcon] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
                     if (image) {
                         WXPerformBlockOnMainThread(^{
-                            [btn setImage:[self imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateSelected];
+                            [btn setImage:[DeviceUtil imageResize:image andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:nil] forState:UIControlStateSelected];
                             if (self->_iconVisible == NO) {
-                                [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:5];
+                                [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:0];
                             } else if (self->_iconGravity) {
                                 [btn SG_imagePositionStyle:(SGImagePositionStyleTop) spacing:5];
                             } else {
@@ -543,7 +577,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                     }
                 }];
             } else {
-                [btn setImage:[self imageResize:[DeviceUtil getIconText:selectedIcon font:0 color:_textSelectColor] andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:selectedIcon] forState:UIControlStateSelected];
+                [btn setImage:[DeviceUtil imageResize:[DeviceUtil getIconText:selectedIcon font:0 color:_textSelectColor] andResizeTo:CGSizeMake(iconWidth, iconHeight) icon:selectedIcon] forState:UIControlStateSelected];
             }
             
             //字体加粗
@@ -568,7 +602,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             
             //上下图片文字
             if (_iconVisible == NO) {
-                [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:5];
+                [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:0];
             } else if (_iconGravity) {
                 [btn SG_imagePositionStyle:(SGImagePositionStyleTop) spacing:5];
             } else {
@@ -584,7 +618,12 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             
             //消息数量
             NSInteger labWitdh = message >= 100 ? 25 : message >= 10 ? 20 : 15;
-            UILabel *msgLab = [[UILabel alloc] initWithFrame:CGRectMake((tabWidth + btn.imageView.frame.size.width)/2 - 2, 5, labWitdh, 15)];
+            CGRect labRect = CGRectMake((tabWidth + MAX(btn.imageView.frame.size.width, titleWidth)) / 2 - 5, 5, labWitdh, 15);
+            if ([_ktabType isEqualToString:@"slidingTop"]) {
+                labRect.origin.x -= 5;
+                labRect.origin.y += 5;
+            }
+            UILabel *msgLab = [[UILabel alloc] initWithFrame:labRect];
             msgLab.backgroundColor = [UIColor redColor];
             msgLab.font = [UIFont systemFontOfSize:10.f];
             msgLab.textAlignment = NSTextAlignmentCenter;
@@ -598,7 +637,12 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             [btn addSubview:msgLab];
             
             //未读红点
-            UIView *dotView = [[UIView alloc] initWithFrame:CGRectMake((tabWidth + btn.imageView.frame.size.width)/2 - 5, 5, 6, 6)];
+            CGRect dotRect = CGRectMake((tabWidth + MAX(btn.imageView.frame.size.width, titleWidth)) / 2 - 5, 5, 6, 6);
+            if ([_ktabType isEqualToString:@"slidingTop"]) {
+                dotRect.origin.x -= 5;
+                dotRect.origin.y += 5;
+            }
+            UIView *dotView = [[UIView alloc] initWithFrame:dotRect];
             dotView.backgroundColor = [UIColor redColor];
             dotView.layer.cornerRadius = 3;
             dotView.layer.masksToBounds = YES;
@@ -723,21 +767,6 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
     
     self.underLineView.frame = CGRectMake(0, y, _tabView.frame.size.width, lineHeight);
     self.underLineView.backgroundColor = [WXConvert UIColor:_underlineColor];
-}
-
-- (UIImage *)imageResize:(UIImage*)img andResizeTo:(CGSize)newSize icon:(NSString *)icon
-{
-    CGFloat scale = [[UIScreen mainScreen]scale];
-    UIGraphicsBeginImageContextWithOptions(newSize, NO, scale);
-    NSInteger x = 0;
-    if (![icon containsString:@"//"]) {
-        x = -newSize.width * scale / 30;
-    }
-    [img drawInRect:CGRectMake(x, 0, newSize.width, newSize.height)];//有偏移，自己加了参数
-    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return newImage;
 }
 
 - (void)loadTabPagesView
@@ -989,7 +1018,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             if ([name isEqualToString:tabName]) {
                 NSInteger labWitdh = num >= 100 ? 25 : num >= 10 ? 20 : 15;
                 UILabel *msgLab = (UILabel*)[_tabView viewWithTag:TabItemMessageTag + i];
-                msgLab.frame = CGRectMake(msgLab.frame.origin.x, msgLab.frame.origin.y, labWitdh, 15);
+                msgLab.frame = CGRectMake(msgLab.frame.origin.x, msgLab.frame.origin.y, labWitdh, msgLab.frame.size.height);
                 msgLab.text = num > 99 ? @"99+" : [NSString stringWithFormat:@"%ld", num];
                 msgLab.hidden = NO;
                 break;
@@ -1189,7 +1218,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
 
 - (void)setTabHeight:(NSInteger)tabHeight
 {
-    _ktabHeight = SCALE(tabHeight);
+    _ktabHeight = SCALEFLOAT(tabHeight);
     [self loadTabView];
 }
 
@@ -1231,12 +1260,12 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
 
 - (void)setTabIconWidth:(NSInteger)iconWidth
 {
-    _iconWidth = SCALE(iconWidth);
+    _iconWidth = SCALEFLOAT(iconWidth);
     [self loadTabView];
 }
 - (void)setTabIconHeight:(NSInteger)iconHeight
 {
-    _iconHeight = SCALE(iconHeight);
+    _iconHeight = SCALEFLOAT(iconHeight);
     [self loadTabView];
 }
 - (void)setSideline:(NSInteger)sideLine

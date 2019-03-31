@@ -1635,6 +1635,8 @@ public class PageActivity extends AppCompatActivity {
     private TextView deBugButton;
     private WsManager deBugSocketWsManager;
     private int deBugButtonSize = 128;
+    private String deBugWsOpenUrl = "";
+    private String deBugKeepScreen = "";
 
     public boolean isDeBugPage() {
         return deBugButton != null;
@@ -1722,6 +1724,9 @@ public class PageActivity extends AppCompatActivity {
         if (deBugButton == null) {
             return;
         }
+        if ("initialize".contentEquals(mode)) {
+            deBugWsOpenUrl = "";
+        }
         if (deBugSocketWsManager != null) {
             deBugSocketWsManager.stopConnect();
             deBugSocketWsManager = null;
@@ -1748,11 +1753,12 @@ public class PageActivity extends AppCompatActivity {
     private View.OnClickListener deBugClickListener = v -> {
         List<ActionItem> mActionItem = new ArrayList<>();
         mActionItem.add(new ActionItem(1, weiuiCommon.getVariateInt("__deBugSocket:Status") == 1 ? "WiFi真机同步 [已连接]" : "WiFi真机同步"));
-        mActionItem.add(new ActionItem(2, "扫一扫"));
-        mActionItem.add(new ActionItem(3, "刷新"));
-        mActionItem.add(new ActionItem(4, "重启APP"));
+        mActionItem.add(new ActionItem(2, deBugKeepScreen.contentEquals("ON") ? "屏幕常亮 [已开启]" : "屏幕常亮"));
+        mActionItem.add(new ActionItem(3, "扫一扫"));
+        mActionItem.add(new ActionItem(4, "刷新"));
+        mActionItem.add(new ActionItem(5, "重启APP"));
         if ("true".equals(weiuiCommon.getVariateStr("configDataIsDist"))) {
-            mActionItem.add(new ActionItem(5, "清除热更新数据"));
+            mActionItem.add(new ActionItem(6, "清除热更新数据"));
 
         }
         ActionSheet.createBuilder(this, getSupportFragmentManager())
@@ -1797,6 +1803,16 @@ public class PageActivity extends AppCompatActivity {
                                 break;
                             }
                             case 1: {
+                                if (deBugKeepScreen.contentEquals("ON")) {
+                                    deBugKeepScreen = "OFF";
+                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                                } else {
+                                    deBugKeepScreen = "ON";
+                                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                                }
+                                break;
+                            }
+                            case 2: {
                                 PageActivity.startScanerCode(PageActivity.this, "{}", new JSCallback() {
                                     @Override
                                     public void invoke(Object data) {
@@ -1843,11 +1859,11 @@ public class PageActivity extends AppCompatActivity {
                                 });
                                 break;
                             }
-                            case 2: {
+                            case 3: {
                                 reload();
                                 break;
                             }
-                            case 3: {
+                            case 4: {
                                 JSONObject newJson = new JSONObject();
                                 newJson.put("title", "热重启APP");
                                 newJson.put("message", "确认要关闭所有页面热重启APP吗？");
@@ -1867,7 +1883,7 @@ public class PageActivity extends AppCompatActivity {
                                 });
                                 break;
                             }
-                            case 4: {
+                            case 5: {
                                 weiuiCommon.setVariate("configDataIsDist", "clear");
                                 weiuiCommon.setVariate("configDataNoUpdate", "clear");
                                 weiui.reboot();
@@ -1898,10 +1914,17 @@ public class PageActivity extends AppCompatActivity {
      * deBugSocket事件
      */
     private WsStatusListener deBugWsStatusListener = new WsStatusListener() {
+
         @Override
         public void onOpen(Response response) {
             super.onOpen(response);
+            Log.d("[socket]", "onOpen");
+            deBugWsOpenUrl = response.request().url().host() + ":" + response.request().url().port();
             //
+            if (deBugKeepScreen.contentEquals("")) {
+                deBugKeepScreen = "ON";
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            }
             List<Activity> activityList = weiui.getActivityList();
             for (int i = activityList.size() - 1; i >= 0; --i) {
                 Activity activity = activityList.get(i);
@@ -1914,8 +1937,8 @@ public class PageActivity extends AppCompatActivity {
         @Override
         public void onMessage(String text) {
             super.onMessage(text);
-            //
             Log.d("[socket]", "onMessage: " + text);
+            //
             if (text.startsWith("HOMEPAGE:")) {
                 List<Activity> activityList = weiui.getActivityList();
                 if (activityList.size() >= 2 && activityList.get(0).getClass().getName().endsWith(".WelcomeActivity")) {
@@ -1978,12 +2001,19 @@ public class PageActivity extends AppCompatActivity {
                         }
                     }
                 }
+            }else if (text.contentEquals("REFRESH")) {
+                Activity activity = weiui.getActivityList().getLast();
+                if (activity instanceof PageActivity) {
+                    PageActivity mActivity = ((PageActivity) activity);
+                    mActivity.reload();
+                }
             }
         }
 
         @Override
         public void onClosed(int code, String reason) {
             super.onClosed(code, reason);
+            Log.d("[socket]", "onClosed");
             //
             List<Activity> activityList = weiui.getActivityList();
             for (int i = activityList.size() - 1; i >= 0; --i) {
@@ -1997,6 +2027,18 @@ public class PageActivity extends AppCompatActivity {
         @Override
         public void onFailure(Throwable t, Response response) {
             super.onFailure(t, response);
+            //
+            String host = weiuiCommon.getVariateStr("__deBugSocket:Host");
+            String port = weiuiCommon.getVariateStr("__deBugSocket:Port");
+            if (deBugWsOpenUrl.contentEquals(host + ":" + port)) {
+                mHandler.postDelayed(()-> {
+                    Log.d("[socket]", "reconnect");
+                    deBugSocketConnect("reconnect");
+                }, 3000);
+            } else {
+                Log.d("[socket]", "onFailure");
+                Toast.makeText(PageActivity.this, "WiFi同步连接失败：" + t.getMessage(), LENGTH_SHORT).show();
+            }
             //
             List<Activity> activityList = weiui.getActivityList();
             for (int i = activityList.size() - 1; i >= 0; --i) {

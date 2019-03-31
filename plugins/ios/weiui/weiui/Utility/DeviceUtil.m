@@ -147,9 +147,9 @@
 {
     CGFloat scale = [[UIScreen mainScreen]scale];
     UIGraphicsBeginImageContextWithOptions(newSize, NO, scale);
-    NSInteger x = 0;
+    CGFloat x = 0;
     if (![icon containsString:@"//"] && ![icon hasPrefix:@"data:"]) {
-        x = -newSize.width * scale / 30;
+        x = -newSize.width * scale / 60;
     }
     [img drawInRect:CGRectMake(x, 0, newSize.width, newSize.height)];//有偏移，自己加了参数
     UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();

@@ -18,6 +18,7 @@
 @interface ViewController ()
 
 @property (nonatomic, assign) BOOL ready;
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
 
 @end
 
@@ -31,12 +32,21 @@ WXMainViewController *homeController;
     [self setFd_prefersNavigationBarHidden:YES];
     [self.view setBackgroundColor:[UIColor whiteColor]];
     
-    NSString *bundleUrl = [Config getHome];
-    
-    [WeexSDKManager sharedIntstance].weexUrl = bundleUrl;
-    [[WeexSDKManager sharedIntstance] setup];
+    self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+    self.activityIndicatorView.center = self.view.center;
+    [self.activityIndicatorView setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
+    [self.view addSubview:self.activityIndicatorView];
+    [self.activityIndicatorView setHidden:NO];
+    [self.activityIndicatorView startAnimating];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)([Cloud welcome:nil] * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSString *bundleUrl = [Config getHome];
+        [WeexSDKManager sharedIntstance].weexUrl = bundleUrl;
+        [[WeexSDKManager sharedIntstance] setup];
+        
+        [self.activityIndicatorView setHidden:YES];
+        [self.activityIndicatorView stopAnimating];
+        
         self.ready = YES;
         homeController = [[WXMainViewController alloc] init];
         homeController.url = bundleUrl;

@@ -204,8 +204,9 @@ exports.syncFolderEvent = (host, port, socketPort, removeBundlejs) => {
                                 //!err && console.log(newPath);
                                 if (!err && socketAlready) {
                                     socketClients.map((client) => {
-                                        if (client.ws.readyState !== 2 && deviceIds[socketClients.deviceId] !== random) {
-                                            deviceIds[socketClients.deviceId] = random;
+                                        let deviceKey = client.deviceId + hostUrl + '/' + item;
+                                        if (client.ws.readyState !== 2 && deviceIds[deviceKey] !== random) {
+                                            deviceIds[deviceKey] = random;
                                             client.ws.send('RELOADPAGE:' + hostUrl + '/' + item);
                                         }
                                     });
@@ -293,6 +294,10 @@ exports.syncFolderEvent = (host, port, socketPort, removeBundlejs) => {
 
                     case "back":
                         ws.send('HOMEPAGEBACK:' + hostUrl + '/index.js');
+                        break;
+
+                    case "reconnect":
+                        //ws.send('REFRESH');
                         break;
                 }
             });

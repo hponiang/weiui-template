@@ -25,6 +25,7 @@ import android.widget.ListView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.bridge.JSCallback;
+import com.taobao.weex.ui.action.BasicComponentData;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -881,6 +882,32 @@ public class weiuiCommon {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * 过滤已存在样式
+     * @param basicComponentData
+     * @param custom
+     * @return
+     */
+    public static Map<String, Object> filterAlreadyStyle(BasicComponentData basicComponentData, Map<String, Object> custom) {
+        Map<String, Object> newCustom = new HashMap<>();
+        if (custom == null) {
+            return newCustom;
+        }
+        for (Map.Entry<String, Object> entry : custom.entrySet()) {
+            newCustom.put(weiuiCommon.camelCaseName(entry.getKey()), entry.getValue());
+        }
+        JSONObject json = weiuiJson.parseObject(basicComponentData.getAttrs().get("weiui"));
+        if (json.size() > 0) {
+            for (Map.Entry<String, Object> entry : json.entrySet()) {
+                newCustom.remove(weiuiCommon.camelCaseName(entry.getKey()));
+            }
+        }
+        for (Map.Entry<String, Object> entry : basicComponentData.getStyles().entrySet()) {
+            newCustom.remove(weiuiCommon.camelCaseName(entry.getKey()));
+        }
+        return newCustom;
     }
 
     /**

@@ -33,14 +33,14 @@
                     },
                     {
                         title: '好友',
-                        selectedIcon: 'http://demo.sc.chinaz.com/Files/pic/icons/6749/g7.png',
-                        unSelectedIcon: 'http://demo.sc.chinaz.com/Files/pic/icons/6749/g4.png',
+                        selectedIcon: 'https://weiui.app/assets/images/cartoon/m7.png',
+                        unSelectedIcon: 'https://weiui.app/assets/images/cartoon/m8.png',
                         url: 'http://dotwe.org/raw/dist/ba938c9aaebe41e5f60b98f90bd0bf61.bundle.wx',
                         message: 9
                     },
                     {
                         title: '圈子',
-                        selectedIcon: 'md-aperture 26sp',
+                        selectedIcon: 'md-aperture',
                         url: 'http://dotwe.org/raw/dist/fb6f016b0116969b6b503e1d3a35285f.bundle.wx',
                         message: 18
                     },

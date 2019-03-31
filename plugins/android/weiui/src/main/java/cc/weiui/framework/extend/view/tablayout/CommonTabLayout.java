@@ -868,7 +868,7 @@ public class CommonTabLayout extends FrameLayout implements ValueAnimator.Animat
                 float diffWidth = mTextPaint.measureText(tv_tab_title.getText().toString()) - mIconWidth;
                 diffWidth = diffWidth > 0 ? diffWidth * -0.5f : 0;
                 tipView.setStrokeColor(Color.TRANSPARENT);
-                setMsgMargin(position, diffWidth - 5, (mIconGravity == Gravity.LEFT || mIconGravity == Gravity.RIGHT) ? 4 : (mIconGravity == Gravity.TOP ? 8 : 0));
+                setMsgMargin(position, diffWidth - 5, (mIconGravity == Gravity.LEFT || mIconGravity == Gravity.RIGHT) ? 4 : (mIconGravity == Gravity.TOP ? 4 : 0));
             }
 
             mInitSetMap.put(position, true);

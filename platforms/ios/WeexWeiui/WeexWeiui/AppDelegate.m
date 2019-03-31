@@ -19,6 +19,7 @@
 #import <SocketRocket/SRWebSocket.h>
 #import "Config.h"
 #import "Cloud.h"
+#import "WeiuiToastManager.h"
 
 @interface AppDelegate ()<SRWebSocketDelegate>
 
@@ -34,7 +35,8 @@ ViewController *mController;
 MNAssistiveBtn *debugBtn;
 NSString *socketHost;
 NSString *socketPort;
-NSTimeInterval reconnectionNumber;
+NSString *deBugWsOpenUrl;
+NSString *deBugKeepScreen;
 NSDictionary *mLaunchOptions;
 
 //启动成功
@@ -228,6 +230,15 @@ NSDictionary *mLaunchOptions;
     [alertController addAction:[UIAlertAction actionWithTitle:self.isSocketConnect ? @"WiFi真机同步 [已连接]" : @"WiFi真机同步" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [self wifiSetting];
     }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:[deBugKeepScreen isEqualToString:@"ON"] ? @"屏幕常亮 [已开启]" : @"屏幕常亮" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        if ([deBugKeepScreen isEqualToString:@"ON"]) {
+            deBugKeepScreen = @"OFF";
+            [UIApplication sharedApplication].idleTimerDisabled = NO;
+        }else{
+            deBugKeepScreen = @"ON";
+            [UIApplication sharedApplication].idleTimerDisabled = YES;
+        }
+    }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"扫一扫" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [self openScan];
     }]];
@@ -365,6 +376,10 @@ NSDictionary *mLaunchOptions;
         [self setDebugBtn:self.isSocketConnect];
     }
     
+    if ([param isEqualToString:@"initialize"]) {
+        deBugWsOpenUrl = @"";
+    }
+    
     if (!socketHost.length || !socketPort.length) {
         return;
     }
@@ -377,37 +392,24 @@ NSDictionary *mLaunchOptions;
 
 //长链接已连接成功
 - (void)webSocketDidOpen:(SRWebSocket *)webSocket{
-    reconnectionNumber = 0;
+    NSLog(@"[socket] %@", @"onOpen");
+    deBugWsOpenUrl = [NSString stringWithFormat:@"%@:%@", [webSocket url].host, [webSocket url].port];
+    if (deBugKeepScreen.length == 0) {
+        deBugKeepScreen = @"ON";
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
+    }
+    //
     if (self.isSocketConnect != YES) {
         self.isSocketConnect = YES;
         [self setDebugBtn:self.isSocketConnect];
     }
 }
 
-//请求长链接失败 及其原因
-- (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error{
-    self.webSocket = nil;
-    if (self.isSocketConnect != NO) {
-        self.isSocketConnect = NO;
-        [self setDebugBtn:self.isSocketConnect];
-    }
-    //重连
-    if (reconnectionNumber < 64) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(reconnectionNumber * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self setSocketConnect:@"reconnection"];
-        });
-        if (reconnectionNumber == 0) {
-            reconnectionNumber = 2;
-        }else{
-            reconnectionNumber *= 2;
-        }
-    }
-}
-
 //长链接收到消息
 - (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message{
     NSString *msg = (NSString *)message;
-    NSLog(@"[socket]: receiveMessage: %@", msg);
+    NSLog(@"[socket] onMessage: %@", msg);
+    //
     if ([msg hasPrefix:@"HOMEPAGE:"]) {
         [[[DeviceUtil getTopviewControler] navigationController] popToRootViewControllerAnimated:NO];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -443,11 +445,42 @@ NSDictionary *mLaunchOptions;
                 }
             }
         }
+    }else if ([msg isEqualToString:@"REFRESH"]) {
+        [self refresh];
+    }
+}
+
+//请求长链接失败 及其原因
+- (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error{
+    if ([deBugWsOpenUrl isEqualToString:[NSString stringWithFormat:@"%@:%@", socketHost, socketPort]]) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSLog(@"[socket] %@ - fail", @"reconnect");
+            [self setSocketConnect:@"reconnect"];
+        });
+    } else {
+        NSLog(@"[socket] %@", @"onFailure");
+        [[WeiuiToastManager sharedIntstance] toast:[NSString stringWithFormat:@"WiFi同步连接失败：%@", [error localizedDescription]]];
+    }
+    self.webSocket.delegate = nil;
+    self.webSocket = nil;
+    if (self.isSocketConnect != NO) {
+        self.isSocketConnect = NO;
+        [self setDebugBtn:self.isSocketConnect];
     }
 }
 
 //长链接断开 及其原因
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean{
+    if ([deBugWsOpenUrl isEqualToString:[NSString stringWithFormat:@"%@:%@", socketHost, socketPort]]) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSLog(@"[socket] %@ - close", @"reconnect");
+            [self setSocketConnect:@"reconnect"];
+        });
+    } else {
+        NSLog(@"[socket] %@", @"onClosed");
+        [[WeiuiToastManager sharedIntstance] toast:[NSString stringWithFormat:@"WiFi同步连接失败：%@", reason]];
+    }
+    //
     self.webSocket.delegate = nil;
     self.webSocket = nil;
     if (self.isSocketConnect != NO) {

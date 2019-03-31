@@ -91,7 +91,19 @@ public class Tabbar extends WXVContainer<ViewGroup> {
 
     public Tabbar(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
         super(instance, parent, basicComponentData);
-        updateNativeStyle(Constants.Name.FLEX_DIRECTION, "row");
+        Map<String, Object> custom = new HashMap<>();
+        custom.put("tabHeight", 100);
+        custom.put("indicatorHeight", 4);
+        custom.put("indicatorWidth", 20);
+        custom.put("indicatorCornerRadius", 2);
+        custom.put("dividerPadding", 12);
+        custom.put("textSize", 26);
+        custom.put("iconWidth", 40);
+        custom.put("iconHeight", 40);
+        custom.put("iconMargin", 10);
+        Map<String, Object> newCustom = weiuiCommon.filterAlreadyStyle(basicComponentData, custom);
+        newCustom.put(Constants.Name.FLEX_DIRECTION, "row");
+        updateNativeStyles(newCustom);
     }
 
     @Override
@@ -986,7 +998,7 @@ public class Tabbar extends WXVContainer<ViewGroup> {
      */
     @JSMethod
     public void setTabTextsize(Object var) {
-        int size = weiuiScreenUtils.weexPx2dp(getInstance(), var, 24);
+        int size = weiuiScreenUtils.weexPx2dp(getInstance(), var, 26);
         mTabLayoutTop.setTextsizePx(size);
         mTabLayoutSlidingTop.setTextsizePx(size);
         mTabLayoutBottom.setTextsizePx(size);
