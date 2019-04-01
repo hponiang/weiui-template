@@ -6,7 +6,7 @@
             <navbar-item type="title">
                 <text class="title">组件截图</text>
             </navbar-item>
-            <navbar-item type="right" @click="viewCode('module/plugin/screenshots')">
+            <navbar-item type="right" @click="viewCode('plugin/screenshots')">
                 <icon content="md-code-working" class="iconr"></icon>
             </navbar-item>
         </navbar>

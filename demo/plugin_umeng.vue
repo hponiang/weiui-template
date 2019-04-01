@@ -6,7 +6,7 @@
             <navbar-item type="title">
                 <text class="title">友盟推送模块</text>
             </navbar-item>
-            <navbar-item type="right" @click="viewCode('module/plugin/umeng')">
+            <navbar-item type="right" @click="viewCode('plugin/umeng')">
                 <icon content="md-code-working" class="iconr"></icon>
             </navbar-item>
         </navbar>

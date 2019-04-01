@@ -6,7 +6,7 @@
             <navbar-item type="title">
                 <text class="title">融云通信</text>
             </navbar-item>
-            <navbar-item type="right" @click="viewCode('module/plugin/rongim')">
+            <navbar-item type="right" @click="viewCode('plugin/rongim')">
                 <icon content="md-code-working" class="iconr"></icon>
             </navbar-item>
         </navbar>

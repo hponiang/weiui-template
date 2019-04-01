@@ -6,7 +6,7 @@
             <navbar-item type="title">
                 <text class="title">微信/支付宝支付</text>
             </navbar-item>
-            <navbar-item type="right" @click="viewCode('module/plugin/pay')">
+            <navbar-item type="right" @click="viewCode('plugin/pay')">
                 <icon content="md-code-working" class="iconr"></icon>
             </navbar-item>
         </navbar>

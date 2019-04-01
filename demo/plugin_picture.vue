@@ -6,7 +6,7 @@
             <navbar-item type="title">
                 <text class="title">图片选择器</text>
             </navbar-item>
-            <navbar-item type="right" @click="viewCode('module/plugin/picture')">
+            <navbar-item type="right" @click="viewCode('plugin/picture')">
                 <icon content="md-code-working" class="iconr"></icon>
             </navbar-item>
         </navbar>
