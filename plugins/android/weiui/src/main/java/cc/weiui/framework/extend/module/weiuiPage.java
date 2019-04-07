@@ -10,6 +10,8 @@ import android.util.Log;
 import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.WXSDKInstance;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -193,6 +195,21 @@ public class weiuiPage {
         }else{
             return null;
         }
+    }
+
+    /**
+     * 规范化url
+     * @param url
+     * @return
+     */
+    public static String realUrl(String url) {
+        try {
+            URL uri = new URL(url);
+            url = uri.toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
     }
 
     /**

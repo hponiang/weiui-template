@@ -25,6 +25,8 @@
 
 + (UIViewController *)getTopviewControler;
 
++ (NSString*)realUrl:(NSString*)url;
+
 + (NSString*)rewriteUrl:(NSString*)url;
 
 + (UIImage*)getIconText:(NSString*)text font:(NSInteger)font color:(NSString*)icolor;

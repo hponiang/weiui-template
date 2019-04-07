@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -81,7 +82,7 @@ public class Tabbar extends WXVContainer<ViewGroup> {
     private ResultCallback<String> resultCallback = result -> {
         for (Map.Entry<String, WXSDKBean> entry : mViewPager.WXSDKList.entrySet()) {
             if (entry.getValue().isLoaded()) {
-                String url = String.valueOf(entry.getValue().getView());
+                String url = weiuiPage.realUrl(String.valueOf(entry.getValue().getView()));
                 if (url.startsWith(result)) {
                     addWXSDKView(entry.getKey());
                 }
@@ -508,6 +509,7 @@ public class Tabbar extends WXVContainer<ViewGroup> {
         sdkBean.setProgress(view.findViewById(R.id.v_progress));
         sdkBean.setErrorView(view.findViewById(R.id.v_error));
         sdkBean.setErrorCodeView(view.findViewById(R.id.v_error_code));
+        sdkBean.setErrorErrinfo(view.findViewById(R.id.v_error_errinfo));
         sdkBean.setCache(barBean.getCache());
         sdkBean.setParams(barBean.getParams());
         sdkBean.setView(barBean.getView());
@@ -527,12 +529,14 @@ public class Tabbar extends WXVContainer<ViewGroup> {
             mViewPager.WXSDKList.put(barBean.getTabName(), sdkBean);
         }
         //
-        view.findViewById(R.id.v_error_title).setOnClickListener(v -> {
-            view.findViewById(R.id.v_error_cbox).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.v_error_info).setOnClickListener(v -> {
+            view.findViewById(R.id.v_error_errbox).setVisibility(View.VISIBLE);
+        });
+        view.findViewById(R.id.v_error_errclose).setOnClickListener(v -> {
+            view.findViewById(R.id.v_error_errbox).setVisibility(View.GONE);
         });
         view.findViewById(R.id.v_refresh).setOnClickListener(v -> {
             view.findViewById(R.id.v_error).setVisibility(View.GONE);
-            view.findViewById(R.id.v_error_cbox).setVisibility(View.GONE);
             reload(barBean.getTabName());
         });
         view.findViewById(R.id.v_back).setVisibility(View.GONE);
@@ -651,10 +655,9 @@ public class Tabbar extends WXVContainer<ViewGroup> {
                 if (errCode == null) {
                     errCode = "";
                 }
-                if (weiui.debug || errCode.equals("-1002") || errCode.equals("-1003")) {
-                    sdkBean.getErrorView().setVisibility(View.VISIBLE);
-                    sdkBean.getErrorCodeView().setText(String.valueOf(errCode));
-                }
+                sdkBean.getErrorView().setVisibility(View.VISIBLE);
+                sdkBean.getErrorCodeView().setText(String.valueOf(errCode));
+                sdkBean.getErrorErrinfo().setText(msg);
             }
         });
         //

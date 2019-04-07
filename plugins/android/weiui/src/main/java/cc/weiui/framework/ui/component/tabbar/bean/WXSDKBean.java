@@ -20,7 +20,7 @@ public class WXSDKBean {
     private FrameLayout container;
     private View progress;
     private View errorView;
-    private TextView errorCodeView;
+    private TextView errorCodeView, errorErrinfo;
 
     private WXSDKInstance instance;
 
@@ -84,6 +84,14 @@ public class WXSDKBean {
 
     public void setErrorCodeView(TextView errorCodeView) {
         this.errorCodeView = errorCodeView;
+    }
+
+    public TextView getErrorErrinfo() {
+        return errorErrinfo;
+    }
+
+    public void setErrorErrinfo(TextView errorErrinfo) {
+        this.errorErrinfo = errorErrinfo;
     }
 
     public WXSDKInstance getInstance() {

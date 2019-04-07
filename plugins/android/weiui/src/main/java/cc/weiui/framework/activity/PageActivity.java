@@ -34,6 +34,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -133,9 +134,8 @@ public class PageActivity extends AppCompatActivity {
     private static List<ResultCallback<String>> tabViewDebug = new LinkedList<>();
 
     //模板部分
-    private ViewGroup mBody, mWeb, mAuto, mError;
-    private TextView mErrorCode;
-    private ViewGroup mErrorCbox;
+    private ViewGroup mBody, mWeb, mAuto, mError, mErrorErrbox;
+    private TextView mErrorCode, mErrorErrinfo;
     private ViewGroup mWeexView;
     private FrameLayout mWeexProgress;
     private ImageView mWeexProgressBg;
@@ -525,6 +525,12 @@ public class PageActivity extends AppCompatActivity {
                 return;
             }
         }
+        if (mErrorErrbox != null) {
+            if (mErrorErrbox.getVisibility() == View.VISIBLE) {
+                mErrorErrbox.setVisibility(View.GONE);
+                return;
+            }
+        }
         BGAKeyboardUtil.closeKeyboard(this);
         super.onBackPressed();
     }
@@ -627,11 +633,19 @@ public class PageActivity extends AppCompatActivity {
         mBody = findViewById(R.id.v_body);
         mError = findViewById(R.id.v_error);
         mErrorCode = findViewById(R.id.v_error_code);
-        mErrorCbox = findViewById(R.id.v_error_cbox);
+        mErrorErrbox = findViewById(R.id.v_error_errbox);
+        mErrorErrinfo = findViewById(R.id.v_error_errinfo);
         //
-        findViewById(R.id.v_error_title).setOnClickListener(view -> mErrorCbox.setVisibility(View.VISIBLE));
+        findViewById(R.id.v_error_errclose).setOnClickListener(view -> mErrorErrbox.setVisibility(View.GONE));
         findViewById(R.id.v_refresh).setOnClickListener(view -> reload());
         findViewById(R.id.v_back).setOnClickListener(view -> finish());
+        //
+        TextView errorInfo = findViewById(R.id.v_error_info);
+        if (BuildConfig.DEBUG) {
+            errorInfo.setOnClickListener(view -> mErrorErrbox.setVisibility(View.VISIBLE));
+        }else{
+            errorInfo.setText("抱歉！页面出现错误了");
+        }
         //
         mSwipeBackHelper.setSwipeBackEnable(mPageInfo.isSwipeBack());
         mBody.setBackgroundColor(Color.parseColor(mPageInfo.getBackgroundColor()));
@@ -703,8 +717,6 @@ public class PageActivity extends AppCompatActivity {
 
                     @Override
                     public void onErrorChanged(WebView view, int errorCode, String description, String failingUrl) {
-                        mError.setVisibility(View.VISIBLE);
-                        mErrorCode.setText(String.valueOf(errorCode));
                         Map<String, Object> retData = new HashMap<>();
                         retData.put("webStatus", "error");
                         retData.put("errCode", errorCode);
@@ -1108,10 +1120,9 @@ public class PageActivity extends AppCompatActivity {
                 retData.put("errUrl", instance.getBundleUrl());
                 invokeAndKeepAlive("error", retData);
                 //
-                if (weiui.debug || errCode.equals("-1002") || errCode.equals("-1003")) {
-                    mError.setVisibility(View.VISIBLE);
-                    mErrorCode.setText(String.valueOf(errCode));
-                }
+                mError.setVisibility(View.VISIBLE);
+                mErrorCode.setText(String.valueOf(errCode));
+                mErrorErrinfo.setText(errMsg);
             }
         };
     }
@@ -1261,9 +1272,6 @@ public class PageActivity extends AppCompatActivity {
     public void reload() {
         if (mError != null) {
             mError.setVisibility(View.GONE);
-        }
-        if (mErrorCbox != null) {
-            mErrorCbox.setVisibility(View.GONE);
         }
         //
         hideNavigation();
@@ -1953,9 +1961,11 @@ public class PageActivity extends AppCompatActivity {
                             String mHomePage = text.substring(9);
                             if (!homePage.equals(mHomePage))  {
                                 weiuiCommon.setCachesString(PageActivity.this, "__deBugSocket", "homePage", mHomePage, 2);
-                                mActivity.mPageInfo.setUrl(mHomePage);
-                                mActivity.reload();
-                                BGAKeyboardUtil.closeKeyboard(PageActivity.this);
+                                mHandler.postDelayed(()-> {
+                                    mActivity.mPageInfo.setUrl(mHomePage);
+                                    mActivity.reload();
+                                    BGAKeyboardUtil.closeKeyboard(PageActivity.this);
+                                }, 300);
                             }
                         }
                     }else{
@@ -1982,7 +1992,7 @@ public class PageActivity extends AppCompatActivity {
                     Activity activity = activityList.get(i);
                     if (activity instanceof PageActivity) {
                         PageActivity mActivity = ((PageActivity) activity);
-                        if (mActivity.mPageInfo.getUrl().startsWith(url)) {
+                        if (weiuiPage.realUrl(mActivity.mPageInfo.getUrl()).startsWith(url)) {
                             if (i == size) {
                                 mActivity.reload();
                                 BGAKeyboardUtil.closeKeyboard(PageActivity.this);

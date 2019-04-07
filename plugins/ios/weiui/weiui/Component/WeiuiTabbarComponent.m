@@ -806,7 +806,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
         
         [WeiuiNewPageManager setTabViewDebug:tabName callback:^(id result, BOOL keepAlive) {
             NSString *url = [WXConvert NSString:result];
-            if ([[vc url] hasPrefix:url]) {
+            if ([[DeviceUtil realUrl:[vc url]] hasPrefix:url]) {
                 [vc refreshPage];
             }
         }];

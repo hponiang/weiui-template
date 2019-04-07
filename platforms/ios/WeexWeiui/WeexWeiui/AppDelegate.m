@@ -430,7 +430,7 @@ NSDictionary *mLaunchOptions;
             id view = [viewData objectForKey:pageName];
             if ([view isKindOfClass:[WXMainViewController class]]) {
                 WXMainViewController *vc = (WXMainViewController*)view;
-                if ([[vc url] hasPrefix:url]) {
+                if ([[DeviceUtil realUrl:[vc url]] hasPrefix:url]) {
                     [vc setResumeUrl:url];
                     already = YES;
                 }

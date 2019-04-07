@@ -40,6 +40,10 @@ static int easyNavigationButtonTag = 8000;
 
 @property (nonatomic, strong) NSMutableDictionary *navigationCallbackDictionary;
 
+@property (nonatomic, strong) UIView *errorView;
+@property (nonatomic, strong) UIScrollView *errorInfoView;
+@property (nonatomic, strong) NSString *errorContent;
+
 @end
 
 @implementation WXMainViewController
@@ -419,6 +423,15 @@ static int easyNavigationButtonTag = 8000;
 
 - (void)renderView
 {
+    if (self.errorView != nil) {
+        [self.errorView removeFromSuperview];
+        self.errorView = nil;
+    }
+    if (self.errorInfoView != nil) {
+        [self.errorInfoView removeFromSuperview];
+        self.errorInfoView = nil;
+    }
+    
     CGFloat width = self.view.frame.size.width;
     [_instance destroyInstance];
     _instance = [[WXSDKInstance alloc] init];
@@ -442,11 +455,85 @@ static int easyNavigationButtonTag = 8000;
     _instance.onCreate = ^(UIView *view) {
         [weakSelf.weexView removeFromSuperview];
         weakSelf.weexView = view;
-//        [weakSelf.mainScrollView addSubview:weakSelf.weexView];
         [weakSelf.view addSubview:weakSelf.weexView];
         UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, weakSelf.weexView);
         
         [weakSelf updateStatus:@"viewCreated"];
+    };
+    
+    _instance.onJSRuntimeException = ^(WXJSExceptionInfo *jsException) {
+        [weakSelf stopLoading];
+        [weakSelf updateStatus:@"error"];
+        weakSelf.errorContent = jsException.exception;
+        
+        //错误页面
+        if (weakSelf.errorView == nil) {
+            weakSelf.errorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, weakSelf.view.frame.size.width, weakSelf.view.frame.size.height)];
+            [weakSelf.errorView setBackgroundColor:[UIColor whiteColor]];
+            
+            NSInteger top = 80;
+            UILabel * label1 = [[UILabel alloc] initWithFrame:CGRectMake(0, top, weakSelf.view.frame.size.width, 50)];
+            label1.text = @"bibi~ 出错啦！";
+            label1.textColor = [WXConvert UIColor:@"#3EB4FF"];
+            label1.font = [UIFont systemFontOfSize:30.f];
+            label1.textAlignment = NSTextAlignmentCenter;
+            [weakSelf.errorView addSubview:label1];
+            
+            top += 50;
+            UILabel * label2 = [[UILabel alloc] initWithFrame:CGRectMake(0, top, weakSelf.view.frame.size.width, 30)];
+            label2.text = [@"错误代码：" stringByAppendingString:jsException.errorCode];
+            label2.textColor = [WXConvert UIColor:@"#c6c6c6"];
+            label2.font = [UIFont systemFontOfSize:13.f];
+            label2.textAlignment = NSTextAlignmentCenter;
+            [weakSelf.errorView addSubview:label2];
+            
+            top += 30;
+            UILabel * label3 = [[UILabel alloc] initWithFrame:CGRectMake(0, top, weakSelf.view.frame.size.width, 30)];
+            label3.tag = 1000;
+            #if DEBUG
+                label3.text = @"页面打不开！查看详情";
+            #else
+                label3.text = @"抱歉！页面出现错误了";
+            #endif
+            label3.textColor = [WXConvert UIColor:@"#3EB4FF"];
+            label3.font = [UIFont systemFontOfSize:13.f];
+            label3.textAlignment = NSTextAlignmentCenter;
+            #if DEBUG
+                label3.userInteractionEnabled = YES;
+                [label3 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:weakSelf action:@selector(errorTabGesture:)]];
+            #endif
+            [weakSelf.errorView addSubview:label3];
+            
+            top += 50;
+            CGFloat w = weakSelf.view.frame.size.width / 24;
+            UIButton * button1 = [[UIButton alloc] initWithFrame:CGRectMake(w * 5, top, w * 6, 36)];
+            button1.tag = 2000;
+            button1.titleLabel.font = [UIFont systemFontOfSize: 13.0];
+            button1.layer.cornerRadius = 3;
+            [button1 setTitle:@"刷新一下" forState:UIControlStateNormal];
+            [button1 setTitleColor:[WXConvert UIColor:@"#ffffff"] forState:UIControlStateNormal];
+            [button1 setBackgroundColor:[WXConvert UIColor:@"#327AE2"]];
+            [button1 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:weakSelf action:@selector(errorTabGesture:)]];
+            [weakSelf.errorView addSubview:button1];
+            
+            if (weakSelf.isChildSubview) {
+                [button1 setFrame:CGRectMake(w * 9, top, w * 6, 36)];
+            }else{
+                UIButton * button2 = [[UIButton alloc] initWithFrame:CGRectMake(w * 13, top, w * 6, 36)];
+                button2.tag = 3000;
+                button2.titleLabel.font = [UIFont systemFontOfSize: 13.0];
+                button2.layer.cornerRadius = 3;
+                [button2 setTitle:@"退后一步" forState:UIControlStateNormal];
+                [button2 setTitleColor:[WXConvert UIColor:@"#ffffff"] forState:UIControlStateNormal];
+                [button2 setBackgroundColor:[WXConvert UIColor:@"#3497E2"]];
+                [button2 addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:weakSelf action:@selector(errorTabGesture:)]];
+                [weakSelf.errorView addSubview:button2];
+            }
+            
+            [weakSelf.view addSubview:weakSelf.errorView];
+        }else{
+            [weakSelf.view bringSubviewToFront:weakSelf.errorView];
+        }
     };
     
     _instance.onFailed = ^(NSError *error) {
@@ -497,19 +584,39 @@ static int easyNavigationButtonTag = 8000;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
     }
-    
-    //    NSURL *URL = [self testURL: [self.url absoluteString]];
-    //    NSString *randomURL = [NSString stringWithFormat:@"%@%@random=%d",URL.absoluteString,URL.query?@"&":@"?",arc4random()];
-    //    [_instance renderWithURL:[NSURL URLWithString:randomURL] options:@{@"bundleUrl":URL.absoluteString} data:nil];
-    
-    //    [self.navigationController.navigationBar setTitleTextAttributes: [NSDictionary dictionaryWithObjectsAndKeys:
-    //                                                                      [UIColor whiteColor], NSForegroundColorAttributeName, nil]];
-    //
-    //    if([_instance.pageName hasPrefix:@"http://dotwe.org"] || [_instance.pageName hasPrefix:@"https://dotwe.org"]) {
-    //        self.navigationItem.title = @"Weex Online Example";
-    //    } else {
-    //        self.navigationItem.title = _instance.pageName;
-    //    }
+}
+
+-(void)errorTabGesture:(UITapGestureRecognizer *)tapGesture
+{
+    if (tapGesture.view.tag == 1000) {
+        if (self.errorInfoView == nil) {
+            self.errorInfoView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+            self.errorInfoView.tag = 1001;
+            [self.errorInfoView setBackgroundColor:[[UIColor blackColor] colorWithAlphaComponent:0.81f]];
+            UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, self.view.frame.size.width - 10, self.view.frame.size.height - 10)];
+            label.text = _errorContent;
+            label.textColor = [WXConvert UIColor:@"#FFFFFF"];
+            label.font = [UIFont systemFontOfSize:13.f];
+            label.lineBreakMode = NSLineBreakByWordWrapping;
+            label.numberOfLines = 0;
+            [label sizeToFit];
+            [self.errorInfoView setContentSize:CGSizeMake(label.frame.size.width, label.frame.size.height)];
+            [self.errorInfoView addSubview:label];
+            [self.errorInfoView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(errorTabGesture:)]];
+            [self.view addSubview:self.errorInfoView];
+        }else{
+            [self.view bringSubviewToFront:self.errorInfoView];
+        }
+    }else if (tapGesture.view.tag == 1001) {
+        if (self.errorInfoView != nil) {
+            [self.errorInfoView removeFromSuperview];
+            self.errorInfoView = nil;
+        }
+    }else if (tapGesture.view.tag == 2000) {
+        [self refreshPage];
+    }else if (tapGesture.view.tag == 3000) {
+        [[WeiuiNewPageManager sharedIntstance] closePage:nil];
+    }
 }
 
 - (void)appDidEnterBackground:(NSNotification*)notification
@@ -642,6 +749,8 @@ static int easyNavigationButtonTag = 8000;
 #pragma mark - refresh
 - (void)refreshPage
 {
+    [self startLoading];
+    
     self.navigationItem.leftBarButtonItem = nil;
     self.navigationItem.rightBarButtonItem = nil;
     [self hideNavigation];

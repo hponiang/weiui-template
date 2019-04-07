@@ -52,6 +52,25 @@
     return rootVC;
 }
 
+//规范化url，删除所有符号连接（比如'/./', '/../' 以及多余的'/'）
++ (NSString*)realUrl:(NSString*)url
+{
+    url = [url stringByReplacingOccurrencesOfString:@"\\" withString:@"/"];
+    NSString *last = @"";
+    while (![url isEqualToString:last]) {
+        last = url;
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"/[^/]+/\\.\\./" options:NSRegularExpressionCaseInsensitive error:nil];
+        url  = [regex stringByReplacingMatchesInString:url options:0 range:NSMakeRange(0, url.length) withTemplate:@"/"];
+    }
+    last = @"";
+    while (![url isEqualToString:last]) {
+        last = url;
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"/\\./+" options:NSRegularExpressionCaseInsensitive error:nil];
+        url  = [regex stringByReplacingMatchesInString:url options:0 range:NSMakeRange(0, url.length) withTemplate:@"/"];
+    }
+    return url;
+}
+
 //重写url
 + (NSString*)rewriteUrl:(NSString*)url
 {
