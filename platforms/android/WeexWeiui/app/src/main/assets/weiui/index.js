@@ -35,6 +35,9 @@
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -62,7 +65,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -593,27 +596,11 @@ module.exports = global;
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
-var _index = __webpack_require__(2);
-
-var _index2 = _interopRequireDefault(_index);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_index2.default.el = '#root';
-new Vue(_index2.default);
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var __vue_exports__, __vue_options__
 var __vue_styles__ = []
 
 /* styles */
-__vue_styles__.push(__webpack_require__(3)
+__vue_styles__.push(__webpack_require__(5)
 )
 
 /* script */
@@ -650,107 +637,59 @@ module.exports = __vue_exports__
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports) {
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = {
-  "app": {
-    "flex": 1
-  },
-  "navbar": {
-    "width": "750",
-    "height": "100"
-  },
-  "navbar-title": {
-    "fontSize": "32",
-    "color": "#ffffff"
-  },
-  "navbar-icon": {
-    "width": "100",
-    "height": "100",
-    "color": "#ffffff"
-  },
-  "list": {
-    "width": "750",
-    "flex": 1
-  },
-  "list-title-box": {
-    "flexDirection": "row",
-    "alignItems": "center"
-  },
-  "list-title": {
-    "paddingTop": "36",
-    "paddingRight": "24",
-    "paddingBottom": "24",
-    "paddingLeft": "24",
-    "fontSize": "28",
-    "color": "#757575"
-  },
-  "list-subtitle": {
-    "position": "absolute",
-    "right": "24",
-    "bottom": "24",
-    "fontSize": "24"
-  },
-  "list-item": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "space-between",
-    "height": "100",
-    "width": "750",
-    "paddingLeft": "20",
-    "paddingRight": "20",
-    "borderTopWidth": "1",
-    "borderTopColor": "#e8e8e8",
-    "borderTopStyle": "solid"
-  },
-  "list-item-left": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "flex-start",
-    "height": "100",
-    "flex": 1
-  },
-  "list-left-icon": {
-    "width": "60",
-    "height": "60",
-    "color": "#3EB4FF"
-  },
-  "list-left-title": {
-    "color": "#242424",
-    "paddingLeft": "12",
-    "width": "380",
-    "fontSize": "26",
-    "textOverflow": "ellipsis",
-    "lines": 1
-  },
-  "list-left-title-history": {
-    "color": "#242424",
-    "paddingLeft": "12",
-    "width": "660",
-    "fontSize": "26",
-    "textOverflow": "ellipsis",
-    "lines": 1
-  },
-  "list-right-title": {
-    "color": "#a2a2a2",
-    "paddingRight": "3",
-    "fontSize": "22",
-    "textOverflow": "ellipsis",
-    "lines": 1
-  },
-  "list-right-icon": {
-    "width": "40",
-    "height": "40",
-    "color": "#C9C9CE"
-  },
-  "list-item-right": {
-    "flexDirection": "row",
-    "alignItems": "center",
-    "justifyContent": "flex-end",
-    "height": "100"
-  }
-}
+"use strict";
+
+
+var _index = __webpack_require__(1);
+
+var _index2 = _interopRequireDefault(_index);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_index2.default.el = '#root';
+new Vue(_index2.default);
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _global = __webpack_require__(0);
+
+var weiui = weex.requireModule('weiui');
+
+var app = {
+
+    jshome: 'https://weiui.app/dist/0.2.0/',
+
+    openViewCode: function openViewCode(str) {
+        app.openViewUrl("https://weiui.app/" + str + ".html");
+    },
+    openViewUrl: function openViewUrl(url) {
+        weiui.openPage({
+            url: app.jshome + 'index_browser.js',
+            pageType: 'weex',
+            statusBarColor: "#3EB4FF",
+            params: {
+                title: "WEIUI",
+                url: url
+            }
+        });
+    },
+    checkVersion: function checkVersion(compareVersion) {
+        if (typeof weiui.getVersion !== "function") {
+            return false;
+        }
+        return (0, _global.runNum)(weiui.getVersion()) >= (0, _global.runNum)(compareVersion);
+    }
+};
+
+module.exports = app;
 
 /***/ }),
 /* 4 */
@@ -765,7 +704,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _global = __webpack_require__(0);
 
-var _app = __webpack_require__(5);
+var _app = __webpack_require__(3);
 
 //
 //
@@ -1230,42 +1169,106 @@ exports.default = {
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-var _global = __webpack_require__(0);
-
-var weiui = weex.requireModule('weiui');
-
-var app = {
-
-    jshome: 'https://weiui.app/dist/0.2.0/',
-
-    openViewCode: function openViewCode(str) {
-        app.openViewUrl("https://weiui.app/" + str + ".html");
-    },
-    openViewUrl: function openViewUrl(url) {
-        weiui.openPage({
-            url: app.jshome + 'index_browser.js',
-            pageType: 'weex',
-            statusBarColor: "#3EB4FF",
-            params: {
-                title: "WEIUI",
-                url: url
-            }
-        });
-    },
-    checkVersion: function checkVersion(compareVersion) {
-        if (typeof weiui.getVersion !== "function") {
-            return false;
-        }
-        return (0, _global.runNum)(weiui.getVersion()) >= (0, _global.runNum)(compareVersion);
-    }
-};
-
-module.exports = app;
+module.exports = {
+  "app": {
+    "flex": 1
+  },
+  "navbar": {
+    "width": "750",
+    "height": "100"
+  },
+  "navbar-title": {
+    "fontSize": "32",
+    "color": "#ffffff"
+  },
+  "navbar-icon": {
+    "width": "100",
+    "height": "100",
+    "color": "#ffffff"
+  },
+  "list": {
+    "width": "750",
+    "flex": 1
+  },
+  "list-title-box": {
+    "flexDirection": "row",
+    "alignItems": "center"
+  },
+  "list-title": {
+    "paddingTop": "36",
+    "paddingRight": "24",
+    "paddingBottom": "24",
+    "paddingLeft": "24",
+    "fontSize": "28",
+    "color": "#757575"
+  },
+  "list-subtitle": {
+    "position": "absolute",
+    "right": "24",
+    "bottom": "24",
+    "fontSize": "24"
+  },
+  "list-item": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "space-between",
+    "height": "100",
+    "width": "750",
+    "paddingLeft": "20",
+    "paddingRight": "20",
+    "borderTopWidth": "1",
+    "borderTopColor": "#e8e8e8",
+    "borderTopStyle": "solid"
+  },
+  "list-item-left": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "flex-start",
+    "height": "100",
+    "flex": 1
+  },
+  "list-left-icon": {
+    "width": "60",
+    "height": "60",
+    "color": "#3EB4FF"
+  },
+  "list-left-title": {
+    "color": "#242424",
+    "paddingLeft": "12",
+    "width": "380",
+    "fontSize": "26",
+    "textOverflow": "ellipsis",
+    "lines": 1
+  },
+  "list-left-title-history": {
+    "color": "#242424",
+    "paddingLeft": "12",
+    "width": "660",
+    "fontSize": "26",
+    "textOverflow": "ellipsis",
+    "lines": 1
+  },
+  "list-right-title": {
+    "color": "#a2a2a2",
+    "paddingRight": "3",
+    "fontSize": "22",
+    "textOverflow": "ellipsis",
+    "lines": 1
+  },
+  "list-right-icon": {
+    "width": "40",
+    "height": "40",
+    "color": "#C9C9CE"
+  },
+  "list-item-right": {
+    "flexDirection": "row",
+    "alignItems": "center",
+    "justifyContent": "flex-end",
+    "height": "100"
+  }
+}
 
 /***/ }),
 /* 6 */
