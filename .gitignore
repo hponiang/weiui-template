@@ -1,9 +1,8 @@
 /.idea
 /.temp
-/.backup
+/common/backup/*
+/common/dist/*
 /node_modules
+/plugins-dev
 .DS_Store
-*.DS_Store
 package-lock.json
-dist
-plugins-dev
