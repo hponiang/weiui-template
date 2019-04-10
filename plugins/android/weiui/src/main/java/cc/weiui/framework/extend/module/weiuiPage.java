@@ -76,6 +76,20 @@ public class weiuiPage {
             mBean.getCallback().invokeAndKeepAlive(ret);
         }
         //
+        if (context instanceof PageActivity) {
+            PageBean currentInfo = ((PageActivity) context).getPageInfo();
+            if ("".equals(mBean.getStatusBarColor())) {
+                mBean.setStatusBarColor(currentInfo.getStatusBarColor());
+            }else if ("".equals(mBean.getBackgroundColor())) {
+                mBean.setBackgroundColor(currentInfo.getBackgroundColor());
+            }
+        }
+        if ("".equals(mBean.getStatusBarColor())) {
+            mBean.setStatusBarColor("#3EB4FF");
+        }else if ("".equals(mBean.getBackgroundColor())) {
+            mBean.setBackgroundColor("#ffffff");
+        }
+        //
         Intent intent = new Intent();
         intent.setClass(context, mBean.isTranslucent() ? PageActivityTransparent.class : PageActivityNoTransparent.class);
         intent.putExtra("name", mBean.getPageName());

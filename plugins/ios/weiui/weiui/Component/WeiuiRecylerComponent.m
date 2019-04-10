@@ -346,10 +346,13 @@ WX_EXPORT_METHOD(@selector(smoothScrollToPosition:))
 
 - (void)setHasMore:(id)hasMore
 {
-    [_collectionView.mj_footer endRefreshing];
-    _collectionView.mj_footer.hidden = ![WXConvert BOOL:hasMore];
-    MJRefreshAutoStateFooter *footer = (MJRefreshAutoStateFooter*)_collectionView.mj_footer;
-    [footer setTitle:hasMore ? _pullTipsIdle : @"" forState:MJRefreshStateIdle];
+    __weak typeof(self) weakSelf = self;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [weakSelf.collectionView.mj_footer endRefreshing];
+        weakSelf.collectionView.mj_footer.hidden = ![WXConvert BOOL:hasMore];
+        MJRefreshAutoStateFooter *footer = (MJRefreshAutoStateFooter*)weakSelf.collectionView.mj_footer;
+        [footer setTitle:hasMore ? weakSelf.pullTipsIdle : @"" forState:MJRefreshStateIdle];
+    });
 }
 
 - (void)pullloaded

@@ -26,6 +26,7 @@
 #import "WXNavigationProtocol.h"
 #import "WXImgLoaderProtocol.h"
 #import "WXLog.h"
+#import "WeiuiNewPageManager.h"
 #include <pthread/pthread.h>
 
 @interface WXRichNode : NSObject
@@ -481,8 +482,12 @@ do {\
         if ([navigationHandler respondsToSelector:@selector(pushViewControllerWithParam:
                                                             completion:
                                                             withContainer:)]) {
-            [navigationHandler pushViewControllerWithParam:@{@"url":URL.absoluteString} completion:^(NSString *code, NSDictionary *responseData) {
-            } withContainer:self.weexInstance.viewController];
+            //weiui dev start
+            [WeiuiNewPageManager sharedIntstance].weexInstance = self.weexInstance;
+            [[WeiuiNewPageManager sharedIntstance] openPage:@{@"url": URL.absoluteString} callback:nil];
+            //[navigationHandler pushViewControllerWithParam:@{@"url":URL.absoluteString} completion:^(NSString *code, NSDictionary *responseData) {
+            //} withContainer:self.weexInstance.viewController];
+            //weiui dev end
         } else {
             WXLogError(@"Event handler of class %@ does not respond to pushViewControllerWithParam", NSStringFromClass([navigationHandler class]));
         }

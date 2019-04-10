@@ -19,6 +19,7 @@ import com.taobao.weex.common.WXException;
 
 import cc.weiui.framework.BuildConfig;
 import cc.weiui.framework.activity.PageActivity;
+import cc.weiui.framework.extend.adapter.DrawableLoader;
 import cc.weiui.framework.extend.adapter.ImageAdapter;
 import cc.weiui.framework.extend.annotation.ModuleEntry;
 import cc.weiui.framework.extend.bean.PageBean;
@@ -54,6 +55,7 @@ import cc.weiui.framework.extend.module.weiuiScreenUtils;
 import cc.weiui.framework.extend.module.weiuiShareUtils;
 import cc.weiui.framework.extend.view.loading.LoadingDialog;
 import cc.weiui.framework.extend.view.webviewBridge.JsCallback;
+import cc.weiui.framework.ui.component.a.A;
 import cc.weiui.framework.ui.component.banner.Banner;
 import cc.weiui.framework.ui.component.button.Button;
 import cc.weiui.framework.ui.component.grid.Grid;
@@ -69,6 +71,7 @@ import cc.weiui.framework.ui.component.sidePanel.SidePanelMenu;
 import cc.weiui.framework.ui.component.tabbar.Tabbar;
 import cc.weiui.framework.ui.component.tabbar.TabbarPage;
 import cc.weiui.framework.ui.component.webView.WebView;
+import cc.weiui.framework.ui.module.WeexEventModule;
 import cc.weiui.framework.ui.module.WeexModule;
 import cc.weiui.framework.ui.module.WeexNavigationBarModule;
 import cc.weiui.framework.ui.module.WeexNavigatorModule;
@@ -137,6 +140,7 @@ public class weiui {
 
         Builder mBuilder = new Builder();
         mBuilder.setImgAdapter(new ImageAdapter());
+        mBuilder.setDrawableLoader(new DrawableLoader(app));
         WXSDKEngine.initialize(application, mBuilder.build());
 
         try {
@@ -144,6 +148,9 @@ public class weiui {
             WXSDKEngine.registerModule("navigator", WeexNavigatorModule.class);
             WXSDKEngine.registerModule("navigationBar", WeexNavigationBarModule.class);
             //
+            WXSDKEngine.registerModule("event", WeexEventModule.class);
+            //
+            WXSDKEngine.registerComponent("a", A.class);
             WXSDKEngine.registerComponent("banner", Banner.class);
             WXSDKEngine.registerComponent("button", Button.class);
             WXSDKEngine.registerComponent("grid", Grid.class);

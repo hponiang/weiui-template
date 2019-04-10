@@ -13,11 +13,9 @@
 
 @interface WeiuiNewPageManager ()
 
-//@property (nonatomic, strong) NSDictionary *params;
 @property (nonatomic, strong) NSMutableDictionary *pageData;
 @property (nonatomic, strong) NSMutableDictionary *viewData;
 @property (nonatomic, strong) NSMutableDictionary *callData;
-//@property (nonatomic, copy) WXModuleKeepAliveCallback callback;
 
 @end
 
@@ -60,15 +58,33 @@
     BOOL swipeBack = params[@"swipeBack"] ? [WXConvert BOOL:params[@"swipeBack"]] : YES;
     BOOL animated = params[@"animated"] ? [WXConvert BOOL:params[@"animated"]] : YES;
     NSString *statusBarType = params[@"statusBarType"] ? [WXConvert NSString:params[@"statusBarType"]] : @"normal";
-    NSString *statusBarColor = params[@"statusBarColor"] ? [WXConvert NSString:params[@"statusBarColor"]] : @"#3EB4FF";
+    NSString *statusBarColor = params[@"statusBarColor"] ? [WXConvert NSString:params[@"statusBarColor"]] : @"";
     NSInteger statusBarAlpha = params[@"statusBarAlpha"] ? [WXConvert NSInteger:params[@"statusBarAlpha"]] : 0;
     NSString *statusBarStyle = params[@"statusBarStyle"] ? [WXConvert NSString:params[@"statusBarStyle"]] : @"";
     
     NSString *softInputMode = params[@"softInputMode"] ? [WXConvert NSString:params[@"softInputMode"]] : @"auto";
-    BOOL translucent = params[@"translucent"] ? [WXConvert BOOL:params[@"translucent"]] : NO;
+    //BOOL translucent = params[@"translucent"] ? [WXConvert BOOL:params[@"translucent"]] : NO;
     
-    NSString *backgroundColor = params[@"backgroundColor"] ? [WXConvert NSString:params[@"backgroundColor"]] : @"#ffffff";
+    NSString *backgroundColor = params[@"backgroundColor"] ? [WXConvert NSString:params[@"backgroundColor"]] : @"";
     BOOL backPressedClose = params[@"backPressedClose"] ? [WXConvert BOOL:params[@"backPressedClose"]] : YES;
+    
+    NSDictionary *currentInfo = [self getPageInfo:nil];
+    if (statusBarColor.length == 0) {
+        if (currentInfo!= nil) {
+            statusBarColor = currentInfo[@"statusBarColor"];
+        }
+        if (statusBarColor.length == 0) {
+            statusBarColor = @"#3EB4FF";
+        }
+    }
+    if (backgroundColor.length == 0) {
+        if (currentInfo!= nil) {
+            backgroundColor = currentInfo[@"backgroundColor"];
+        }
+        if (backgroundColor.length == 0) {
+            backgroundColor = @"#FFFFFF";
+        }
+    }
     
     url = [DeviceUtil rewriteUrl:url];
     NSLog(@"NewPage = %@", url);
@@ -244,13 +260,6 @@
     } else {
         vc = (WXMainViewController*)[DeviceUtil getTopviewControler];
     }
-    
-#warning ssss 下拉页面复杂，暂时禁用
-    //vc.refreshHeaderBlock = ^{
-    //    if (callback) {
-    //        callback(name, YES);
-    //    }
-    //};
 }
 
 - (void)setRefreshing:(id)params refreshing:(BOOL)refreshing

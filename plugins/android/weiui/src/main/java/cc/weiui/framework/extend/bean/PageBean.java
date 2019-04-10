@@ -78,12 +78,12 @@ public class PageBean {
     private boolean animated = true;
     private boolean animatedClose = true;
     private String statusBarType = "default";
-    private String statusBarColor = "#3EB4FF";
+    private String statusBarColor = "";
     private int statusBarAlpha = 0;
     private Boolean statusBarStyle = null;
     private String softInputMode = "auto";
     private boolean translucent = false;
-    private String backgroundColor = "#ffffff";
+    private String backgroundColor = "";
     private boolean backPressedClose = true;
     private boolean firstPage = false;
     private String resumeUrl = "";
