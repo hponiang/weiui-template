@@ -6,3 +6,4 @@
 /plugins-dev
 .DS_Store
 package-lock.json
+local.properties
