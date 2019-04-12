@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -16,9 +17,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.bridge.JSCallback;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cc.weiui.framework.R;
+import cc.weiui.framework.activity.PageActivity;
 import cc.weiui.framework.extend.module.utilcode.util.SizeUtils;
 import cc.weiui.framework.extend.module.weiuiCommon;
 import cc.weiui.framework.extend.module.weiuiDialog;
@@ -40,6 +46,7 @@ public class LoadingDialog extends weiuiDialog {
     private TextView v_title;
     private static Handler mHandler = new Handler();
     private static List<loadBean> mLoadBean = new ArrayList<>();
+    private static Map<String, String> identifyLists = new HashMap<>();
 
     public static String init(Context context, String obj, JSCallback callback) {
         JSONObject json = weiuiJson.parseObject(obj);
@@ -64,11 +71,47 @@ public class LoadingDialog extends weiuiDialog {
             int duration = weiuiJson.getInt(json, "duration");
             if (duration > 0) {
                 mHandler.postDelayed(()-> close(loadName), duration);
+            }else if (context instanceof PageActivity) {
+                Timer timer = new Timer();
+                identifyLists.put(loadName, ((PageActivity) context).identify);
+                timer.schedule(new closeTask((PageActivity) context, timer, loadName), 3000, 3000);
             }
             //
             return loadName;
         }else{
             return "";
+        }
+    }
+
+    private static class closeTask extends TimerTask {
+
+        PageActivity context;
+        Timer timer;
+        String loadName;
+
+        closeTask(PageActivity var1, Timer var2, String var3) {
+            context = var1;
+            timer = var2;
+            loadName = var3;
+        }
+
+        @Override
+        public void run() {
+            loadBean temp = null;
+            for (int i = 0; i < mLoadBean.size(); i++) {
+                temp = mLoadBean.get(i);
+                if (loadName.equals(temp.getName())) {
+                    break;
+                }
+            }
+            if (temp == null) {
+                timer.cancel();
+                return;
+            }
+            if (!context.identify.equals(identifyLists.get(loadName))) {
+                timer.cancel();
+                temp.getLoading().cancel();
+            }
         }
     }
 

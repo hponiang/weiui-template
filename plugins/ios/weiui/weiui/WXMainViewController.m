@@ -60,6 +60,7 @@ static int easyNavigationButtonTag = 8000;
     
     [self.view setClipsToBounds:YES];
     
+    _identify = [NSString stringWithFormat: @"%d", arc4random() % 100000];
     _weexHeight = self.view.frame.size.height - CGRectGetMaxY(self.navigationController.navigationBar.frame);
     _cache = 0;
     
@@ -237,6 +238,8 @@ static int easyNavigationButtonTag = 8000;
 - (void)dealloc
 {
     NSLog(@"gggggggg::dealloc");
+    
+    self.identify = @"";
     [self updateStatus:@"destroy"];
     
     [_instance destroyInstance];
@@ -763,6 +766,7 @@ static int easyNavigationButtonTag = 8000;
 {
     [self startLoading];
     
+    self.identify = [NSString stringWithFormat: @"%d", arc4random() % 100000];
     self.navigationItem.leftBarButtonItem = nil;
     self.navigationItem.rightBarButtonItem = nil;
     [self hideNavigation];

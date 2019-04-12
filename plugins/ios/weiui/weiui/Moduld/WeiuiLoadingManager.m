@@ -8,9 +8,12 @@
 
 #import "WeiuiLoadingManager.h"
 #import "DGActivityIndicatorView.h"
+#import "DeviceUtil.h"
+#import "WeiuiNewPageManager.h"
 
 @interface WeiuiLoadingView : UIControl
 
+@property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *title;
 @property (nonatomic, strong) NSString *titleColor;
 @property (nonatomic, strong) NSString *style;
@@ -20,6 +23,9 @@
 @property (nonatomic, assign) NSInteger duration;
 @property (nonatomic, assign) CGFloat amount;
 
+@property (nonatomic, strong) NSString *identify;
+@property (nonatomic, strong) NSString *pageName;
+@property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, copy) void (^cancelLoadingBlock)(void);
 
 @end
@@ -68,6 +74,36 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_duration * NSEC_PER_MSEC)), dispatch_get_main_queue(), ^{
             self.cancelLoadingBlock();
         });
+    }else{
+        UIViewController *navigation = [DeviceUtil getTopviewControler];
+        if ([navigation isKindOfClass:[WXMainViewController class]]) {
+            WXMainViewController *vc = (WXMainViewController*) navigation;
+            _identify = vc.identify;
+            _pageName = [vc pageName];
+            _timer = [NSTimer timerWithTimeInterval:3.0 target:self selector:@selector(closeTimer) userInfo:nil repeats:YES];
+            [[NSRunLoop currentRunLoop] addTimer:_timer forMode:NSRunLoopCommonModes];
+        }
+    }
+}
+
+- (void)closeTimer
+{
+    id loading = [[WeiuiLoadingManager sharedIntstance].loadingDic objectForKey:self->_name];
+    if (loading == nil) {
+        [_timer invalidate];
+        _timer = nil;
+        return;
+    }
+    
+    NSDictionary *viewData = [[WeiuiNewPageManager sharedIntstance] getViewData];
+    id view = [viewData objectForKey:_pageName];
+    if (![view isKindOfClass:[WXMainViewController class]]) {
+        [self closeClick];
+        return;
+    }
+    WXMainViewController *vc = (WXMainViewController*)view;
+    if (![vc.identify isEqualToString:_identify]) {
+        [self closeClick];
     }
 }
 
@@ -75,6 +111,10 @@
 {
     if (_cancelable) {
         self.cancelLoadingBlock();
+    }
+    if (_timer != nil) {
+        [_timer invalidate];
+        _timer = nil;
     }
 }
 
@@ -152,6 +192,7 @@
         UIWindow *window = [UIApplication sharedApplication].delegate.window;
         
         WeiuiLoadingView *loadingView = [[WeiuiLoadingView alloc] initWithFrame:window.bounds];
+        loadingView.name = name;
         loadingView.title = title;
         loadingView.titleColor = titleColor;
         loadingView.style = style;

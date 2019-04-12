@@ -45,6 +45,10 @@ public final class PermissionUtils {
     private List<String> mPermissionsDenied;
     private List<String> mPermissionsDeniedForever;
 
+    public static boolean isShowApply = false;
+    public static boolean isShowRationale = false;
+    public static boolean isShowOpenAppSetting = false;
+
     /**
      * Return the permissions used in application.
      *
@@ -173,6 +177,7 @@ public final class PermissionUtils {
      * Start request.
      */
     public void request() {
+        isShowApply = true;
         mPermissionsGranted = new ArrayList<>();
         mPermissionsRequest = new ArrayList<>();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -238,6 +243,7 @@ public final class PermissionUtils {
     }
 
     private void requestCallback() {
+        isShowApply = false;
         if (mSimpleCallback != null) {
             if (mPermissionsRequest.size() == 0
                     || mPermissions.size() == mPermissionsGranted.size()) {
@@ -268,43 +274,6 @@ public final class PermissionUtils {
         getPermissionsStatus(activity);
         requestCallback();
     }
-
-
-    /*@RequiresApi(api = Build.VERSION_CODES.M)
-    public static class PermissionActivity extends Activity {
-
-        public static void start(final Context context) {
-            Intent starter = new Intent(context, PermissionActivity.class);
-            starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(starter);
-        }
-
-        @Override
-        protected void onCreate(@Nullable Bundle savedInstanceState) {
-            if (sInstance.mThemeCallback != null) {
-                sInstance.mThemeCallback.onActivityCreate(this);
-            }
-            super.onCreate(savedInstanceState);
-
-            if (sInstance.rationale(this)) {
-                finish();
-                return;
-            }
-            if (sInstance.mPermissionsRequest != null) {
-                int size = sInstance.mPermissionsRequest.size();
-                requestPermissions(sInstance.mPermissionsRequest.toArray(new String[size]), 1);
-            }
-        }
-
-        @Override
-        public void onRequestPermissionsResult(int requestCode,
-                                               @NonNull String[] permissions,
-                                               @NonNull int[] grantResults) {
-            sInstance.onRequestPermissionsResult(this);
-            finish();
-        }
-    }*/
-
 
     public interface OnRationaleListener {
 
@@ -350,12 +319,23 @@ public final class PermissionUtils {
     /**
      * 解释权限的dialog
      */
-    public static void showRationaleDialog(Context context, final PermissionUtils.OnRationaleListener.ShouldRequest shouldRequest) {
+    public static void showRationaleDialog(Context context, final PermissionUtils.OnRationaleListener.ShouldRequest shouldRequest, String desc) {
+        if (isShowRationale) {
+            return;
+        }
+        isShowRationale = true;
+        String descMsg = !"".equals(desc) ? "[" + desc + "]" : "相关";
         new android.support.v7.app.AlertDialog.Builder(context)
                 .setTitle("申请权限")
-                .setMessage("请允许相关权限后才能继续")
-                .setPositiveButton("确定", (dialog, which) -> shouldRequest.again(true))
-                .setNegativeButton("取消", (dialog, which) -> shouldRequest.again(false))
+                .setMessage("请允许" + descMsg + "权限后才能继续")
+                .setPositiveButton("确定", (dialog, which) -> {
+                    shouldRequest.again(true);
+                    isShowRationale = false;
+                })
+                .setNegativeButton("取消", (dialog, which) -> {
+                    shouldRequest.again(false);
+                    isShowRationale = false;
+                })
                 .setCancelable(false)
                 .create()
                 .show();
@@ -364,12 +344,20 @@ public final class PermissionUtils {
     /**
      * 显示前往应用设置Dialog
      */
-    public static void showOpenAppSettingDialog(Context context) {
+    public static void showOpenAppSettingDialog(Context context, String desc) {
+        if (isShowOpenAppSetting) {
+            return;
+        }
+        isShowOpenAppSetting = true;
+        String descMsg = !"".equals(desc) ? "[" + desc + "]" : "相关";
         new android.support.v7.app.AlertDialog.Builder(context)
                 .setTitle("需要权限")
-                .setMessage("我们需要相关权限，才能实现功能，点击前往，将转到应用的设置界面，请开启应用的相关权限。")
-                .setPositiveButton("前往", (dialog, which) -> PermissionUtils.launchAppDetailsSettings())
-                .setNegativeButton("取消", (dialog, which) -> { })
+                .setMessage("我们需要" + descMsg + "权限，才能实现功能，点击前往，将转到应用的设置界面，请开启应用的" + descMsg + "权限。")
+                .setPositiveButton("前往", (dialog, which) -> {
+                    PermissionUtils.launchAppDetailsSettings();
+                    isShowOpenAppSetting = false;
+                })
+                .setNegativeButton("取消", (dialog, which) -> isShowOpenAppSetting = false)
                 .setCancelable(false)
                 .create()
                 .show();

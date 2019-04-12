@@ -738,7 +738,7 @@ public class weiuiCommon {
         final String[] result = {null};
         final CountDownLatch latch = new CountDownLatch(1);
         new Thread(() -> PermissionUtils.permission(Manifest.permission.READ_PHONE_STATE)
-                .rationale(shouldRequest -> PermissionUtils.showRationaleDialog(ctx, shouldRequest))
+                .rationale(shouldRequest -> PermissionUtils.showRationaleDialog(ctx, shouldRequest, "电话"))
                 .callback(new PermissionUtils.FullCallback() {
                     @Override
                     public void onGranted(List<String> permissionsGranted) {
@@ -760,7 +760,7 @@ public class weiuiCommon {
                     @Override
                     public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
                         if (!permissionsDeniedForever.isEmpty()) {
-                            PermissionUtils.showOpenAppSettingDialog(ctx);
+                            PermissionUtils.showOpenAppSettingDialog(ctx, "电话");
                         }
                         result[0] = "";
                         latch.countDown();

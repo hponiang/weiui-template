@@ -52,6 +52,7 @@ typedef NS_ENUM(NSInteger, LifeCycleType) {
 @property (nonatomic, strong) id params;
 
 @property (nonatomic,assign) BOOL keyBoardlsVisible;
+@property (nonatomic,strong) NSString *identify;
 
 - (void)stopLoading;
 - (void)startLoading;

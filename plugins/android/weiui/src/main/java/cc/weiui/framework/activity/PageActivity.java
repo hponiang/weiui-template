@@ -94,6 +94,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -121,6 +123,7 @@ public class PageActivity extends AppCompatActivity {
 
     private Handler mHandler = new Handler();
 
+    public String identify;
     private PageBean mPageInfo;
     private String lifecycleLastStatus;
 
@@ -211,7 +214,7 @@ public class PageActivity extends AppCompatActivity {
         json.put("successClose", weiuiJson.getBoolean(json, "successClose", true));
         //
         PermissionUtils.permission(PermissionConstants.CAMERA)
-                .rationale(shouldRequest -> PermissionUtils.showRationaleDialog(context, shouldRequest))
+                .rationale(shouldRequest -> PermissionUtils.showRationaleDialog(context, shouldRequest, "相机"))
                 .callback(new PermissionUtils.FullCallback() {
                     @Override
                     public void onGranted(List<String> permissionsGranted) {
@@ -227,7 +230,7 @@ public class PageActivity extends AppCompatActivity {
                     @Override
                     public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
                         if (!permissionsDeniedForever.isEmpty()) {
-                            PermissionUtils.showOpenAppSettingDialog(context);
+                            PermissionUtils.showOpenAppSettingDialog(context, "相机");
                         }
                     }
                 }).request();
@@ -253,6 +256,7 @@ public class PageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
+        identify = weiuiCommon.randomString(16);
         mPageInfo = weiuiPage.getPageBean(intent.getStringExtra("name"));
 
         if (mPageInfo == null) {
@@ -499,6 +503,7 @@ public class PageActivity extends AppCompatActivity {
                 KeyboardUtils.unregisterSoftInputChangedListener(this);
             }
         }
+        identify = "";
         invoke("destroy", null);
         super.onDestroy();
     }
@@ -1273,11 +1278,14 @@ public class PageActivity extends AppCompatActivity {
         if (mError != null) {
             mError.setVisibility(View.GONE);
         }
+        identify = weiuiCommon.randomString(16);
         //
-        hideNavigation();
-        titleBarLeftNull = true;
-        titleBarLeft.removeAllViews();
-        titleBarRight.removeAllViews();
+        if (titleBar != null) {
+            hideNavigation();
+            titleBarLeftNull = true;
+            titleBarLeft.removeAllViews();
+            titleBarRight.removeAllViews();
+        }
         //
         switch (mPageInfo.getPageType()) {
             case "web":
@@ -1645,6 +1653,7 @@ public class PageActivity extends AppCompatActivity {
     private int deBugButtonSize = 128;
     private String deBugWsOpenUrl = "";
     private String deBugKeepScreen = "";
+    private Timer deBugSocketTimer;
 
     public boolean isDeBugPage() {
         return deBugButton != null;
@@ -1721,7 +1730,25 @@ public class PageActivity extends AppCompatActivity {
             JSONObject jsonData = weiuiJson.parseObject(weiuiCommon.getAssetsJson("weiui/config.json", this));
             weiuiCommon.setVariate("__deBugSocket:Host", weiuiJson.getString(jsonData, "socketHost"));
             weiuiCommon.setVariate("__deBugSocket:Port", weiuiJson.getString(jsonData, "socketPort"));
-            deBugSocketConnect("initialize");
+            if (PermissionUtils.isShowApply || PermissionUtils.isShowRationale || PermissionUtils.isShowOpenAppSetting) {
+                if (deBugSocketTimer != null) {
+                    deBugSocketTimer.cancel();
+                    deBugSocketTimer = null;
+                }
+                deBugSocketTimer = new Timer();
+                deBugSocketTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (!PermissionUtils.isShowApply && !PermissionUtils.isShowRationale && !PermissionUtils.isShowOpenAppSetting) {
+                            deBugSocketTimer.cancel();
+                            deBugSocketTimer = null;
+                            deBugSocketConnect("initialize");
+                        }
+                    }
+                }, 3000, 2000);
+            }else{
+                deBugSocketConnect("initialize");
+            }
         }
     }
 
