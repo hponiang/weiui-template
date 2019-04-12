@@ -30,13 +30,12 @@ module.exports = {
         ios: {
             enabled: true,
             appKey: "5c79d535203657751400106e",
-            appSecret: "",
             channel: "weiuidemo",
         },
         android: {
             enabled: true,
             appKey: "5ab9d815f29d980730000365",
-            appSecret: "0f6e074e1443674fc7ba4327bf93939a",
+            messageSecret: "0f6e074e1443674fc7ba4327bf93939a",
             channel: "weiuidemo",
         }
     },

@@ -327,12 +327,7 @@
                     title_en: 'adDialog',
                     icon: 'logo-buffer',
                     url: jshome + 'module_ad_dialog.js',
-                }/*, {
-                    title: '更多拓展模块',
-                    title_en: 'expandModule',
-                    icon: 'md-more',
-                    url: jshome + 'index_expand.js',
-                }*/],
+                }],
 
                 plugin: [{
                     title: '城市选择器',

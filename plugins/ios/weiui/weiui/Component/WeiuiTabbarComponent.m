@@ -227,15 +227,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
     [self loadTabView];
     
     //indicator
-    if (_indicatorStyle == 0) {
-        self.indicatorView =  [[UIView alloc] init];
-        [self.tabView addSubview:self.indicatorView];
-        [self loadIndicatorView];
-    } else if (_indicatorStyle == 1) {
-        self.indicatorView =  [[TriangleIndicatorView alloc] init];
-        [self.tabView addSubview:self.indicatorView];
-        [self loadIndicatorView];
-    }
+    [self initIndicatorView];
     
     //下划线
     self.underLineView = [[UIView alloc] init];
@@ -326,6 +318,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
     }
     
     [self loadTabView];
+    [self initIndicatorView];
 }
 
 
@@ -460,6 +453,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                 tabName = cmp.tabName;
                 title = cmp.title;
                 message = cmp.message;
+                dot = cmp.dot;
                 unSelectedIcon = cmp.unSelectedIcon;
                 selectedIcon = cmp.selectedIcon;
             } else if ([data isKindOfClass:[NSDictionary class]]) {
@@ -469,18 +463,18 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                 dot = data[@"dot"] ? [WXConvert BOOL:data[@"dot"]] : NO;
                 unSelectedIcon = data[@"unSelectedIcon"] ? [WXConvert NSString:data[@"unSelectedIcon"]] : @"";
                 selectedIcon = data[@"selectedIcon"] ? [WXConvert NSString:data[@"selectedIcon"]] : @"";
+            }
+            if ([selectedIcon isEqual: @""]) {
+                if ([unSelectedIcon isEqual: @""]) {
+                    selectedIcon = @"tb-home-fill-light";
+                }else{
+                    selectedIcon = unSelectedIcon;
+                }
+            }else if ([unSelectedIcon isEqual: @""]) {
                 if ([selectedIcon isEqual: @""]) {
-                    if ([unSelectedIcon isEqual: @""]) {
-                        selectedIcon = @"tb-home-fill-light";
-                    }else{
-                        selectedIcon = unSelectedIcon;
-                    }
-                }else if ([unSelectedIcon isEqual: @""]) {
-                    if ([selectedIcon isEqual: @""]) {
-                        unSelectedIcon = @"tb-home-light";
-                    }else{
-                        unSelectedIcon = selectedIcon;
-                    }
+                    unSelectedIcon = @"tb-home-light";
+                }else{
+                    unSelectedIcon = selectedIcon;
                 }
             }
             
@@ -550,9 +544,9 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                             if (self->_iconVisible == NO) {
                                 [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:0];
                             } else if (self->_iconGravity) {
-                                [btn SG_imagePositionStyle:(SGImagePositionStyleTop) spacing:5];
+                                [btn SG_imagePositionStyle:(SGImagePositionStyleTop) spacing:iconMargin];
                             } else {
-                                [btn SG_imagePositionStyle:(SGImagePositionStyleBottom) spacing:5];
+                                [btn SG_imagePositionStyle:(SGImagePositionStyleBottom) spacing:iconMargin];
                             }
                         });
                     }
@@ -569,9 +563,9 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                             if (self->_iconVisible == NO) {
                                 [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:0];
                             } else if (self->_iconGravity) {
-                                [btn SG_imagePositionStyle:(SGImagePositionStyleTop) spacing:5];
+                                [btn SG_imagePositionStyle:(SGImagePositionStyleTop) spacing:iconMargin];
                             } else {
-                                [btn SG_imagePositionStyle:(SGImagePositionStyleBottom) spacing:5];
+                                [btn SG_imagePositionStyle:(SGImagePositionStyleBottom) spacing:iconMargin];
                             }
                         });
                     }
@@ -604,9 +598,9 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             if (_iconVisible == NO) {
                 [btn SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing:0];
             } else if (_iconGravity) {
-                [btn SG_imagePositionStyle:(SGImagePositionStyleTop) spacing:5];
+                [btn SG_imagePositionStyle:(SGImagePositionStyleTop) spacing:iconMargin];
             } else {
-                [btn SG_imagePositionStyle:(SGImagePositionStyleBottom) spacing:5];
+                [btn SG_imagePositionStyle:(SGImagePositionStyleBottom) spacing:iconMargin];
             }
             
             //分割线
@@ -661,6 +655,22 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             UIScrollView *scoView = (UIScrollView*)[self.bodyView viewWithTag:TabBgScrollTag + i];
             scoView.frame = CGRectMake(i * self.bodyView.frame.size.width, 0, self.bodyView.frame.size.width, self.bodyView.frame.size.height);
         }
+    }
+}
+
+- (void)initIndicatorView
+{
+    if (self.indicatorView != nil) {
+        [self.indicatorView removeFromSuperview];
+    }
+    if (self->_indicatorStyle == 0) {
+        self.indicatorView =  [[UIView alloc] init];
+        [self.tabView addSubview:self.indicatorView];
+        [self loadIndicatorView];
+    } else if (self->_indicatorStyle == 1) {
+        self.indicatorView =  [[TriangleIndicatorView alloc] init];
+        [self.tabView addSubview:self.indicatorView];
+        [self loadIndicatorView];
     }
 }
 
