@@ -239,11 +239,38 @@ NSDictionary *mLaunchOptions;
             [UIApplication sharedApplication].idleTimerDisabled = YES;
         }
     }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"页面信息" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        if ([[DeviceUtil getTopviewControler] isKindOfClass:[WXMainViewController class]]) {
+            WXMainViewController *vc = (WXMainViewController*)[DeviceUtil getTopviewControler];
+            NSDictionary *info = [[WeiuiNewPageManager sharedIntstance] getPageInfo:vc.pageName];
+            NSError *error;
+            NSData *data = [NSJSONSerialization dataWithJSONObject:info options:NSJSONWritingPrettyPrinted error:&error];
+            if(data && !error){
+                NSString *infoString = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
+                infoString = [infoString stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+                [vc showFixedInfo:infoString];
+                return;
+            }
+        }
+        UIAlertController * alertController = [UIAlertController
+                                               alertControllerWithTitle: @"页面信息"
+                                               message: @"当前页面不支持。"
+                                               preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:nil]];
+        UIWindow *alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        alertWindow.rootViewController = [[UIViewController alloc] init];
+        alertWindow.windowLevel = UIWindowLevelAlert + 1;
+        [alertWindow makeKeyAndVisible];
+        [alertWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
+    }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"扫一扫" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [self openScan];
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"刷新" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [self refresh];
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"隐藏DEV" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self hideDev];
     }]];
     [alertController addAction:[UIAlertAction actionWithTitle:@"重启APP" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [self rebootConfirm];
@@ -254,7 +281,14 @@ NSDictionary *mLaunchOptions;
         }]];
     }
     
-    [self.window.rootViewController presentViewController:alertController animated:TRUE completion:nil];
+    NSString *deviceType = [UIDevice currentDevice].model;
+    if([deviceType isEqualToString:@"iPad"]) {
+        UIPopoverPresentationController *popPresenter = [alertController popoverPresentationController];
+        popPresenter.sourceView = debugBtn;
+        popPresenter.sourceRect = debugBtn.bounds;
+    }
+    
+    [self.window.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
 
 //WiFi真机同步配置
@@ -331,6 +365,23 @@ NSDictionary *mLaunchOptions;
 //刷新当前页面
 - (void) refresh {
     [[WeiuiNewPageManager sharedIntstance] reloadPage:nil];
+}
+
+//隐藏DEV按钮
+- (void) hideDev {
+    UIAlertController * alertController = [UIAlertController
+                                           alertControllerWithTitle: @"隐藏DEV"
+                                           message: @"确认要隐藏DEV漂浮按钮吗？\n隐藏按钮将在下次启动APP时显示。"
+                                           preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:nil]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [debugBtn removeFromSuperview];
+    }]];
+    UIWindow *alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    alertWindow.rootViewController = [[UIViewController alloc] init];
+    alertWindow.windowLevel = UIWindowLevelAlert + 1;
+    [alertWindow makeKeyAndVisible];
+    [alertWindow.rootViewController presentViewController:alertController animated:YES completion:nil];
 }
 
 //确认重启APP

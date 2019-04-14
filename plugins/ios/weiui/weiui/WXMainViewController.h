@@ -73,4 +73,6 @@ typedef NS_ENUM(NSInteger, LifeCycleType) {
 - (void)showNavigation;
 - (void)hideNavigation;
 
+- (void)showFixedInfo:(NSString *)text;
+
 @end

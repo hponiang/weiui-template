@@ -32,7 +32,7 @@
 //字体尺寸转换
 + (NSInteger)font:(NSInteger)font
 {
-    return font/2;
+    return [UIScreen mainScreen].bounds.size.width * 1.0f/750 * font;
 }
 
 //获取当前控制器
@@ -168,7 +168,7 @@
     UIGraphicsBeginImageContextWithOptions(newSize, NO, scale);
     CGFloat x = 0;
     if (![icon containsString:@"//"] && ![icon hasPrefix:@"data:"]) {
-        x = -newSize.width * scale / 60;
+        x = - newSize.width / 12 + scale / 12;
     }
     [img drawInRect:CGRectMake(x, 0, newSize.width, newSize.height)];//有偏移，自己加了参数
     UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();

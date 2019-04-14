@@ -43,6 +43,7 @@ static int easyNavigationButtonTag = 8000;
 @property (nonatomic, strong) UIView *errorView;
 @property (nonatomic, strong) UIScrollView *errorInfoView;
 @property (nonatomic, strong) NSString *errorContent;
+@property (nonatomic, strong) UIColor *navigationBarBarTintColor;
 
 @end
 
@@ -151,6 +152,10 @@ static int easyNavigationButtonTag = 8000;
 {
     [super viewDidAppear:animated];
     [self updateInstanceState:WeexInstanceAppear];
+    
+    if (_navigationBarBarTintColor != nil) {
+        self.navigationController.navigationBar.barTintColor = _navigationBarBarTintColor;
+    }
     
     if (_resumeUrl.length > 0) {
         [self setResumeUrl:@""];
@@ -600,28 +605,7 @@ static int easyNavigationButtonTag = 8000;
 -(void)errorTabGesture:(UITapGestureRecognizer *)tapGesture
 {
     if (tapGesture.view.tag == 1000) {
-        if (self.errorInfoView == nil) {
-            UIEdgeInsets safeArea = UIEdgeInsetsZero;
-            if (@available(iOS 11.0, *)) {
-                safeArea = self.view.safeAreaInsets;
-            }
-            self.errorInfoView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-            self.errorInfoView.tag = 1001;
-            [self.errorInfoView setBackgroundColor:[[UIColor blackColor] colorWithAlphaComponent:0.81f]];
-            UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(5, 5 + safeArea.top, self.view.frame.size.width - 10, self.view.frame.size.height - 10 - safeArea.top)];
-            label.text = _errorContent;
-            label.textColor = [WXConvert UIColor:@"#FFFFFF"];
-            label.font = [UIFont systemFontOfSize:13.f];
-            label.lineBreakMode = NSLineBreakByWordWrapping;
-            label.numberOfLines = 0;
-            [label sizeToFit];
-            [self.errorInfoView setContentSize:CGSizeMake(label.frame.size.width, label.frame.size.height)];
-            [self.errorInfoView addSubview:label];
-            [self.errorInfoView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(errorTabGesture:)]];
-            [self.view addSubview:self.errorInfoView];
-        }else{
-            [self.view bringSubviewToFront:self.errorInfoView];
-        }
+        [self showFixedInfo:_errorContent];
     }else if (tapGesture.view.tag == 1001) {
         if (self.errorInfoView != nil) {
             [self.errorInfoView removeFromSuperview];
@@ -631,6 +615,36 @@ static int easyNavigationButtonTag = 8000;
         [self refreshPage];
     }else if (tapGesture.view.tag == 3000) {
         [[WeiuiNewPageManager sharedIntstance] closePage:nil];
+    }
+}
+
+- (void)showFixedInfo:(NSString *)text
+{
+    if (self.errorInfoView == nil) {
+        UIEdgeInsets safeArea = UIEdgeInsetsZero;
+        self.errorInfoView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+        self.errorInfoView.tag = 1001;
+        if (@available(iOS 11.0, *)) {
+            safeArea = self.view.safeAreaInsets;
+            self.errorInfoView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
+        [self.errorInfoView setBackgroundColor:[[UIColor blackColor] colorWithAlphaComponent:0.81f]];
+        UILabel * label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+        label.text = text;
+        label.textColor = [WXConvert UIColor:@"#FFFFFF"];
+        label.font = [UIFont systemFontOfSize:13.f];
+        label.lineBreakMode = NSLineBreakByWordWrapping;
+        label.numberOfLines = 0;
+        [label sizeToFit];
+        CGRect temp = label.frame;
+        temp.origin.y+= safeArea.top;
+        [label setFrame:temp];
+        [self.errorInfoView setContentSize:CGSizeMake(label.frame.size.width, label.frame.size.height + safeArea.top + safeArea.bottom)];
+        [self.errorInfoView addSubview:label];
+        [self.errorInfoView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(errorTabGesture:)]];
+        [self.view addSubview:self.errorInfoView];
+    }else{
+        [self.view bringSubviewToFront:self.errorInfoView];
     }
 }
 
@@ -857,7 +871,8 @@ static int easyNavigationButtonTag = 8000;
     
     //背景色
     CGFloat alpha = (255 - _statusBarAlpha) * 1.0 / 255;
-    self.navigationController.navigationBar.barTintColor = [[WXConvert UIColor:backgroundColor] colorWithAlphaComponent:alpha];
+    _navigationBarBarTintColor = [[WXConvert UIColor:backgroundColor] colorWithAlphaComponent:alpha];
+    self.navigationController.navigationBar.barTintColor = _navigationBarBarTintColor;
     [self showNavigation];
     
     //标题
@@ -865,7 +880,7 @@ static int easyNavigationButtonTag = 8000;
     [titleLabel setBackgroundColor:[UIColor clearColor]];
     [titleLabel setTextColor:[WXConvert UIColor:titleColor]];
     [titleLabel setText:[[NSString alloc] initWithFormat:@"  %@  ", title]];
-    [titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:SCALEFLOAT(titleSize)]];
+    [titleLabel setFont:[UIFont systemFontOfSize:[self NAVSCALE:titleSize]]];
     [titleLabel sizeToFit];
     
     if (subtitle.length > 0) {
@@ -873,7 +888,7 @@ static int easyNavigationButtonTag = 8000;
         [subtitleLabel setBackgroundColor:[UIColor clearColor]];
         [subtitleLabel setTextColor:[WXConvert UIColor:subtitleColor]];
         [subtitleLabel setText:[[NSString alloc] initWithFormat:@"  %@  ", subtitle]];
-        [subtitleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:SCALEFLOAT(subtitleSize)]];
+        [subtitleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:[self NAVSCALE:subtitleSize]]];
         [subtitleLabel sizeToFit];
         
         UIView *twoLineTitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, MAX(subtitleLabel.frame.size.width, titleLabel.frame.size.width), 30)];
@@ -949,17 +964,17 @@ static int easyNavigationButtonTag = 8000;
                 [SDWebImageDownloader.sharedDownloader downloadImageWithURL:[NSURL URLWithString:icon] options:SDWebImageDownloaderLowPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
                     if (image) {
                         WXPerformBlockOnMainThread(^{
-                            [customButton setImage:[DeviceUtil imageResize:image andResizeTo:CGSizeMake(SCALEFLOAT(iconSize), SCALEFLOAT(iconSize)) icon:nil] forState:UIControlStateNormal];
+                            [customButton setImage:[DeviceUtil imageResize:image andResizeTo:CGSizeMake([self NAVSCALE:iconSize], [self NAVSCALE:iconSize]) icon:nil] forState:UIControlStateNormal];
                             [customButton SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing: (icon.length > 0 && title.length > 0) ? 5 : 0];
                         });
                     }
                 }];
             } else {
-                [customButton setImage:[DeviceUtil getIconText:icon font:FONT(iconSize) color:iconColor] forState:UIControlStateNormal];
+                [customButton setImage:[DeviceUtil getIconText:icon font:[self NAVSCALE:iconSize] color:iconColor] forState:UIControlStateNormal];
             }
         }
         if (title.length > 0){
-            customButton.titleLabel.font = [UIFont systemFontOfSize:SCALEFLOAT(titleSize)];
+            customButton.titleLabel.font = [UIFont systemFontOfSize:[self NAVSCALE:titleSize]];
             [customButton setTitle:title forState:UIControlStateNormal];
             [customButton setTitleColor:[WXConvert UIColor:titleColor] forState:UIControlStateNormal];
             [customButton.titleLabel sizeToFit];
@@ -983,6 +998,12 @@ static int easyNavigationButtonTag = 8000;
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:buttonItems];
     }else{
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:buttonItems];
+    }
+    
+    if (_navigationBarBarTintColor == nil) {
+        [self setNavigationTitle:@" " callback:nil];
+    }else{
+        [self showNavigation];
     }
 }
 
@@ -1030,6 +1051,11 @@ static int easyNavigationButtonTag = 8000;
     [self setFd_prefersNavigationBarHidden:YES];
     [self.navigationController setNavigationBarHidden:YES];
     [self.view setNeedsLayout];
+}
+
+- (CGFloat)NAVSCALE:(CGFloat)size
+{
+    return MIN([UIScreen mainScreen].bounds.size.width, 375) * 1.0f/750 * size;
 }
 
 @end
