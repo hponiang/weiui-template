@@ -958,6 +958,8 @@ static int easyNavigationButtonTag = 8000;
         NSString *icon = item[@"icon"] ? [WXConvert NSString:item[@"icon"]] : @"";
         NSString *iconColor = item[@"iconColor"] ? [WXConvert NSString:item[@"iconColor"]] : @"#232323";
         CGFloat iconSize = item[@"iconSize"] ? [WXConvert CGFloat:item[@"iconSize"]] : 28.0;
+        NSInteger width = item[@"width"] ? [WXConvert NSInteger:item[@"width"]] : 0;
+        NSInteger spacing = item[@"spacing"] ? [WXConvert NSInteger:item[@"spacing"]] : 10;
         
         UIButton *customButton = [UIButton buttonWithType:UIButtonTypeCustom];
         if (icon.length > 0) {
@@ -966,7 +968,7 @@ static int easyNavigationButtonTag = 8000;
                     if (image) {
                         WXPerformBlockOnMainThread(^{
                             [customButton setImage:[DeviceUtil imageResize:image andResizeTo:CGSizeMake([self NAVSCALE:iconSize], [self NAVSCALE:iconSize]) icon:nil] forState:UIControlStateNormal];
-                            [customButton SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing: (icon.length > 0 && title.length > 0) ? 5 : 0];
+                            [customButton SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing: (icon.length > 0 && title.length > 0) ? [self NAVSCALE:spacing] : 0];
                         });
                     }
                 }];
@@ -980,13 +982,18 @@ static int easyNavigationButtonTag = 8000;
             [customButton setTitleColor:[WXConvert UIColor:titleColor] forState:UIControlStateNormal];
             [customButton.titleLabel sizeToFit];
         }
-        [customButton SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing: (icon.length > 0 && title.length > 0) ? 5 : 0];
+        [customButton SG_imagePositionStyle:(SGImagePositionStyleDefault) spacing: (icon.length > 0 && title.length > 0) ? [self NAVSCALE:spacing] : 0];
         if (callback) {
             customButton.tag = ++easyNavigationButtonTag;
             [customButton addTarget:self action:@selector(navigationItemClick:) forControlEvents:UIControlEventTouchUpInside];
             [_navigationCallbackDictionary setObject:@{@"callback":[callback copy], @"params":[item copy]} forKey:@(customButton.tag)];
         }
         [customButton sizeToFit];
+        if (width > 0) {
+            CGRect customCGRect = customButton.frame;
+            customCGRect.size.width = [self NAVSCALE:width];
+            [customButton setFrame:customCGRect];
+        }
         CGFloat bWitdh = buttonItems.frame.size.width;
         CGFloat cWitdh = MAX(self.navigationController.navigationBar.frame.size.height, customButton.frame.size.width);
         CGFloat cHeight = self.navigationController.navigationBar.frame.size.height;

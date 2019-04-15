@@ -173,6 +173,7 @@ public class PageActivity extends AppCompatActivity {
     //标题栏部分
     private LinearLayout titleBar, titleBarLeft, titleBarMiddle, titleBarRight;
     private TextView titleBarTitle, titleBarSubtitle;
+    private String navigationBarBackgroundColor = null;
     private boolean titleBarLeftNull = true;
 
     /****************************************************************************************************/
@@ -1483,9 +1484,9 @@ public class PageActivity extends AppCompatActivity {
         String subtitle = weiuiJson.getString(item, "subtitle", "");
         String subtitleColor = weiuiJson.getString(item, "subtitleColor", "#232323");
         float subtitleSize = weiuiJson.getFloat(item, "subtitleSize", 24f);
-        String backgroundColor = weiuiJson.getString(item, "backgroundColor", (!mPageInfo.getStatusBarColor().equals("") ? mPageInfo.getStatusBarColor() : "#3EB4FF"));
+        navigationBarBackgroundColor = weiuiJson.getString(item, "backgroundColor", (!mPageInfo.getStatusBarColor().equals("") ? mPageInfo.getStatusBarColor() : "#3EB4FF"));
 
-        titleBar.setBackgroundColor(Color.parseColor(backgroundColor));
+        titleBar.setBackgroundColor(Color.parseColor(navigationBarBackgroundColor));
         showNavigation();
 
         titleBarTitle.setText(title);
@@ -1546,12 +1547,14 @@ public class PageActivity extends AppCompatActivity {
             String icon = weiuiJson.getString(item, "icon", "");
             String iconColor = weiuiJson.getString(item, "iconColor", "#232323");
             float iconSize = weiuiJson.getFloat(item, "iconSize", 28f);
+            int width = weiuiScreenUtils.weexPx2dp(mWXSDKInstance, item.get("width"));
+            int spacing = weiuiScreenUtils.weexPx2dp(mWXSDKInstance, item.get("spacing"), 10);
 
+            LinearLayout.LayoutParams customParams = new LinearLayout.LayoutParams(width > 0 ? width : LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
             LinearLayout customButton = new LinearLayout(this);
-            customButton.setLayoutParams(layoutParams);
+            customButton.setLayoutParams(customParams);
             customButton.setGravity(Gravity.CENTER);
             customButton.setOrientation(LinearLayout.HORIZONTAL);
-            customButton.setMinimumWidth(SizeUtils.dp2px(56));
             TextView titleView = new TextView(this);
             if (!"".equals(icon)) {
                 if (isFontIcon(icon)) {
@@ -1581,7 +1584,7 @@ public class PageActivity extends AppCompatActivity {
             }
             if (!"".equals(title)) {
                 if (!"".equals(icon)) {
-                    titleView.setPadding(5, 0, 0, 0);
+                    titleView.setPadding(spacing, 0, 0, 0);
                 }
                 titleView.setLayoutParams(layoutParams);
                 titleView.setGravity(Gravity.CENTER);
@@ -1627,6 +1630,12 @@ public class PageActivity extends AppCompatActivity {
                 }
             });
         });
+
+        if (navigationBarBackgroundColor == null) {
+            setNavigationTitle(" ", null);
+        }else{
+            showNavigation();
+        }
     }
 
     /**
