@@ -20,7 +20,7 @@ public class WXSDKBean {
     private FrameLayout container;
     private View progress;
     private View errorView;
-    private TextView errorCodeView, errorErrinfo;
+    private TextView errorCodeView;
 
     private WXSDKInstance instance;
 
@@ -29,6 +29,8 @@ public class WXSDKBean {
     private long cache = 0;
 
     private Object view;
+
+    private String errorMsg = "";
 
     public boolean isLoaded() {
         return loaded;
@@ -86,14 +88,6 @@ public class WXSDKBean {
         this.errorCodeView = errorCodeView;
     }
 
-    public TextView getErrorErrinfo() {
-        return errorErrinfo;
-    }
-
-    public void setErrorErrinfo(TextView errorErrinfo) {
-        this.errorErrinfo = errorErrinfo;
-    }
-
     public WXSDKInstance getInstance() {
         return instance;
     }
@@ -132,5 +126,13 @@ public class WXSDKBean {
 
     public void setView(Object view) {
         this.view = view;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+
+    public String getErrorMsg() {
+        return errorMsg;
     }
 }

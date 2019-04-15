@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -54,6 +55,8 @@ import cc.weiui.framework.ui.weiui;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 public class Tabbar extends WXVContainer<ViewGroup> {
 
@@ -509,7 +512,6 @@ public class Tabbar extends WXVContainer<ViewGroup> {
         sdkBean.setProgress(view.findViewById(R.id.v_progress));
         sdkBean.setErrorView(view.findViewById(R.id.v_error));
         sdkBean.setErrorCodeView(view.findViewById(R.id.v_error_code));
-        sdkBean.setErrorErrinfo(view.findViewById(R.id.v_error_errinfo));
         sdkBean.setCache(barBean.getCache());
         sdkBean.setParams(barBean.getParams());
         sdkBean.setView(barBean.getView());
@@ -529,17 +531,20 @@ public class Tabbar extends WXVContainer<ViewGroup> {
             mViewPager.WXSDKList.put(barBean.getTabName(), sdkBean);
         }
         //
-        view.findViewById(R.id.v_error_info).setOnClickListener(v -> {
-            view.findViewById(R.id.v_error_errbox).setVisibility(View.VISIBLE);
-        });
-        view.findViewById(R.id.v_error_errclose).setOnClickListener(v -> {
-            view.findViewById(R.id.v_error_errbox).setVisibility(View.GONE);
-        });
-        view.findViewById(R.id.v_refresh).setOnClickListener(v -> {
-            view.findViewById(R.id.v_error).setVisibility(View.GONE);
-            reload(barBean.getTabName());
-        });
+        view.findViewById(R.id.v_refresh).setOnClickListener(v -> reload(barBean.getTabName()));
         view.findViewById(R.id.v_back).setVisibility(View.GONE);
+        TextView errorInfo = view.findViewById(R.id.v_error_info);
+        if (BuildConfig.DEBUG) {
+            view.findViewById(R.id.v_error_info).setOnClickListener(v -> {
+                if (getContext() instanceof PageActivity) {
+                    ((PageActivity) getContext()).showPageInfo(sdkBean.getErrorMsg());
+                }else{
+                    Toast.makeText(getContext(), "当前页面不支持此功能！", LENGTH_SHORT).show();
+                }
+            });
+        }else{
+            errorInfo.setText("抱歉！页面出现错误了");
+        }
         //
         if (getEvents().contains(weiuiConstants.Event.REFRESH_LISTENER)) {
             sdkBean.getSwipeRefresh().setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
@@ -612,6 +617,9 @@ public class Tabbar extends WXVContainer<ViewGroup> {
         if (sdkBean == null || !sdkBean.getType().equals("urlView")) {
             return;
         }
+        if (sdkBean.getErrorView() != null) {
+            sdkBean.getErrorView().setVisibility(View.GONE);
+        }
         String url = String.valueOf(sdkBean.getView());
         //
         if (sdkBean.getInstance() != null) {
@@ -657,7 +665,7 @@ public class Tabbar extends WXVContainer<ViewGroup> {
                 }
                 sdkBean.getErrorView().setVisibility(View.VISIBLE);
                 sdkBean.getErrorCodeView().setText(String.valueOf(errCode));
-                sdkBean.getErrorErrinfo().setText(msg);
+                sdkBean.setErrorMsg(msg);
             }
         });
         //

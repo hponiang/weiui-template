@@ -24,7 +24,7 @@ public class PageBean {
         temp.put("pageTitle", getPageTitle());
         temp.put("pageType", getPageType());
         temp.put("params", getParams());
-        temp.put("cache", getUrl());
+        temp.put("cache", getCache());
         temp.put("loading", isLoading());
         temp.put("swipeBack", isSwipeBack());
         temp.put("animated", isAnimated());

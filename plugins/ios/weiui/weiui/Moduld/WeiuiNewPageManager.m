@@ -608,6 +608,14 @@
     return self.viewData;
 }
 
+- (void)setPageDataValue:(NSString*)pageName key:(NSString*)key value:(NSString*)value
+{
+    NSMutableDictionary *data = self.pageData[pageName];
+    if (data) {
+        [data setObject:value forKey:key];
+    }
+}
+
 - (void)setTitle:(id) params callback:(WXModuleKeepAliveCallback) callback
 {
     WXMainViewController *vc = (WXMainViewController*)[DeviceUtil getTopviewControler];

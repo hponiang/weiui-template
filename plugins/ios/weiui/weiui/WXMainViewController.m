@@ -724,6 +724,7 @@ static int easyNavigationButtonTag = 8000;
 {
     self.url = url;
     self.URL = [NSURL URLWithString:_url];
+    [[WeiuiNewPageManager sharedIntstance] setPageDataValue:self.pageName key:@"url" value:self.url];
 }
 
 - (void)setResumeUrl:(NSString *)url

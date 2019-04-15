@@ -195,7 +195,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             _iconVisible = NO;
         }
         
-        _isRefreshListener = [events containsObject:@"refreshListener"];        
+        _isRefreshListener = [events containsObject:@"refreshListener"];
     }
     return self;
 }
@@ -799,6 +799,8 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             scoView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }
         
+        NSString *tempName = [NSString stringWithFormat: @"%@:%d", tabName, arc4random() % 100000];
+        
         WXMainViewController *vc = [[WXMainViewController alloc] init];
         vc.url = [DeviceUtil rewriteUrl:url];
         vc.cache = cache;
@@ -807,20 +809,20 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
         vc.pageName = tabName;
         vc.title = title;
         
-        #if DEBUG
+#if DEBUG
         vc.statusBlock = ^(NSString *status) {
-            if ([status isEqualToString:@"stop"]) {
-                [WeiuiNewPageManager removeTabViewDebug:tabName];
+            if ([status isEqualToString:@"destroy"]) {
+                [WeiuiNewPageManager removeTabViewDebug:tempName];
             }
         };
         
-        [WeiuiNewPageManager setTabViewDebug:tabName callback:^(id result, BOOL keepAlive) {
+        [WeiuiNewPageManager setTabViewDebug:tempName callback:^(id result, BOOL keepAlive) {
             NSString *url = [WXConvert NSString:result];
             if ([[DeviceUtil realUrl:[vc url]] hasPrefix:url]) {
                 [vc refreshPage];
             }
         }];
-        #endif
+#endif
         
         [_tabInstance.viewController addChildViewController:vc];
         [scoView addSubview:vc.view];
@@ -1162,9 +1164,9 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                 vc.pageName = [NSString stringWithFormat:@"TabPage-%d", (arc4random() % 100) + 1000];
                 vc.title = title;
                 
-                #if DEBUG
+#if DEBUG
                 vc.statusBlock = ^(NSString *status) {
-                    if ([status isEqualToString:@"stop"]) {
+                    if ([status isEqualToString:@"destroy"]) {
                         [WeiuiNewPageManager removeTabViewDebug:tabName];
                     }
                 };
@@ -1175,7 +1177,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                         [vc refreshPage];
                     }
                 }];
-                #endif
+#endif
                 
                 [_tabInstance.viewController addChildViewController:vc];
                 [scoView addSubview:vc.view];

@@ -67,6 +67,7 @@ import cc.weiui.framework.extend.module.weiuiAlertDialog;
 import cc.weiui.framework.extend.module.weiuiConstants;
 import cc.weiui.framework.extend.module.weiuiJson;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import cc.weiui.framework.extend.integration.glide.Glide;
@@ -121,6 +122,8 @@ public class PageActivity extends AppCompatActivity {
 
     private static final String TAG = "PageActivity";
 
+    private static boolean hideDev = false;
+
     private Handler mHandler = new Handler();
 
     public String identify;
@@ -137,8 +140,8 @@ public class PageActivity extends AppCompatActivity {
     private static List<ResultCallback<String>> tabViewDebug = new LinkedList<>();
 
     //模板部分
-    private ViewGroup mBody, mWeb, mAuto, mError, mErrorErrbox;
-    private TextView mErrorCode, mErrorErrinfo;
+    private ViewGroup mBody, mWeb, mAuto, mError;
+    private TextView mErrorCode;
     private ViewGroup mWeexView;
     private FrameLayout mWeexProgress;
     private ImageView mWeexProgressBg;
@@ -146,6 +149,8 @@ public class PageActivity extends AppCompatActivity {
     private ExtendWebView mWebView;
     private WXSDKInstance mWXSDKInstance;
     private BGASwipeBackHelper mSwipeBackHelper;
+    private String mErrorMsg;
+    private View mPageInfoView;
 
     //申请权限部分
     private PermissionUtils mPermissionInstance;
@@ -503,6 +508,9 @@ public class PageActivity extends AppCompatActivity {
                 KeyboardUtils.unregisterSoftInputChangedListener(this);
             }
         }
+        if (PageActivity.hideDev && BuildConfig.DEBUG && weiui.getActivityList().size() == 1) {
+            PageActivity.hideDev = false;
+        }
         identify = "";
         invoke("destroy", null);
         super.onDestroy();
@@ -522,17 +530,16 @@ public class PageActivity extends AppCompatActivity {
                 return;
             }
         }
+        if (mPageInfoView != null) {
+            mBody.removeView(mPageInfoView);
+            mPageInfoView = null;
+            return;
+        }
         if (!mPageInfo.isBackPressedClose()) {
             return;
         }
         if (mOnBackPressed != null) {
             if (mOnBackPressed.onBackPressed()) {
-                return;
-            }
-        }
-        if (mErrorErrbox != null) {
-            if (mErrorErrbox.getVisibility() == View.VISIBLE) {
-                mErrorErrbox.setVisibility(View.GONE);
                 return;
             }
         }
@@ -638,16 +645,13 @@ public class PageActivity extends AppCompatActivity {
         mBody = findViewById(R.id.v_body);
         mError = findViewById(R.id.v_error);
         mErrorCode = findViewById(R.id.v_error_code);
-        mErrorErrbox = findViewById(R.id.v_error_errbox);
-        mErrorErrinfo = findViewById(R.id.v_error_errinfo);
         //
-        findViewById(R.id.v_error_errclose).setOnClickListener(view -> mErrorErrbox.setVisibility(View.GONE));
         findViewById(R.id.v_refresh).setOnClickListener(view -> reload());
         findViewById(R.id.v_back).setOnClickListener(view -> finish());
         //
         TextView errorInfo = findViewById(R.id.v_error_info);
         if (BuildConfig.DEBUG) {
-            errorInfo.setOnClickListener(view -> mErrorErrbox.setVisibility(View.VISIBLE));
+            errorInfo.setOnClickListener(view -> showPageInfo(mErrorMsg));
         }else{
             errorInfo.setText("抱歉！页面出现错误了");
         }
@@ -1127,7 +1131,7 @@ public class PageActivity extends AppCompatActivity {
                 //
                 mError.setVisibility(View.VISIBLE);
                 mErrorCode.setText(String.valueOf(errCode));
-                mErrorErrinfo.setText(errMsg);
+                mErrorMsg = errMsg;
             }
         };
     }
@@ -1680,6 +1684,9 @@ public class PageActivity extends AppCompatActivity {
         }else{
             deBugButton.setBackgroundResource(R.drawable.debug_button_connect);
         }
+        if (PageActivity.hideDev) {
+            deBugButton.setVisibility(View.GONE);
+        }
         deBugButton.setOnClickListener(deBugClickListener);
         FloatDragView.Builder mFloatDragView = new FloatDragView.Builder();
         mFloatDragView.setActivity(this)
@@ -1709,6 +1716,9 @@ public class PageActivity extends AppCompatActivity {
         }else if (status == 2) {
             deBugButton.setBackgroundResource(R.drawable.debug_button_connect);
             weiuiCommon.setVariate("__deBugSocket:Status", 2);
+        }else if (status == 3) {
+            deBugButton.setVisibility(View.GONE);
+            return;
         }
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(deBugButtonSize, deBugButtonSize);
         int left = weiuiParse.parseInt(weiuiCommon.getVariate("__pageActivity::FloatDrag:Left"), ScreenUtils.getScreenWidth() - deBugButtonSize);
@@ -1789,11 +1799,13 @@ public class PageActivity extends AppCompatActivity {
         List<ActionItem> mActionItem = new ArrayList<>();
         mActionItem.add(new ActionItem(1, weiuiCommon.getVariateInt("__deBugSocket:Status") == 1 ? "WiFi真机同步 [已连接]" : "WiFi真机同步"));
         mActionItem.add(new ActionItem(2, deBugKeepScreen.contentEquals("ON") ? "屏幕常亮 [已开启]" : "屏幕常亮"));
-        mActionItem.add(new ActionItem(3, "扫一扫"));
-        mActionItem.add(new ActionItem(4, "刷新"));
-        mActionItem.add(new ActionItem(5, "重启APP"));
+        mActionItem.add(new ActionItem(3, "页面信息"));
+        mActionItem.add(new ActionItem(4, "扫一扫"));
+        mActionItem.add(new ActionItem(5, "刷新"));
+        mActionItem.add(new ActionItem(6, "隐藏DEV"));
+        mActionItem.add(new ActionItem(7, "重启APP"));
         if ("true".equals(weiuiCommon.getVariateStr("configDataIsDist"))) {
-            mActionItem.add(new ActionItem(6, "清除热更新数据"));
+            mActionItem.add(new ActionItem(8, "清除热更新数据"));
 
         }
         ActionSheet.createBuilder(this, getSupportFragmentManager())
@@ -1848,6 +1860,10 @@ public class PageActivity extends AppCompatActivity {
                                 break;
                             }
                             case 2: {
+                                showPageInfo(JSON.toJSONString(getPageInfo().toMap(), true));
+                                break;
+                            }
+                            case 3: {
                                 PageActivity.startScanerCode(PageActivity.this, "{}", new JSCallback() {
                                     @Override
                                     public void invoke(Object data) {
@@ -1894,11 +1910,38 @@ public class PageActivity extends AppCompatActivity {
                                 });
                                 break;
                             }
-                            case 3: {
+                            case 4: {
                                 reload();
                                 break;
                             }
-                            case 4: {
+                            case 5: {
+                                JSONObject newJson = new JSONObject();
+                                newJson.put("title", "隐藏DEV");
+                                newJson.put("message", "确定要隐藏DEV漂浮按钮吗？\n隐藏按钮将在下次启动APP时显示。");
+                                weiuiAlertDialog.confirm(weiui.getActivityList().getLast(), newJson, new JSCallback() {
+                                    @Override
+                                    public void invoke(Object data) {
+                                        Map<String, Object> retData = weiuiMap.objectToMap(data);
+                                        if (weiuiParse.parseStr(retData.get("status")).equals("click") && weiuiParse.parseStr(retData.get("title")).equals("确定")) {
+                                            PageActivity.hideDev = true;
+                                            List<Activity> activityList = weiui.getActivityList();
+                                            for (int i = activityList.size() - 1; i >= 0; --i) {
+                                                Activity activity = activityList.get(i);
+                                                if (activity instanceof PageActivity) {
+                                                    ((PageActivity) activity).deBugButtonRefresh(3);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void invokeAndKeepAlive(Object data) {
+
+                                    }
+                                });
+                                break;
+                            }
+                            case 6: {
                                 JSONObject newJson = new JSONObject();
                                 newJson.put("title", "热重启APP");
                                 newJson.put("message", "确认要关闭所有页面热重启APP吗？");
@@ -1918,7 +1961,7 @@ public class PageActivity extends AppCompatActivity {
                                 });
                                 break;
                             }
-                            case 5: {
+                            case 7: {
                                 weiuiCommon.setVariate("configDataIsDist", "clear");
                                 weiuiCommon.setVariate("configDataNoUpdate", "clear");
                                 weiui.reboot();
@@ -2086,4 +2129,26 @@ public class PageActivity extends AppCompatActivity {
             }
         }
     };
+
+    /**
+     * 显示页面详情
+     */
+    public void showPageInfo(String context) {
+        if (mPageInfoView != null) {
+            ((TextView) mPageInfoView.findViewById(R.id.v_info)).setText(context);
+            return;
+        }
+        mPageInfoView = PageActivity.this.getLayoutInflater().inflate(R.layout.activity_page_info, null);
+        ((TextView) mPageInfoView.findViewById(R.id.v_info)).setText(context);
+        if ("immersion".equals(mPageInfo.getStatusBarType())) {
+            mPageInfoView.setPadding(0, weiuiCommon.getStatusBarHeight(PageActivity.this), 0, 0);
+        } else {
+            mPageInfoView.setPadding(0, 0, 0, 0);
+        }
+        mPageInfoView.findViewById(R.id.v_close).setOnClickListener(v -> {
+            mBody.removeView(mPageInfoView);
+            mPageInfoView = null;
+        });
+        mBody.addView(mPageInfoView);
+    }
 }

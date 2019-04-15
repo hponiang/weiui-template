@@ -38,6 +38,7 @@ static NSMutableDictionary *tabViewDebug;
 - (void)goDesktop;
 - (void)removePageData:(NSString*)pageName;
 - (void)setPageData:(NSString*)pageName vc:(WXMainViewController *)vc;
+- (void)setPageDataValue:(NSString*)pageName key:(NSString*)key value:(NSString*)value;
 - (NSDictionary *)getViewData;
 
 - (void)setTitle:(id) params callback:(WXModuleKeepAliveCallback) callback;
