@@ -610,9 +610,13 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                 [self.tabView addSubview:dividerView];
             }
             
+            CGFloat labW = MAX(btn.imageView.frame.size.width + 10, titleWidth);
+            if (_iconVisible == YES && _iconGravity == 1 && btn.imageView.frame.size.width > 0) {
+                labW = btn.imageView.frame.size.width + 5;
+            }
             //消息数量
             NSInteger labWitdh = message >= 100 ? 25 : message >= 10 ? 20 : 15;
-            CGRect labRect = CGRectMake((tabWidth + MAX(btn.imageView.frame.size.width, titleWidth)) / 2 - 5, 5, labWitdh, 15);
+            CGRect labRect = CGRectMake((tabWidth + labW) / 2 - 5, 3, labWitdh, 15);
             if ([_ktabType isEqualToString:@"slidingTop"]) {
                 labRect.origin.x -= 5;
                 labRect.origin.y += 5;
@@ -631,7 +635,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             [btn addSubview:msgLab];
             
             //未读红点
-            CGRect dotRect = CGRectMake((tabWidth + MAX(btn.imageView.frame.size.width, titleWidth)) / 2 - 5, 5, 6, 6);
+            CGRect dotRect = CGRectMake((tabWidth + labW) / 2 - 5, 3, 6, 6);
             if ([_ktabType isEqualToString:@"slidingTop"]) {
                 dotRect.origin.x -= 5;
                 dotRect.origin.y += 5;

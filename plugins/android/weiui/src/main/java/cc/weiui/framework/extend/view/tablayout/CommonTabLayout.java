@@ -41,6 +41,7 @@ import cc.weiui.framework.extend.integration.iconify.widget.IconTextView;
 
 import cc.weiui.framework.R;
 import cc.weiui.framework.extend.module.weiuiColorUtils;
+import cc.weiui.framework.extend.module.weiuiParse;
 import cc.weiui.framework.extend.view.tablayout.listener.CustomTabEntity;
 import cc.weiui.framework.extend.view.tablayout.listener.OnTabSelectListener;
 import cc.weiui.framework.extend.view.tablayout.utils.FragmentChangeManager;
@@ -1035,6 +1036,7 @@ public class CommonTabLayout extends FrameLayout implements ValueAnimator.Animat
                 if (!iconUrl.contains("#") || !iconUrl.contains("rgb")) {
                     iconUrl += " " + weiuiColorUtils.int2Hex(isCurrent ? mTextSelectColor : mTextUnselectColor);
                 }
+                icontext.setAutoSize(true);
                 icontext.setText("{" + iconUrl + "}");
                 return;
             }
@@ -1058,7 +1060,7 @@ public class CommonTabLayout extends FrameLayout implements ValueAnimator.Animat
     private int getImageViewIntrinsicHeight(CustomTabEntity tabEntity) {
         String iconUrl = tabEntity.getTabSelectedIconUrl();
         if (iconUrl != null) {
-            return imageViewHeight.get(iconUrl);
+            return weiuiParse.parseInt(imageViewHeight.get(iconUrl));
         }else{
             return mContext.getResources().getDrawable(tabEntity.getTabSelectedIcon()).getIntrinsicHeight();
         }
