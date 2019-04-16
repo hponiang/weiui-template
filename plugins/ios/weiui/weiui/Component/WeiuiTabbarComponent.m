@@ -627,7 +627,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
             msgLab.textAlignment = NSTextAlignmentCenter;
             msgLab.textColor = [UIColor whiteColor];
             msgLab.adjustsFontSizeToFitWidth = YES;
-            msgLab.text = message > 99 ? @"99+" : [NSString stringWithFormat:@"%ld", message];
+            msgLab.text = message > 99 ? @"99+" : [NSString stringWithFormat:@"%ld", (long)message];
             msgLab.layer.cornerRadius = 7.5f;
             msgLab.layer.masksToBounds = YES;
             msgLab.tag = TabItemMessageTag + i;
@@ -867,7 +867,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
         
         vc.isTabbarChildSelected = YES;
         vc.isTabbarChildView = YES;
-        [_lifeTabPages setObject:vc forKey:[NSString stringWithFormat:@"%ld", _selectedIndex]];
+        [_lifeTabPages setObject:vc forKey:[NSString stringWithFormat:@"%ld", (long)_selectedIndex]];
     }
 }
 
@@ -938,7 +938,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
 {
     //重现
     if (_selectedIndex < _tabPages.count) {
-        NSString *key = [NSString stringWithFormat:@"%ld", _selectedIndex];
+        NSString *key = [NSString stringWithFormat:@"%ld", (long)_selectedIndex];
         WXMainViewController *vc = _lifeTabPages[key];
         if (vc) {
             vc.isTabbarChildSelected = YES;
@@ -948,7 +948,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
     
     //消失
     if (_lastSelectedIndex < _tabPages.count) {
-        NSString *key = [NSString stringWithFormat:@"%ld", _lastSelectedIndex];
+        NSString *key = [NSString stringWithFormat:@"%ld", (long)_lastSelectedIndex];
         WXMainViewController *vc = _lifeTabPages[key];
         if (vc) {
             vc.isTabbarChildSelected = NO;
@@ -1035,7 +1035,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                 NSInteger labWitdh = num >= 100 ? 25 : num >= 10 ? 20 : 15;
                 UILabel *msgLab = (UILabel*)[_tabView viewWithTag:TabItemMessageTag + i];
                 msgLab.frame = CGRectMake(msgLab.frame.origin.x, msgLab.frame.origin.y, labWitdh, msgLab.frame.size.height);
-                msgLab.text = num > 99 ? @"99+" : [NSString stringWithFormat:@"%ld", num];
+                msgLab.text = num > 99 ? @"99+" : [NSString stringWithFormat:@"%ld", (long)num];
                 msgLab.hidden = NO;
                 break;
             }
