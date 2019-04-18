@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.ValueCallback;
 
 import com.alibaba.fastjson.JSONObject;
 import com.taobao.weex.WXSDKInstance;
@@ -125,6 +126,29 @@ public class WebView extends WXVContainer<ViewGroup> {
                 }
             };
             webTimer.schedule(webTask, 1000, 1000);
+            //
+            v_webview.setInvalidateListener(() -> {
+                if (webTimer != null) {
+                    webTimer.cancel();
+                    webTimer = null;
+                    webTask = null;
+                    webHeight = -1f;
+                }
+                float tempHeight = v_webview.getContentHeight() * v_webview.getScale();
+                if (tempHeight != webHeight) {
+                    webHeight = tempHeight;
+                    Map<String, Object> retData = new HashMap<>();
+                    retData.put("height", weiuiScreenUtils.weexDp2px(getInstance(), webHeight));
+                    fireEvent(weiuiConstants.Event.HEIGHT_CHANGED, retData);
+                }
+            });
+        }
+        if (getEvents().contains(weiuiConstants.Event.RECEIVE_MESSAGE)) {
+            v_webview.setSendMessage(value -> {
+                Map<String, Object> retData = new HashMap<>();
+                retData.put("message", value);
+                fireEvent(weiuiConstants.Event.RECEIVE_MESSAGE, retData);
+            });
         }
     }
 
@@ -214,6 +238,17 @@ public class WebView extends WXVContainer<ViewGroup> {
     public void setUrl(String url){
         if (v_webview != null) {
             v_webview.loadUrl(url);
+        }
+    }
+
+    /**
+     * 设置javaScript
+     * @param script
+     */
+    @JSMethod
+    public void setJavaScript(String script){
+        if (v_webview != null) {
+            v_webview.loadUrl("javascript:(function(){" + script + "})();");
         }
     }
 

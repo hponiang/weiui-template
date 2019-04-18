@@ -551,6 +551,16 @@ public class WeexModule extends WXModule {
         myApp().clearCacheAjax(mWXSDKInstance.getContext());
     }
 
+    /**
+     * 获取图片尺寸
+     * @param url
+     * @param callback
+     */
+    @JSMethod
+    public void getImageSize(String url, JSCallback callback) {
+        myApp().getImageSize(mWXSDKInstance.getContext(), url, callback);
+    }
+
     /****************************************************************************************/
     /****************************************************************************************/
 

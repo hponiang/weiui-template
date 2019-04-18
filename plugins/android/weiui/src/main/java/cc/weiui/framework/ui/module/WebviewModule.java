@@ -113,4 +113,11 @@ public class WebviewModule {
             weiui.HCallback(callback, canForward);
         }
     }
+
+    /**
+     * 网页向组件发送参数
+     */
+    public static void sendMessage(ExtendWebView webView, Object params){
+        webView.sendMessage(params);
+    }
 }

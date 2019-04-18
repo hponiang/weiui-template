@@ -21,9 +21,10 @@
 #import "WeiuiVersion.h"
 #import "DeviceUtil.h"
 #import "scanViewController.h"
+#import "CustomWeexSDKManager.h"
+#import "UIImage+itdCategory.h"
 #import <UIKit/UIKit.h>
 #import <AdSupport/AdSupport.h>
-#import "CustomWeexSDKManager.h"
 
 #define iPhoneXSeries (([[UIApplication sharedApplication] statusBarFrame].size.height == 44.0f) ? (YES):(NO))
 
@@ -71,6 +72,19 @@ WX_EXPORT_METHOD(@selector(clearCacheAjax))
 - (void)clearCacheAjax
 {
     [[WeiuiAjaxManager sharedIntstance] clearCacheAjax];
+}
+
+#pragma mark 获取图片尺寸
+
+WX_EXPORT_METHOD(@selector(getImageSize:callback:))
+
+- (void)getImageSize:(NSString *)url callback:(WXModuleCallback)callback
+{
+    if (url != nil && callback != nil) {
+        [UIImage itd_sizeOfImageWithUrlStr:url sizeGetDo:^(CGSize size) {
+            callback(@{@"status":@"success", @"width":@(size.width), @"height":@(size.height)});
+        }];
+    }
 }
 
 #pragma mark 确认对话框

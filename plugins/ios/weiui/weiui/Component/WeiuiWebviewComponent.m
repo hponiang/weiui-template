@@ -32,6 +32,7 @@
 @property (nonatomic, assign) BOOL isScrollEnabled;
 @property (nonatomic, assign) BOOL isEnableApi;
 @property (nonatomic, assign) BOOL isHeightChanged;
+@property (nonatomic, assign) BOOL isReceiveMessage;
 @property (nonatomic, strong) JSCallCommon* JSCall;
 @property (strong, nonatomic) YHWebViewProgressView *progressView;
 
@@ -43,6 +44,7 @@
 
 WX_EXPORT_METHOD(@selector(setContent:))
 WX_EXPORT_METHOD(@selector(setUrl:))
+WX_EXPORT_METHOD(@selector(setJavaScript:))
 WX_EXPORT_METHOD(@selector(setProgressbarVisibility:))
 WX_EXPORT_METHOD(@selector(setScrollEnabled:))
 WX_EXPORT_METHOD(@selector(canGoBack:))
@@ -62,6 +64,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
         _isScrollEnabled = YES;
         _isEnableApi = YES;
         _isHeightChanged = [events containsObject:@"heightChanged"];
+        _isReceiveMessage = [events containsObject:@"receiveMessage"];
         
         for (NSString *key in styles.allKeys) {
             [self dataKey:key value:styles[key] isUpdate:NO];
@@ -340,13 +343,18 @@ WX_EXPORT_METHOD(@selector(goForward:))
 - (void)setUrl:(NSString*)urlStr
 {
     WeiuiWebView *webView = (WeiuiWebView*) self.view;
-    if (![urlStr hasPrefix:@"http://"] && ![urlStr hasPrefix:@"https://"]) {
-        urlStr = [NSString stringWithFormat:@"http://%@", urlStr];
-    }
     _url = urlStr;
     NSURL *url = [NSURL URLWithString:urlStr];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [webView loadRequest:request];
+}
+
+//设置JavaScript
+- (void)setJavaScript:(NSString*)script
+{
+    WeiuiWebView *webView = (WeiuiWebView*) self.view;
+    NSString *javaScript = [@";(function(){?})();" stringByReplacingOccurrencesOfString:@"?" withString:script];
+    [webView evaluateJavaScript:javaScript completionHandler:nil];
 }
 
 //是否显示进度条
@@ -400,6 +408,14 @@ WX_EXPORT_METHOD(@selector(goForward:))
         [webView goForward];
     }
     callback(@(webView.canGoForward), NO);
+}
+
+//网页向组件发送参数
+- (void)sendMessage:(id) message
+{
+    if (_isReceiveMessage) {
+        [self fireEvent:@"receiveMessage" params:@{@"message": message}];
+    }
 }
 
 

@@ -51,6 +51,7 @@ public class ExtendWebView extends WebView {
     private ProgressBar progressbar;
     private TitleCall mTitleCall;
     private StatusCall mStatusCall;
+    private InvalidateListener mInvalidateListener;
     private boolean progressbarVisibility;
     private String userAgent;
 
@@ -59,6 +60,7 @@ public class ExtendWebView extends WebView {
     private static final int REQUEST_CHOOSE = 2;
     private ValueCallback<Uri> mUploadMessage;
     private ValueCallback<Uri[]> mUploadMessagesAboveL;
+    private ValueCallback<Object> mSendMessage;
     private Uri cameraUri;
 
     private WebChromeClient mWebChromeClient;
@@ -256,6 +258,14 @@ public class ExtendWebView extends WebView {
         super.onScrollChanged(l, t, oldl, oldt);
     }
 
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        if (mInvalidateListener != null) {
+            mInvalidateListener.onCall();
+        }
+    }
+
     /**
      * 【图片上传部分】检查SD卡是否挂载
      * @param context
@@ -425,6 +435,31 @@ public class ExtendWebView extends WebView {
         }
         mUploadMessagesAboveL.onReceiveValue(results);
         mUploadMessagesAboveL = null;
+    }
+
+    /**
+     * 监听
+     * @param mInvalidateListener
+     */
+    public void setInvalidateListener(InvalidateListener mInvalidateListener) {
+        this.mInvalidateListener = mInvalidateListener;
+    }
+
+    public interface InvalidateListener {
+        void onCall();
+    }
+
+    /**
+     * 监听网页向组件发送参数
+     * @param mSendMessage
+     */
+    public void setSendMessage(ValueCallback<Object> mSendMessage) {
+        this.mSendMessage = mSendMessage;
+    }
+    public void sendMessage(Object params) {
+        if (mSendMessage != null) {
+            mSendMessage.onReceiveValue(params);
+        }
     }
 
     /**

@@ -153,7 +153,8 @@
                   [fname isEqualToString:@"canGoForward"] ||
                   [fname isEqualToString:@"goForward"] ||
                   [fname isEqualToString:@"setProgressbarVisibility"] ||
-                  [fname isEqualToString:@"setScrollEnabled"])) {
+                  [fname isEqualToString:@"setScrollEnabled"] ||
+                  [fname isEqualToString:@"sendMessage"])) {
                 continue;
             }
         }

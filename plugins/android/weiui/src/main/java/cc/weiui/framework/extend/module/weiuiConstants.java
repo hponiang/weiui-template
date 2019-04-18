@@ -66,6 +66,9 @@ public class weiuiConstants {
 
         //高度发生改变
         String HEIGHT_CHANGED = "heightChanged";
+
+        //接收网页通信
+        String RECEIVE_MESSAGE = "receiveMessage";
     }
 
 }

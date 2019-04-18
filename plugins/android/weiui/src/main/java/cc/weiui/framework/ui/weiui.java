@@ -6,8 +6,11 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -23,6 +26,11 @@ import cc.weiui.framework.extend.adapter.DrawableLoader;
 import cc.weiui.framework.extend.adapter.ImageAdapter;
 import cc.weiui.framework.extend.annotation.ModuleEntry;
 import cc.weiui.framework.extend.bean.PageBean;
+import cc.weiui.framework.extend.integration.glide.Glide;
+import cc.weiui.framework.extend.integration.glide.load.engine.DiskCacheStrategy;
+import cc.weiui.framework.extend.integration.glide.request.RequestOptions;
+import cc.weiui.framework.extend.integration.glide.request.target.SimpleTarget;
+import cc.weiui.framework.extend.integration.glide.request.transition.Transition;
 import cc.weiui.framework.extend.integration.iconify.Iconify;
 import cc.weiui.framework.extend.integration.iconify.fonts.IoniconsModule;
 
@@ -38,7 +46,9 @@ import java.util.Map;
 
 import cc.weiui.framework.extend.integration.swipebacklayout.BGAKeyboardUtil;
 import cc.weiui.framework.extend.integration.swipebacklayout.BGASwipeBackHelper;
+import cc.weiui.framework.extend.integration.xutils.x;
 import cc.weiui.framework.extend.module.rxtools.rxtoolsModule;
+import cc.weiui.framework.extend.module.rxtools.tool.RxEncryptTool;
 import cc.weiui.framework.extend.module.utilcode.util.DeviceUtils;
 import cc.weiui.framework.extend.module.utilcode.util.FileUtils;
 import cc.weiui.framework.extend.module.utilcode.utilcodeModule;
@@ -1222,6 +1232,29 @@ public class weiui {
      */
     public void clearCacheAjax(Context context) {
         new weiuiIhttp.clearCache("ajax").start();
+    }
+
+    /**
+     * 获取图片尺寸
+     * @param context
+     * @param url
+     * @param callback
+     */
+    public void getImageSize(Context context, String url, JSCallback callback) {
+        Glide.with(context)
+                .asBitmap()
+                .load(url)
+                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL))
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("status", "success");
+                        data.put("width", resource.getWidth());
+                        data.put("height", resource.getHeight());
+                        callback.invoke(data);
+                    }
+                });
     }
 
     /****************************************************************************************/

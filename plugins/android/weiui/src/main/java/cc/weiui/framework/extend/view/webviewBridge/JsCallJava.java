@@ -168,6 +168,7 @@ public class JsCallJava {
                                     break;
 
                                 case "_P":
+                                    values[k + 1] = temp;
                                     break;
                             }
                             k++;

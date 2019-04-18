@@ -494,6 +494,15 @@ public class WebModule {
         myApp().clearCacheAjax(webView.getContext());
     }
 
+    /**
+     * 获取图片尺寸
+     * @param url
+     * @param callback
+     */
+    public static void getImageSize(ExtendWebView webView, String url, JsCallback callback) {
+        myApp().getImageSize(webView.getContext(), url, weiui.MCallback(callback));
+    }
+
     /****************************************************************************************/
     /****************************************************************************************/
 
