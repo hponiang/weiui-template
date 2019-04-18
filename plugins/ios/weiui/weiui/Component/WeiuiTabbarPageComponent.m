@@ -21,7 +21,7 @@
         _selectedIcon = @"";
         _message = 0;
         _dot = NO;
-
+        
         for (NSString *key in styles.allKeys) {
             [self dataKey:key value:styles[key] isUpdate:NO];
         }
