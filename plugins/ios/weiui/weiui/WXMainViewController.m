@@ -12,6 +12,7 @@
 #import "weiuiNewPageManager.h"
 #import "CustomWeexSDKManager.h"
 #import "DeviceUtil.h"
+#import "Config.h"
 #import "SGEasyButton.h"
 #import "SDWebImageDownloader.h"
 #import "UINavigationController+FDFullscreenPopGesture.h"
@@ -363,7 +364,11 @@ static int easyNavigationButtonTag = 8000;
 - (void)loadWeexPage
 {
     //缓存文件
-    if (self.cache > 0) {
+    NSInteger cache = self.cache;
+    if ([_url hasPrefix:@"file://"]) {
+        cache = 0;
+    }
+    if (cache > 0) {
         BOOL isCache = NO;
         if ([WeexSDKManager sharedIntstance].cacheData[_url]) {
             //存在缓存文件，则判断是否过期
@@ -413,8 +418,8 @@ static int easyNavigationButtonTag = 8000;
                     NSDictionary *saveDic = @{kCacheUrl:fullPath, kCacheTime:@(time)};
                     [[WeexSDKManager sharedIntstance].cacheData setObject:saveDic forKey:ws.url];
                     
+                    ws.URL = [NSURL fileURLWithPath:fullPath];
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        ws.URL = [NSURL fileURLWithPath:fullPath];
                         [ws renderView];
                     });
                 }
@@ -422,7 +427,7 @@ static int easyNavigationButtonTag = 8000;
             [downloadTask resume];
         }
     } else {
-        self.URL = [NSURL URLWithString:_url];
+        self.URL = [NSURL URLWithString:[Config verifyFile:_url]];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self renderView];
         });
@@ -723,7 +728,7 @@ static int easyNavigationButtonTag = 8000;
 - (void)setHomeUrl:(NSString*)url
 {
     self.url = url;
-    self.URL = [NSURL URLWithString:_url];
+    self.URL = [NSURL URLWithString:[Config verifyFile:_url]];
     [[WeiuiNewPageManager sharedIntstance] setPageDataValue:self.pageName key:@"url" value:self.url];
 }
 

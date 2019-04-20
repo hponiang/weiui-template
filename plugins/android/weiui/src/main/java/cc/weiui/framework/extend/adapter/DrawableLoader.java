@@ -23,6 +23,7 @@ import cc.weiui.framework.extend.integration.glide.load.engine.DiskCacheStrategy
 import cc.weiui.framework.extend.integration.glide.request.RequestOptions;
 import cc.weiui.framework.extend.integration.glide.request.target.SimpleTarget;
 import cc.weiui.framework.extend.integration.glide.request.transition.Transition;
+import cc.weiui.framework.extend.module.weiuiBase;
 import cc.weiui.framework.extend.module.weiuiHtml;
 
 public class DrawableLoader implements IDrawableLoader {
@@ -53,6 +54,7 @@ public class DrawableLoader implements IDrawableLoader {
                 }
             }
 
+            tempUrl = weiuiBase.config.verifyFile(tempUrl);
             try {
                 RequestBuilder<Drawable> myLoad;
                 if (tempUrl.startsWith("file://assets/")) {

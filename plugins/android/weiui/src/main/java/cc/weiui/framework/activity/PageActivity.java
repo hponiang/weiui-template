@@ -49,6 +49,7 @@ import cc.weiui.framework.extend.integration.glide.request.RequestOptions;
 import cc.weiui.framework.extend.integration.glide.request.target.Target;
 import cc.weiui.framework.extend.integration.iconify.widget.IconTextView;
 import cc.weiui.framework.extend.module.utilcode.util.KeyboardUtils;
+import cc.weiui.framework.extend.module.weiuiBase;
 import cc.weiui.framework.extend.module.weiuiScreenUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
@@ -1061,7 +1062,11 @@ public class PageActivity extends AppCompatActivity {
      * Weex
      */
     private void weexRenderPage() {
-        weiuiPage.cachePage(mPageInfo.getUrl(), mPageInfo.getCache(), mPageInfo.getParams(), new weiuiPage.OnCachePageCallback() {
+        long cache = mPageInfo.getCache();
+        if (mPageInfo.getUrl().startsWith("file://")) {
+            cache = 0;
+        }
+        weiuiPage.cachePage(mPageInfo.getUrl(), cache, mPageInfo.getParams(), new weiuiPage.OnCachePageCallback() {
             @Override
             public void success(Map<String, Object> resParams, String resData) {
                 mWXSDKInstance.render(mPageInfo.getPageName(), resData, resParams, null, WXRenderStrategy.APPEND_ASYNC);
@@ -1069,7 +1074,8 @@ public class PageActivity extends AppCompatActivity {
 
             @Override
             public void error(Map<String, Object> resParams) {
-                mWXSDKInstance.renderByUrl(mPageInfo.getPageName(), mPageInfo.getUrl(), resParams, null, WXRenderStrategy.APPEND_ASYNC);
+                String tempUrl = weiuiBase.config.verifyFile(mPageInfo.getUrl());
+                mWXSDKInstance.renderByUrl(mPageInfo.getPageName(), tempUrl, resParams, null, WXRenderStrategy.APPEND_ASYNC);
             }
 
             @Override
@@ -1959,7 +1965,7 @@ public class PageActivity extends AppCompatActivity {
                                     public void invoke(Object data) {
                                         Map<String, Object> retData = weiuiMap.objectToMap(data);
                                         if (weiuiParse.parseStr(retData.get("status")).equals("click") && weiuiParse.parseStr(retData.get("title")).equals("确定")) {
-                                            weiui.reboot();
+                                            weiuiBase.cloud.reboot();
                                         }
                                     }
 
@@ -1971,9 +1977,7 @@ public class PageActivity extends AppCompatActivity {
                                 break;
                             }
                             case 7: {
-                                weiuiCommon.setVariate("configDataIsDist", "clear");
-                                weiuiCommon.setVariate("configDataNoUpdate", "clear");
-                                weiui.reboot();
+                                weiuiBase.cloud.clearUpdate();
                                 break;
                             }
                         }

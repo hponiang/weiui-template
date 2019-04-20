@@ -17,9 +17,11 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSMutableDictionary *) getObject:(NSString*)key;
 + (NSString *) getHome;
 + (NSString *) getHomeParams:(NSString*)key defaultVal:(NSString *)defaultVal;
-+ (BOOL) isConfigDataIsDist;
++ (NSString *) verifyFile:(NSString*)originalUrl;
++ (BOOL) verifyIsUpdate;
 
-+ (NSString *) getPath:(NSString*)name;
++ (NSString *) getResourcePath:(NSString*)name;
++ (NSString *) getSandPath:(NSString*)name;
 + (NSInteger) getLocalVersion;
 + (NSString*)getLocalVersionName;
 + (BOOL) isFileExists:(NSString*)path;

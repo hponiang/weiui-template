@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -18,6 +19,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,34 +54,27 @@ public class weiuiBase {
      */
     public static class config {
 
-        private static boolean configDataIsDist;
         private static JSONObject configData;
+        private static JSONArray verifyDir;
 
         /**
          * 读取配置
          * @return
          */
         public static JSONObject get() {
-            if (weiuiCommon.getVariateStr("configDataIsDist").equals("clear")) {
-                weiuiCommon.setVariate("configDataIsDist", "");
-                FileUtils.deleteDir(weiui.getApplication().getExternalFilesDir("dist"));
-                FileUtils.deleteDir(weiui.getApplication().getExternalFilesDir("update"));
-                clear();
-            }
             if (configData == null) {
-                File tempDir = weiui.getApplication().getExternalFilesDir("dist");
-                File lockFile = new File(tempDir, weiuiCommon.getLocalVersion(weiui.getApplication()) + ".lock");
-                File jsonFile = new File(tempDir, "config.json");
-                if (lockFile.exists() && lockFile.isFile() && jsonFile.exists() && jsonFile.isFile()) {
+                String temp = "file://assets/weiui/config.json";
+                String vTemp = verifyFile(temp);
+                if (!temp.equals(vTemp)) {
+                    vTemp = vTemp.substring(7);
                     try {
-                        FileInputStream fis = new FileInputStream(jsonFile);
+                        FileInputStream fis = new FileInputStream(new File(vTemp));
                         int length = fis.available();
                         byte [] buffer = new byte[length];
                         int read = fis.read(buffer);
                         fis.close();
                         if (read != -1) {
                             weiuiCommon.setVariate("configDataIsDist", "true");
-                            configDataIsDist = true;
                             configData = weiuiJson.parseObject(new String(buffer));
                             return configData;
                         }
@@ -91,9 +89,8 @@ public class weiuiBase {
          * 清除配置
          */
         public static void clear() {
-            weiuiCommon.setVariate("configDataIsDist", "false");
-            configDataIsDist = false;
             configData = null;
+            verifyDir = null;
         }
 
         /**
@@ -122,15 +119,6 @@ public class weiuiBase {
         public static String getHome() {
             String homePage = weiuiJson.getString(get(), "homePage");
             if (homePage.length() == 0) {
-                if (configDataIsDist) {
-                    File tempDir = weiui.getApplication().getExternalFilesDir("dist");
-                    File indexFile = new File(tempDir, "index.js");
-                    if (indexFile.exists() && indexFile.isFile()) {
-                        homePage = "file://" + indexFile.getPath();
-                    }
-                }
-            }
-            if (homePage.length() == 0) {
                 homePage = "file://assets/weiui/index.js";
             }
             return homePage;
@@ -151,134 +139,122 @@ public class weiuiBase {
         }
 
         /**
-         * 判断是否
+         * 转换修复文件路径
+         * @param originalUrl
          * @return
          */
-        public static boolean isConfigDataIsDist() {
-            return configDataIsDist;
-        }
-    }
+        public static String verifyFile(String originalUrl) {
+            if (originalUrl == null ||
+                    originalUrl.startsWith("http://") ||
+                    originalUrl.startsWith("https://") ||
+                    originalUrl.startsWith("ftp://") ||
+                    originalUrl.startsWith("data:image/")) {
+                return originalUrl;
+            }
+            String rootPath = "file://assets/weiui";
+            if (!originalUrl.startsWith(rootPath)) {
+                return originalUrl;
+            }
+            rootPath+= "/";
 
-    /**
-     * 升级类
-     */
-    public static class update {
+            String originalPath = originalUrl.replace(rootPath, "");
+            File path = weiui.getApplication().getExternalFilesDir("update");
+            if (path == null) {
+                return originalUrl;
+            }
 
-        private static String errorStr;
-        private static boolean copySuccess;
-
-        /**
-         * 解压文件
-         * @param zipFile
-         * @param unDir
-         * @param callback
-         */
-        public static void zipToDist(File zipFile, File unDir, Callback callback) {
-            try {
-                File distDir = weiui.getApplication().getExternalFilesDir("dist");
-                List<File> unZipLists = ZipUtils.unzipFile(zipFile, unDir);
-                weiuiToDist(new Callback() {
-                    @Override
-                    public void success() {
-                        for (File fileRow : unZipLists) {
-                            if (fileRow.isFile()) {
-                                FileUtils.copyFile(fileRow, new File(distDir, fileRow.getPath().replaceFirst(unDir.getPath(), "")), () -> true);
-                            }
-                        }
-                        FileUtils.deleteFile(zipFile);
-                        FileUtils.deleteDir(unDir);
-                        if (callback != null) callback.success();
+            if (verifyDir == null) {
+                verifyDir = new JSONArray();
+                File[] files = path.listFiles();
+                List<File> fileList = Arrays.asList(files);
+                Collections.sort(fileList, (o1, o2) -> {
+                    if (o1.isDirectory() && o2.isFile()) {
+                        return -1;
+                    }else if (o1.isFile() && o2.isDirectory()) {
+                        return 1;
                     }
-
-                    @Override
-                    public void error(String error) {
-                        if (callback != null) callback.error(error);
-                    }
+                    return o1.getName().compareTo(o2.getName());
                 });
-            } catch (IOException e) {
-                e.printStackTrace();
-                errorStr = e.getMessage();
-                if (callback != null) callback.error(errorStr);
-            }
-        }
-
-        /**
-         * 事件接口
-         */
-        public interface Callback {
-            void success();
-            void error(String error);
-        }
-
-        /**
-         * 将assets/weiui下的文件复制到dist
-         * @param callback
-         */
-        private static void weiuiToDist(Callback callback) {
-            File tempDir = weiui.getApplication().getExternalFilesDir("dist");
-            File lockFile = new File(tempDir, weiuiCommon.getLocalVersion(weiui.getApplication()) + ".lock");
-            if (lockFile.exists() && lockFile.isFile()) {
-                if (callback != null) callback.success();
-                return;
-            }
-            //
-            copyHandler("weiui", "dist");
-            //
-            if (copySuccess) {
-                try {
-                    FileOutputStream fos = new FileOutputStream(lockFile);
-                    byte[] bytes = TimeUtils.getNowString().getBytes();
-                    fos.write(bytes);
-                    fos.close();
-                    if (callback != null) callback.success();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    errorStr = e.getMessage();
-                    if (callback != null) callback.error(errorStr);
-                }
-            } else {
-                if (callback != null) callback.error(errorStr);
-            }
-        }
-
-        /**
-         * 复制assets方法
-         * @param srcPath
-         * @param dstPath
-         */
-        private static void copyHandler(String srcPath, String dstPath) {
-            try {
-                String fileNames[] = weiui.getApplication().getAssets().list(srcPath);
-                if (fileNames.length > 0) {
-                    for (String fileName : fileNames) {
-                        if (srcPath.equals("")) {
-                            copyHandler(fileName, dstPath + File.separator + fileName);
-                        } else {
-                            copyHandler(srcPath + File.separator + fileName, dstPath + File.separator + fileName);
-                        }
-                    }
-                } else {
-                    File tempDir = weiui.getApplication().getExternalFilesDir(null);
-                    if (tempDir != null) {
-                        File outFile = new File(tempDir, dstPath);
-                        InputStream is = weiui.getApplication().getAssets().open(srcPath);
-                        FileOutputStream fos = new FileOutputStream(outFile);
-                        byte[] buffer = new byte[1024];
-                        int byteCount;
-                        while ((byteCount = is.read(buffer)) != -1) {
-                            fos.write(buffer, 0, byteCount);
-                        }
-                        fos.flush();
-                        is.close();
-                        fos.close();
+                Collections.reverse(fileList);
+                for (File file1 : files) {
+                    if (file1.isDirectory()) {
+                        verifyDir.add(file1.getName());
                     }
                 }
-                copySuccess = true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                errorStr = e.getMessage();
-                copySuccess = false;
             }
+
+            String newUrl = "";
+            for (int i = 0; i < verifyDir.size(); i++) {
+                File tempPath = weiui.getApplication().getExternalFilesDir("update/" + verifyDir.getString(i) + "/" + originalPath);
+                if (tempPath != null) {
+                    if (isDir(tempPath)) {
+                        Log.d("gggggg", "verifyFile: 11");
+                    }
+                    if (isFile(tempPath)) {
+                        Log.d("gggggg", "verifyFile: 22");
+                        newUrl = "file://" + tempPath.getPath();
+                        break;
+                    }
+                }
+            }
+
+            return newUrl.length() > 0 ? newUrl : originalUrl;
+        }
+
+        /**
+         * 是否有升级文件
+         * @return
+         */
+        public static boolean verifyIsUpdate() {
+            File tempDir = weiui.getApplication().getExternalFilesDir("update");
+            if (tempDir == null) {
+                return false;
+            }
+            if (!isDir(tempDir)) {
+                return false;
+            }
+            File[] files = tempDir.listFiles();
+            if (files == null) {
+                return false;
+            }
+            boolean isUpdate = false;
+            for (File file : files) {
+                if(isDir(file)){
+                    isUpdate = true;
+                    break;
+                }
+            }
+            return isUpdate;
+        }
+
+        /**
+         * 判断是否文件夹（不存在返回NO）
+         * @param file
+         * @return
+         */
+        public static boolean isDir(File file) {
+            if (file == null) {
+                return false;
+            }
+            if (!file.exists()) {
+                return false;
+            }
+            return file.isDirectory();
+        }
+
+        /**
+         * 判断是否文件（不存在返回NO）
+         * @param file
+         * @return
+         */
+        public static boolean isFile(File file) {
+            if (file == null) {
+                return false;
+            }
+            if (!file.exists()) {
+                return false;
+            }
+            return file.isFile();
         }
     }
 
@@ -303,7 +279,7 @@ public class weiuiBase {
             welcome_wait = welcome_wait > 100 ? welcome_wait : 2000;
             //
             File welcomeFile = new File(welcome_image);
-            if (welcomeFile.isFile()) {
+            if (config.isFile(welcomeFile)) {
                 Glide.with(activity).asBitmap().load(welcomeFile).apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE)).into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
@@ -325,10 +301,6 @@ public class weiuiBase {
          * 云数据
          */
         public static void appData() {
-            if (weiuiCommon.getVariateStr("configDataNoUpdate").equals("clear")) {
-                weiuiCommon.setVariate("configDataNoUpdate", "");
-                return;
-            }
             String appkey = config.getString("appKey", "");
             if (appkey.length() == 0) {
                 return;
@@ -396,14 +368,6 @@ public class weiuiBase {
          * @param number
          */
         private static void checkUpdateLists(JSONArray lists, int number, boolean isReboot) {
-            if (lists == null || lists.size() == 0) {
-                if (config.isConfigDataIsDist()) {
-                    FileUtils.deleteDir(weiui.getApplication().getExternalFilesDir("dist"));
-                    FileUtils.deleteDir(weiui.getApplication().getExternalFilesDir("update"));
-                    reboot();
-                }
-                return;
-            }
             if (number >= lists.size()) {
                 if (isReboot) {
                     reboot();
@@ -414,6 +378,7 @@ public class weiuiBase {
             JSONObject data = weiuiJson.parseObject(lists.get(number));
             String id = weiuiJson.getString(data, "id");
             String url = weiuiJson.getString(data, "path");
+            int valid = weiuiJson.getInt(data, "valid");
             if (!url.startsWith("http")) {
                 checkUpdateLists(lists, number + 1, isReboot);
                 return;
@@ -421,99 +386,132 @@ public class weiuiBase {
             //
             File tempDir = weiui.getApplication().getExternalFilesDir("update");
             File lockFile = new File(tempDir, RxEncryptTool.encryptMD5ToString(url) + ".lock");
-            if (lockFile.exists() && lockFile.isFile()) {
-                checkUpdateLists(lists, number + 1, isReboot);
-                return;
-            }
-            if (tempDir != null && (tempDir.exists() || tempDir.mkdirs())) {
-                //下载zip文件
-                File zipSaveFile = new File(tempDir, id + ".zip");
-                File zipUnDir = new File(tempDir, id);
-                RequestParams requestParams = new RequestParams(url);
-                requestParams.setSaveFilePath(zipSaveFile.getPath());
-                x.http().get(requestParams, new Callback.CommonCallback<File>() {
-                    @Override
-                    public void onSuccess(File result) {
-                        //下载成功 > 解压 > 覆盖
-                        update.zipToDist(zipSaveFile, zipUnDir, new update.Callback() {
-                            @Override
-                            public void success() {
-                                try {
-                                    FileOutputStream fos = new FileOutputStream(lockFile);
-                                    byte[] bytes = TimeUtils.getNowString().getBytes();
-                                    fos.write(bytes);
-                                    fos.close();
-                                    //
-                                    weiuiIhttp.get("checkUpdateLists", apiUrl + "api/client/update/success?id=" + id, null, null);
-                                    switch (weiuiJson.getInt(data, "reboot")) {
-                                        case 1:
-                                            checkUpdateLists(lists, number + 1, true);
-                                            break;
-
-                                        case 2:
-                                            JSONObject rebootInfo = weiuiJson.parseObject(data.getJSONObject("reboot_info"));
-                                            JSONObject newJson = new JSONObject();
-                                            newJson.put("title", weiuiJson.getString(rebootInfo, "title"));
-                                            newJson.put("message", weiuiJson.getString(rebootInfo, "message"));
-                                            weiuiAlertDialog.confirm(weiui.getActivityList().getLast(), newJson, new JSCallback() {
-                                                @Override
-                                                public void invoke(Object data) {
-                                                    Map<String, Object> retData = weiuiMap.objectToMap(data);
-                                                    if (weiuiParse.parseStr(retData.get("status")).equals("click")) {
-                                                        if (weiuiParse.parseStr(retData.get("title")).equals("确定")) {
-                                                            if (weiuiJson.getBoolean(rebootInfo, "confirm_reboot")) {
-                                                                reboot();
-                                                                return;
-                                                            }
-                                                        }
-                                                        checkUpdateLists(lists, number + 1, isReboot);
-                                                    }
-                                                }
-
-                                                @Override
-                                                public void invokeAndKeepAlive(Object data) {
-
-                                                }
-                                            });
-                                            break;
-
-                                        default:
-                                            checkUpdateLists(lists, number + 1, isReboot);
-                                            break;
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+            File zipSaveFile = new File(tempDir, id + ".zip");
+            File zipUnDir = new File(tempDir, id);
+            if (valid == 1) {
+                //开始修复
+                if (config.isFile(lockFile)) {
+                    checkUpdateLists(lists, number + 1, isReboot);
+                    return;
+                }
+                if (tempDir != null && (tempDir.exists() || tempDir.mkdirs())) {
+                    //下载zip文件
+                    RequestParams requestParams = new RequestParams(url);
+                    requestParams.setSaveFilePath(zipSaveFile.getPath());
+                    x.http().get(requestParams, new Callback.CommonCallback<File>() {
+                        @Override
+                        public void onSuccess(File result) {
+                            //下载成功 > 解压
+                            try {
+                                ZipUtils.unzipFile(zipSaveFile, zipUnDir);
+                                FileUtils.deleteFile(zipSaveFile);
+                                //
+                                FileOutputStream fos = new FileOutputStream(lockFile);
+                                byte[] bytes = TimeUtils.getNowString().getBytes();
+                                fos.write(bytes);
+                                fos.close();
+                                //
+                                weiuiIhttp.get("checkUpdateLists", apiUrl + "api/client/update/success?id=" + id, null, null);
+                                checkUpdateHint(lists, data, number, isReboot);
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
+                        }
 
-                            @Override
-                            public void error(String error) {
+                        @Override
+                        public void onError(Throwable ex, boolean isOnCallback) {
 
-                            }
-                        });
-                    }
+                        }
 
-                    @Override
-                    public void onError(Throwable ex, boolean isOnCallback) {
+                        @Override
+                        public void onCancelled(CancelledException cex) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onCancelled(CancelledException cex) {
+                        @Override
+                        public void onFinished() {
 
-                    }
-
-                    @Override
-                    public void onFinished() {
-
-                    }
-                });
+                        }
+                    });
+                }
+            }else if (valid == 2) {
+                //开始删除
+                boolean isDelete = false;
+                if (config.isFile(lockFile)) {
+                    FileUtils.deleteFile(lockFile);
+                    isDelete = true;
+                }
+                if (config.isDir(zipUnDir)) {
+                    FileUtils.deleteDir(zipUnDir);
+                    isDelete = true;
+                }
+                if (!isDelete) {
+                    checkUpdateLists(lists, number + 1, isReboot);
+                    return;
+                }
+                weiuiIhttp.get("checkUpdateLists", apiUrl + "api/client/update/delete?id=" + id, null, null);
+                checkUpdateHint(lists, data, number, isReboot);
             }
         }
 
-        private static void reboot() {
+        /**
+         * 更新部分(提示处理)
+         * @param lists
+         * @param number
+         */
+        private static void checkUpdateHint(JSONArray lists, JSONObject data, int number, boolean isReboot) {
+            switch (weiuiJson.getInt(data, "reboot")) {
+                case 1:
+                    checkUpdateLists(lists, number + 1, true);
+                    break;
+
+                case 2:
+                    JSONObject rebootInfo = weiuiJson.parseObject(data.getJSONObject("reboot_info"));
+                    JSONObject newJson = new JSONObject();
+                    newJson.put("title", weiuiJson.getString(rebootInfo, "title"));
+                    newJson.put("message", weiuiJson.getString(rebootInfo, "message"));
+                    weiuiAlertDialog.confirm(weiui.getActivityList().getLast(), newJson, new JSCallback() {
+                        @Override
+                        public void invoke(Object data) {
+                            Map<String, Object> retData = weiuiMap.objectToMap(data);
+                            if (weiuiParse.parseStr(retData.get("status")).equals("click")) {
+                                if (weiuiParse.parseStr(retData.get("title")).equals("确定")) {
+                                    if (weiuiJson.getBoolean(rebootInfo, "confirm_reboot")) {
+                                        reboot();
+                                        return;
+                                    }
+                                }
+                                checkUpdateLists(lists, number + 1, isReboot);
+                            }
+                        }
+
+                        @Override
+                        public void invokeAndKeepAlive(Object data) {
+
+                        }
+                    });
+                    break;
+
+                default:
+                    checkUpdateLists(lists, number + 1, isReboot);
+                    break;
+            }
+        }
+
+        /**
+         * 重启
+         */
+        public static void reboot() {
             config.clear();
             weiui.reboot();
+        }
+
+        /**
+         * 清除热更新缓存
+         */
+        public static void clearUpdate() {
+            FileUtils.deleteDir(weiui.getApplication().getExternalFilesDir("update"));
+            reboot();
         }
     }
 }

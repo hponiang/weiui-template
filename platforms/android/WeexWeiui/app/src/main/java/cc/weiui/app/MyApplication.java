@@ -8,6 +8,7 @@ import com.alibaba.weex.plugin.loader.WeexPluginContainer;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKEngine;
 
+import cc.weiui.framework.BuildConfig;
 import cc.weiui.framework.extend.module.weiuiBase;
 import cc.weiui.framework.extend.module.weiui;
 
@@ -22,8 +23,8 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         //
-        WXEnvironment.setOpenDebugLog(true);
-        WXEnvironment.setApkDebugable(true);
+        WXEnvironment.setOpenDebugLog(BuildConfig.DEBUG);
+        WXEnvironment.setApkDebugable(BuildConfig.DEBUG);
         WXSDKEngine.addCustomOptions("appName", weiuiBase.appName);
         WXSDKEngine.addCustomOptions("appGroup", weiuiBase.appGroup);
         //

@@ -275,7 +275,7 @@ NSDictionary *mLaunchOptions;
     [alertController addAction:[UIAlertAction actionWithTitle:@"重启APP" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [self rebootConfirm];
     }]];
-    if ([Config isConfigDataIsDist]) {
+    if ([Config verifyIsUpdate]) {
         [alertController addAction:[UIAlertAction actionWithTitle:@"清除热更新数据" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             [Cloud clearUpdate];
         }]];

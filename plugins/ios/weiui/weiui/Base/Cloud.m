@@ -7,9 +7,9 @@
 
 #import "Cloud.h"
 #import "Config.h"
-#import "Update.h"
 #import "DeviceUtil.h"
 #import "AFNetworking.h"
+#import "SSZipArchive.h"
 #import "WeiuiStorageManager.h"
 #import "WeiuiNewPageManager.h"
 #import "WeexSDKManager.h"
@@ -57,7 +57,7 @@ static UIImageView *welcomeView;
     }
     NSString *url = [[NSString alloc] initWithFormat:@"%@api/client/app", apiUrl];
     NSString *package = [[NSBundle mainBundle]bundleIdentifier];
-    NSString *version = [NSString stringWithFormat:@"%ld", [Config getLocalVersion]];
+    NSString *version = [NSString stringWithFormat:@"%ld", (long)[Config getLocalVersion]];
     NSString *versionName = [Config getLocalVersionName];
     NSString *screenWidth = [NSString stringWithFormat:@"%f", [UIScreen mainScreen].bounds.size.width];
     NSString *screenHeight = [NSString stringWithFormat:@"%f", [UIScreen mainScreen].bounds.size.height];
@@ -101,18 +101,12 @@ static UIImageView *welcomeView;
     }else{
         [storage setCachesString:@"welcome_image" value:@"" expired:0];
     }
-    [storage setCachesString:@"welcome_wait" value:[NSString stringWithFormat:@"%ld", wait] expired:0];
+    [storage setCachesString:@"welcome_wait" value:[NSString stringWithFormat:@"%ld", (long)wait] expired:0];
 }
 
 //更新部分
 + (void) checkUpdateLists:(NSMutableArray*)lists number:(NSInteger)number isReboot:(BOOL)isReboot
 {
-    if (lists == nil || [lists count] == 0) {
-        if ([Config isConfigDataIsDist]) {
-            [self clearUpdate];
-        }
-        return;
-    }
     if (number >= [lists count]) {
         if (isReboot) {
             [self reboot];
@@ -122,37 +116,60 @@ static UIImageView *welcomeView;
     NSMutableDictionary *data = [lists objectAtIndex:number];
     NSString *id = [NSString stringWithFormat:@"%@", data[@"id"]];
     NSString *url = [NSString stringWithFormat:@"%@", data[@"path"]];
+    NSInteger valid = [WXConvert NSInteger:data[@"valid"]];
     if (![url hasPrefix:@"http"]) {
         [self checkUpdateLists:lists number:number+1 isReboot:isReboot];
         return;
     }
     //
     NSFileManager *fm = [NSFileManager defaultManager];
-    NSString *tempDir = [Config getPath:@"update"];
-    NSString *lockFile = [Config getPath:[[NSString alloc] initWithFormat:@"update/%@.lock", [Config MD5ForLower32Bate:url]]];
-    if ([Config isFile:lockFile]) {
-        [self checkUpdateLists:lists number:number+1 isReboot:isReboot];
-        return;
-    }
+    NSString *tempDir = [Config getSandPath:@"update"];
+    NSString *lockFile = [Config getSandPath:[[NSString alloc] initWithFormat:@"update/%@.lock", [Config MD5ForLower32Bate:url]]];
     if (![fm fileExistsAtPath:tempDir]) {
         [fm createDirectoryAtPath:tempDir withIntermediateDirectories:YES attributes:nil error:nil];
     }
-    //开始下载
-    NSString *zipFile = [Config getPath:[[NSString alloc] initWithFormat:@"update/%@.zip", id]];
-    if (![fm fileExistsAtPath:zipFile]) {
-        NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
-        [data writeToFile:zipFile atomically:YES];
+    NSString *zipFile = [Config getSandPath:[[NSString alloc] initWithFormat:@"update/%@.zip", id]];
+    NSString *zipUnDir = [Config getSandPath:[[NSString alloc] initWithFormat:@"update/%@", id]];
+    if (valid == 1) {
+        //开始修复
+        if ([Config isFile:lockFile]) {
+            [self checkUpdateLists:lists number:number+1 isReboot:isReboot];
+            return;
+        }
+        //开始下载
+        if (![fm fileExistsAtPath:zipFile]) {
+            NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
+            [data writeToFile:zipFile atomically:YES];
+        }
+        //下载成功 > 解压 > 覆盖
+        if (![SSZipArchive unzipFileAtPath:zipFile toDestination:zipUnDir]) {
+            return;
+        }
+        //标记回调
+        [fm createFileAtPath:lockFile contents:[[Config getyyyMMddHHmmss] dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        NSString *tempUrl = [[NSString alloc] initWithFormat:@"%@api/client/update/success?id=%@", apiUrl, id];
+        [manager GET:tempUrl parameters:nil progress:nil success:nil failure:nil];
+    }else if (valid == 2) {
+        //开始删除
+        BOOL isDelete = NO;
+        if ([Config isFile:lockFile]) {
+            [fm removeItemAtPath:lockFile error:nil];
+            isDelete = YES;
+        }
+        if ([Config isDir:zipUnDir]) {
+            [fm removeItemAtPath:zipUnDir error:nil];
+            isDelete = YES;
+        }
+        if (!isDelete) {
+            [self checkUpdateLists:lists number:number+1 isReboot:isReboot];
+            return;
+        }
+        //标记回调
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        NSString *tempUrl = [[NSString alloc] initWithFormat:@"%@api/client/update/delete?id=%@", apiUrl, id];
+        [manager GET:tempUrl parameters:nil progress:nil success:nil failure:nil];
     }
-    //下载成功 > 解压 > 覆盖
-    NSString *zipUnDir = [Config getPath:[[NSString alloc] initWithFormat:@"update/%@", id]];
-    if (![Update zipToDist:zipFile zipUnDir:zipUnDir]) {
-        return;
-    }
-    //标记回调
-    [fm createFileAtPath:lockFile contents:[[Config getyyyMMddHHmmss] dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    NSString *tempUrl = [[NSString alloc] initWithFormat:@"%@api/client/update/success?id=%@", apiUrl, id];
-    [manager GET:tempUrl parameters:nil progress:nil success:nil failure:nil];
     //
     NSString *reboot = [NSString stringWithFormat:@"%@", data[@"reboot"]];
     if ([reboot isEqualToString:@"1"]) {
@@ -207,8 +224,7 @@ static UIImageView *welcomeView;
 + (void) clearUpdate
 {
     NSFileManager *fm = [NSFileManager defaultManager];
-    [fm removeItemAtPath:[Config getPath:@"dist"] error:nil];
-    [fm removeItemAtPath:[Config getPath:@"update"] error:nil];
+    [fm removeItemAtPath:[Config getSandPath:@"update"] error:nil];
     [self reboot];
 }
 

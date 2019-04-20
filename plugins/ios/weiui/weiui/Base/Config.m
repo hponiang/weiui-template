@@ -10,26 +10,15 @@
 
 @implementation Config
 
-static BOOL configDataIsDist;
 static NSMutableDictionary *configData;
+static NSMutableArray *verifyDir;
 
 //读取配置
 + (NSMutableDictionary *) get
 {
-    NSString *dist = [self getPath:@"dist"];
-    //判断创建文件夹
-    if (![[NSFileManager defaultManager] fileExistsAtPath:dist]) {
-        [[NSFileManager defaultManager] createDirectoryAtPath:dist withIntermediateDirectories:YES attributes:nil error:nil];
-    }
     //读取json
     if (configData == nil) {
-        NSString *lockFile = [self getPath:[[NSString alloc] initWithFormat:@"dist/%ld.lock", [self getLocalVersion]]];
-        NSString *jsonFile = [self getPath:@"dist/config.json"];
-        if ([self isFile:lockFile] && [self isFile:jsonFile]) {
-            configDataIsDist = YES;
-        }else{
-            jsonFile = [[ NSBundle mainBundle ] pathForResource : @"bundlejs/weiui/config" ofType : @"json" ];
-        }
+        NSString *jsonFile = [self verifyFile:[self getResourcePath:@"bundlejs/weiui/config.json"]];
         NSData *fileData = [[ NSData alloc ] initWithContentsOfFile :jsonFile];
         NSDictionary *jsonObject = [NSJSONSerialization JSONObjectWithData:fileData options:kNilOptions error:nil];
         configData = [NSMutableDictionary dictionaryWithDictionary:jsonObject];
@@ -40,8 +29,8 @@ static NSMutableDictionary *configData;
 //清除配置
 + (void) clear
 {
-    configDataIsDist = NO;
     configData = nil;
+    verifyDir = nil;
 }
 
 //获取配置值
@@ -79,15 +68,7 @@ static NSMutableDictionary *configData;
 {
     NSString *homePage = [self getString:@"homePage" defaultVal:@""];
     if (homePage.length == 0) {
-        if (configDataIsDist) {
-            NSString *indexFile = [self getPath:@"dist/index.js"];
-            if ([self isFile:indexFile]) {
-                homePage = [NSString stringWithFormat:@"file://%@", indexFile];
-            }
-        }
-    }
-    if (homePage.length == 0) {
-        homePage = [NSString stringWithFormat:@"file://%@/bundlejs/weiui/index.js", [NSBundle mainBundle].bundlePath];
+        homePage = [NSString stringWithFormat:@"file://%@", [self getResourcePath:@"bundlejs/weiui/index.js"]];
     }
     return homePage;
 }
@@ -112,10 +93,86 @@ static NSMutableDictionary *configData;
     return str;
 }
 
-//判断是否
-+ (BOOL) isConfigDataIsDist
+//转换修复文件路径
++ (NSString *) verifyFile:(NSString*)originalUrl
 {
-    return configDataIsDist;
+    if (originalUrl == nil ||
+        [originalUrl hasPrefix:@"http://"] ||
+        [originalUrl hasPrefix:@"https://"] ||
+        [originalUrl hasPrefix:@"ftp://"] ||
+        [originalUrl hasPrefix:@"data:image/"]) {
+        return originalUrl;
+    }
+    
+    BOOL isFilePre = NO;
+    NSString *rootPath = [self getResourcePath:@"bundlejs/weiui"];
+    if (![originalUrl hasPrefix:rootPath]) {
+        isFilePre = YES;
+        rootPath = [NSString stringWithFormat:@"file://%@", rootPath];
+        if (![originalUrl hasPrefix:rootPath]) {
+            return originalUrl;
+        }
+    }
+    rootPath = [NSString stringWithFormat:@"%@/", rootPath];
+    
+    NSString *originalPath = [originalUrl stringByReplacingOccurrencesOfString:rootPath withString:@""];
+    NSString *path = [Config getSandPath:@"update"];
+    
+    NSFileManager *myFileManager = [NSFileManager defaultManager];
+    BOOL isDir = NO;
+    BOOL isExist = NO;
+    
+    if (verifyDir == nil) {
+        verifyDir = [NSMutableArray array];
+        NSArray *tmpArray = [myFileManager contentsOfDirectoryAtPath:path error:nil];
+        for (NSString * dirName in tmpArray) {
+            isExist = [myFileManager fileExistsAtPath:[NSString stringWithFormat:@"%@/%@", path, dirName] isDirectory:&isDir];
+            if (isDir) {
+                [verifyDir addObject:dirName];
+            }
+        }
+        [verifyDir sortUsingComparator:^NSComparisonResult(id _Nonnull obj1, id _Nonnull obj2) {
+            if ([obj1 integerValue] < [obj2 integerValue]) {
+                return NSOrderedDescending;
+            } else {
+                return NSOrderedAscending;
+            }
+        }];
+    }
+    
+    NSString *newUrl = @"";
+    for (NSString * dirName in verifyDir) {
+        NSString *tempPath = [NSString stringWithFormat:@"%@/%@/%@", path, dirName, originalPath];
+        isExist = [myFileManager fileExistsAtPath:tempPath isDirectory:&isDir];
+        if (isExist && !isDir) {
+            newUrl = [NSString stringWithFormat:@"%@%@", isFilePre ? @"file://" : @"", tempPath];;
+            break;
+        }
+    }
+    
+    if (newUrl.length == 0) {
+        return originalUrl;
+    }
+    return newUrl;
+}
+
+//是否有升级文件
++ (BOOL) verifyIsUpdate
+{
+    BOOL isDir = NO;
+    BOOL isExist = NO;
+    BOOL isUpdate = NO;
+    NSString *path = [Config getSandPath:@"update"];
+    NSFileManager *myFileManager = [NSFileManager defaultManager];
+    NSArray *tmpArray = [myFileManager contentsOfDirectoryAtPath:path error:nil];
+    for (NSString * dirName in tmpArray) {
+        isExist = [myFileManager fileExistsAtPath:[NSString stringWithFormat:@"%@/%@", path, dirName] isDirectory:&isDir];
+        if (isDir) {
+            isUpdate = YES;
+            break;
+        }
+    }
+    return isUpdate;
 }
 
 //******************************************************************************************
@@ -123,8 +180,14 @@ static NSMutableDictionary *configData;
 //******************************************************************************************
 
 
-//获取路径
-+ (NSString *) getPath:(NSString*)name
+//获取资源路径
++ (NSString *) getResourcePath:(NSString*)name
+{
+    return [[ NSBundle mainBundle ] pathForResource : name ofType : nil ];
+}
+
+//获取沙盘路径
++ (NSString *) getSandPath:(NSString*)name
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     return [[NSString alloc] initWithFormat:@"%@/%@/%@", [paths objectAtIndex:0], [[NSBundle mainBundle]bundleIdentifier], name];

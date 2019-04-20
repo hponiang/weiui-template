@@ -21,6 +21,7 @@ import cc.weiui.framework.extend.integration.glide.load.engine.GlideException;
 import cc.weiui.framework.extend.integration.glide.request.RequestListener;
 import cc.weiui.framework.extend.integration.glide.request.RequestOptions;
 import cc.weiui.framework.extend.integration.glide.request.target.Target;
+import cc.weiui.framework.extend.module.weiuiBase;
 import cc.weiui.framework.extend.module.weiuiHtml;
 
 import com.taobao.weex.WXSDKManager;
@@ -96,6 +97,7 @@ public class ImageAdapter implements IWXImgLoaderAdapter {
             return;
         }
         //
+        tempUrl = weiuiBase.config.verifyFile(tempUrl);
         try {
             RequestBuilder<Drawable> myLoad;
             if (tempUrl.startsWith("file://assets/")) {
