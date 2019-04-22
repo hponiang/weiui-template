@@ -264,7 +264,7 @@ WX_EXPORT_METHOD(@selector(goForward:))
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error
 {
     if (error) {
-        NSString *code = [NSString stringWithFormat:@"%ld", error.code];
+        NSString *code = [NSString stringWithFormat:@"%ld", (long)error.code];
         NSString *msg = [NSString stringWithFormat:@"%@", error.description];
         [self fireEvent:@"stateChanged" params:@{@"status":@"error", @"title":@"", @"url":@"", @"errCode":code, @"errMsg":msg, @"errUrl":_url}];
     }
