@@ -460,6 +460,7 @@ public class weiuiBase {
          * @param number
          */
         private static void checkUpdateHint(JSONArray lists, JSONObject data, int number, boolean isReboot) {
+            weiuiBase.config.clear();
             switch (weiuiJson.getInt(data, "reboot")) {
                 case 1:
                     checkUpdateLists(lists, number + 1, true);

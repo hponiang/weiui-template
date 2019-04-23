@@ -30,7 +30,7 @@ static int easyNavigationButtonTag = 8000;
 @property (nonatomic, strong) UIView *weexView;
 @property (nonatomic, assign) CGFloat weexHeight;
 @property (nonatomic, strong) NSMutableArray *listenerList;
-@property (nonatomic, strong) NSURL *URL;
+@property (nonatomic, strong) NSString *renderUrl;
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
 @property (nonatomic, strong) UIView *statusBar;
@@ -379,13 +379,13 @@ static int easyNavigationButtonTag = 8000;
             if ([date compare:[NSDate date]] == NSOrderedDescending) {
                 NSString *cacheUrl = data[kCacheUrl];
                 //使用缓存文件
-                self.URL = [NSURL fileURLWithPath:cacheUrl];
+                self.renderUrl = cacheUrl;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self renderView];
                 });
                 isCache = NO;
             } else {
-                self.URL = [NSURL URLWithString:_url];
+                self.renderUrl = _url;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self renderView];
                 });
@@ -418,7 +418,7 @@ static int easyNavigationButtonTag = 8000;
                     NSDictionary *saveDic = @{kCacheUrl:fullPath, kCacheTime:@(time)};
                     [[WeexSDKManager sharedIntstance].cacheData setObject:saveDic forKey:ws.url];
                     
-                    ws.URL = [NSURL fileURLWithPath:fullPath];
+                    ws.renderUrl = fullPath;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [ws renderView];
                     });
@@ -427,7 +427,7 @@ static int easyNavigationButtonTag = 8000;
             [downloadTask resume];
         }
     } else {
-        self.URL = [NSURL URLWithString:[Config verifyFile:_url]];
+        self.renderUrl = _url;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self renderView];
         });
@@ -526,7 +526,7 @@ static int easyNavigationButtonTag = 8000;
     }
     _instance.viewController = self;
     
-    [_instance renderWithURL:_URL options:@{@"params":_params?_params:@""} data:nil];
+    [_instance renderWithURL:[NSURL URLWithString:[Config verifyFile:self.renderUrl]] options:@{@"params":_params?_params:@""} data:nil];
     
     if (_didWillEnter == NO) {
         _didWillEnter = YES;
@@ -728,7 +728,7 @@ static int easyNavigationButtonTag = 8000;
 - (void)setHomeUrl:(NSString*)url
 {
     self.url = url;
-    self.URL = [NSURL URLWithString:[Config verifyFile:_url]];
+    self.renderUrl = self.url;
     [[WeiuiNewPageManager sharedIntstance] setPageDataValue:self.pageName key:@"url" value:self.url];
 }
 

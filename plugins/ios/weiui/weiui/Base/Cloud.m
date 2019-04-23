@@ -170,6 +170,7 @@ static UIImageView *welcomeView;
         NSString *tempUrl = [[NSString alloc] initWithFormat:@"%@api/client/update/delete?id=%@", apiUrl, id];
         [manager GET:tempUrl parameters:nil progress:nil success:nil failure:nil];
     }
+    [Config clear];
     //
     NSString *reboot = [NSString stringWithFormat:@"%@", data[@"reboot"]];
     if ([reboot isEqualToString:@"1"]) {
