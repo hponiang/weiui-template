@@ -51,7 +51,9 @@
         return;
     }
     
-    UIWindow *window = [UIApplication sharedApplication].delegate.window;
+    NSArray *windows = [[UIApplication sharedApplication] windows];
+    UIWindow *window = (UIWindow *)[windows lastObject];
+    window.windowLevel = window.windowLevel + 1;
     
     UILabel *toastLab = [[UILabel alloc] init];
     toastLab.font = [UIFont systemFontOfSize:12.0f];

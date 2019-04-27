@@ -19,6 +19,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import cc.weiui.framework.BuildConfig;
 import cc.weiui.framework.activity.PageActivity;
+import cc.weiui.framework.extend.module.weiuiBase;
 import cc.weiui.framework.extend.module.weiuiConstants;
 
 import cc.weiui.framework.extend.module.weiuiMap;
@@ -701,7 +702,11 @@ public class Tabbar extends WXVContainer<ViewGroup> {
             }
         });
         //
-        weiuiPage.cachePage(url, sdkBean.getCache(), sdkBean.getParams(), new weiuiPage.OnCachePageCallback() {
+        long cache = sdkBean.getCache();
+        if (url.startsWith("file://")) {
+            cache = 0;
+        }
+        weiuiPage.cachePage(url, cache, sdkBean.getParams(), new weiuiPage.OnCachePageCallback() {
             @Override
             public void success(Map<String, Object> resParams, String resData) {
                 sdkBean.getInstance().render(tabName, resData, resParams, null, WXRenderStrategy.APPEND_ASYNC);
@@ -709,7 +714,8 @@ public class Tabbar extends WXVContainer<ViewGroup> {
 
             @Override
             public void error(Map<String, Object> resParams) {
-                sdkBean.getInstance().renderByUrl("Tabbar:" + tabName, url, resParams, null, WXRenderStrategy.APPEND_ASYNC);
+                String tempUrl = weiuiBase.config.verifyFile(url);
+                sdkBean.getInstance().renderByUrl("Tabbar:" + tabName, tempUrl, resParams, null, WXRenderStrategy.APPEND_ASYNC);
             }
 
             @Override
