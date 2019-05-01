@@ -17,20 +17,24 @@ NSString *const kGifRangeValue = @"bytes=6-9";
 + (void)itd_sizeOfImageWithUrlStr:(NSString *)imgUrlStr sizeGetDo:(ImageSizeBlock)doBlock
 {
     NSString *extensionStr = [[imgUrlStr pathExtension] lowercaseString];
-    CGSize imgSize = CGSizeZero;
-    if ([extensionStr isEqualToString:@"png"]) {
-        imgSize = [UIImage size_downloadPNGImageWithUrlString:imgUrlStr];
-    }else if ([extensionStr isEqualToString:@"gif"])
-    {
-         imgSize = [UIImage size_downloadGIFImageWithUrlString:imgUrlStr];
-    }else{
-        imgSize = [UIImage size_downloadJPGImageWithUrlString:imgUrlStr];
-    }
-    
-    if (doBlock) {
-        doBlock(imgSize);
-    }
-    return ;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (doBlock) {
+            CGSize imgSize = CGSizeZero;
+            if ([extensionStr isEqualToString:@"png"]) {
+                imgSize = [UIImage size_downloadPNGImageWithUrlString:imgUrlStr];
+            }else if ([extensionStr isEqualToString:@"gif"]){
+                imgSize = [UIImage size_downloadGIFImageWithUrlString:imgUrlStr];
+            }else{
+                imgSize = [UIImage size_downloadJPGImageWithUrlString:imgUrlStr];
+            }
+            if (CGSizeEqualToSize(CGSizeZero, imgSize)) {
+                NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imgUrlStr]];
+                UIImage *image = [UIImage imageWithData:data];
+                imgSize = image.size;
+            }
+            doBlock(imgSize);
+        }
+    });
 }
 
 + (CGSize)size_downloadJPGImageWithUrlString:(NSString *)urlString{
