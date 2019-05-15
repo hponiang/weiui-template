@@ -147,6 +147,8 @@ static const CGFloat kDefaultFadeLength = 7.f;
     [super willMoveToWindow:newWindow];
     if (!newWindow) {
         [self stopDisplayLinke];
+    }else{
+        [self creatDisplayLink];
     }
 }
 
@@ -206,8 +208,10 @@ static const CGFloat kDefaultFadeLength = 7.f;
 #pragma mark - DisplayLink control
 
 - (void)creatDisplayLink {
-    self.displayLinke = [CADisplayLink displayLinkWithTarget:self selector:@selector(processDisplayLink)];
-    [self.displayLinke addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    if (self.displayLinke == nil) {
+        self.displayLinke = [CADisplayLink displayLinkWithTarget:self selector:@selector(processDisplayLink)];
+        [self.displayLinke addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    }
 }
 
 - (void)processDisplayLink {
@@ -269,8 +273,10 @@ static const CGFloat kDefaultFadeLength = 7.f;
 }
 
 - (void)stopDisplayLinke {
-    [self.displayLinke invalidate];
-    self.displayLinke = nil;
+    if (self.displayLinke != nil) {
+        [self.displayLinke invalidate];
+        self.displayLinke = nil;
+    }
 }
 
 #pragma mark - Setter

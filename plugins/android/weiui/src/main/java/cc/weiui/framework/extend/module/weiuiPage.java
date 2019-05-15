@@ -239,13 +239,19 @@ public class weiuiPage {
                 String weexTpl = mUri.getQueryParameter("_wx_tpl");
                 url = TextUtils.isEmpty(weexTpl) ? mUri.toString() : weexTpl;
             }
+            if (url != null && url.contains("/./")) {
+                url = url.replaceAll("/\\./", "/");
+            }
             return url;
         }
         if (context instanceof PageActivity) {
             PageBean info = ((PageActivity) context).getPageInfo();
             if (info != null) {
-                return weiuiHtml.repairUrl(url, info.getUrl());
+                url = weiuiHtml.repairUrl(url, info.getUrl());
             }
+        }
+        if (url.contains("/./")) {
+            url = url.replaceAll("/\\./", "/");
         }
         return url;
     }

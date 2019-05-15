@@ -86,12 +86,12 @@ typedef NS_ENUM(NSInteger, SK_AUTOSCROLL_DIRECTION){
 /**
  *  Plain text color.
  */
-@property (nonatomic, strong) UIColor * _Nullable textColor;
+@property (nonatomic, strong) UIColor *textColor;
 
 /**
  *  Plain text font.
  */
-@property (nonatomic, strong) UIFont * _Nullable font;
+@property (nonatomic, strong) UIFont *font;
 
 /**
  *  Plain text alignment.

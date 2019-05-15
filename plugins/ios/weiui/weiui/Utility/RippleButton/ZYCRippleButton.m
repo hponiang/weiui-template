@@ -7,6 +7,8 @@
 //
 
 #import "ZYCRippleButton.h"
+#import "DeviceUtil.h"
+#import "WeiuiNewPageManager.h"
 
 const CGFloat ZYCRippleInitialRaius = 20;
 
@@ -141,6 +143,23 @@ const CGFloat ZYCRippleInitialRaius = 20;
 #pragma mark - CAAnimationDelegate
 - (void)animationDidStart:(CAAnimation *)anim{
     if (self.rippleBlock){
+        if ([[DeviceUtil getTopviewControler] isKindOfClass:[WXMainViewController class]]) {
+            WXMainViewController *vc = (WXMainViewController*)[DeviceUtil getTopviewControler];
+            [[WeiuiNewPageManager sharedIntstance] setPageStatusListener:@{@"listenerName": @"ZYCRippleButton:listener", @"pageName": vc.pageName} callback:^(id result, BOOL keepAlive) {
+                NSString *status = @"";
+                if ([result isKindOfClass:[NSString class]]) {
+                    status = result;
+                } else if ([result isKindOfClass:[NSDictionary class]]) {
+                    status = result[@"status"];
+                }
+                if ([status isEqualToString:@"pause"]) {
+                    CALayer *layer = [anim valueForKey:@"rippleLayer"];
+                    if (layer) {
+                        [layer removeFromSuperlayer];
+                    }
+                }
+            }];
+        }
         self.rippleBlock();
     }
 }

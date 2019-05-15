@@ -90,6 +90,9 @@
                 }
             }
         }
+        if ([url containsString:@"/./"]) {
+            url = [url stringByReplacingOccurrencesOfString:@"/./" withString:@"/"];
+        }
         return url;
     }
     
@@ -120,6 +123,9 @@
         newUrl = [NSString stringWithFormat:@"%@%@/%@", newUrl, path, url];
     }
     
+    if ([newUrl containsString:@"/./"]) {
+        newUrl = [newUrl stringByReplacingOccurrencesOfString:@"/./" withString:@"/"];
+    }
     return newUrl;
 }
 

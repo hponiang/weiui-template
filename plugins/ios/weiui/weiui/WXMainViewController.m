@@ -243,7 +243,7 @@ static int easyNavigationButtonTag = 8000;
 
 - (void)dealloc
 {
-    NSLog(@"gggggggg::dealloc");
+    NSLog(@"gggggggg::dealloc:%@", self.pageName);
     
     self.identify = @"";
     [self updateStatus:@"destroy"];
