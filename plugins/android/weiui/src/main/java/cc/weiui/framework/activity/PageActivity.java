@@ -915,6 +915,19 @@ public class PageActivity extends AppCompatActivity {
             int cropHeight = scan_main.getHeight() * height.get() / scan_containter.getHeight();
             setScanCropWidth(cropWidth);
             setScanCropHeight(cropHeight);
+
+            SurfaceView surfaceView = findViewById(R.id.scan_preview);
+            ViewGroup.LayoutParams params = surfaceView.getLayoutParams();
+            float screenRatio = ((float) scan_containter.getWidth()) / scan_containter.getHeight();
+            float cameraRatio = ((float) width.get()) / height.get();
+            if (cameraRatio > screenRatio) {
+                params.width = (int) (((float) scan_containter.getHeight()) / height.get() * width.get());
+                params.height = scan_containter.getHeight();
+            }else{
+                params.width = scan_containter.getWidth();
+                params.height = (int) (((float) scan_containter.getWidth()) / width.get() * height.get());
+            }
+            surfaceView.setLayoutParams(params);
         } catch (IOException | RuntimeException ioe) {
             return;
         }

@@ -200,6 +200,16 @@ public class WeexModule extends WXModule {
         myApp().goDesktop(mWXSDKInstance.getContext());
     }
 
+    /**
+     * 获取weiui.config.js配置指定参数
+     * @param key
+     * @return
+     */
+    @JSMethod(uiThread = false)
+    public String getConfigString(String key) {
+        return myApp().getConfigString(key);
+    }
+
     /****************************************************************************************/
     /****************************************************************************************/
 

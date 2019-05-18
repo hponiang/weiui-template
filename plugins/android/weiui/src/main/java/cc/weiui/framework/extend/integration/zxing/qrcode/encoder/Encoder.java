@@ -92,7 +92,7 @@ public final class Encoder {
     BitArray headerBits = new BitArray();
 
     // Append ECI segment if applicable
-    if (mode == Mode.BYTE && (hasEncodingHint || !DEFAULT_BYTE_MODE_ENCODING.equals(encoding))) {
+    if (mode == Mode.BYTE && hasEncodingHint) {
       CharacterSetECI eci = CharacterSetECI.getCharacterSetECIByName(encoding);
       if (eci != null) {
         appendECI(eci, headerBits);
@@ -589,8 +589,11 @@ public final class Encoder {
     } catch (UnsupportedEncodingException uee) {
       throw new WriterException(uee);
     }
-    int length = bytes.length;
-    for (int i = 0; i < length; i += 2) {
+    if (bytes.length % 2 != 0) {
+      throw new WriterException("Kanji byte size not even");
+    }
+    int maxI = bytes.length - 1; // bytes.length must be even
+    for (int i = 0; i < maxI; i += 2) {
       int byte1 = bytes[i] & 0xFF;
       int byte2 = bytes[i + 1] & 0xFF;
       int code = (byte1 << 8) | byte2;

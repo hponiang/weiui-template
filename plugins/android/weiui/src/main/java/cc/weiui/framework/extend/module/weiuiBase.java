@@ -37,6 +37,7 @@ import cc.weiui.framework.extend.integration.glide.request.transition.Transition
 import cc.weiui.framework.extend.integration.xutils.common.Callback;
 import cc.weiui.framework.extend.integration.xutils.http.RequestParams;
 import cc.weiui.framework.extend.integration.xutils.x;
+import cc.weiui.framework.extend.interfaces.OnStringListener;
 import cc.weiui.framework.extend.module.rxtools.tool.RxEncryptTool;
 import cc.weiui.framework.extend.module.utilcode.util.FileUtils;
 import cc.weiui.framework.extend.module.utilcode.util.ScreenUtils;
@@ -349,8 +350,7 @@ public class weiuiBase {
                     try {
                         Bitmap resource = Glide.with(weiui.getApplication()).asBitmap().load(url).apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL)).submit().get();
                         if (resource != null) {
-                            String path = weiuiCommon.saveImageToGallery(weiui.getApplication(), resource, "welcome_image", null);
-                            weiuiCommon.setCachesString(weiui.getApplication(), "main", "welcome_image", path);
+                            weiuiCommon.saveImageToGallery(null, resource, "welcome_image", null, path -> weiuiCommon.setCachesString(weiui.getApplication(), "main", "welcome_image", path));
                         }
                     } catch (Exception ignored) {
                         weiuiCommon.removeCachesString(weiui.getApplication(), "main", "welcome_image");

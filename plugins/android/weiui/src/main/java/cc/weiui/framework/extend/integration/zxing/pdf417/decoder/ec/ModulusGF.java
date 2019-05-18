@@ -22,7 +22,7 @@ import cc.weiui.framework.extend.integration.zxing.pdf417.PDF417Common;
  * <p>A field based on powers of a generator integer, modulo some modulus.</p>
  *
  * @author Sean Owen
- * @see cc.weiui.framework.extend.integration.zxing.common.reedsolomon.GenericGF
+ * @see com.google.zxing.common.reedsolomon.GenericGF
  */
 public final class ModulusGF {
 

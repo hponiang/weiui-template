@@ -18,7 +18,7 @@ package cc.weiui.framework.extend.integration.zxing.pdf417.decoder.ec;
 
 /**
  * @author Sean Owen
- * @see cc.weiui.framework.extend.integration.zxing.common.reedsolomon.GenericGFPoly
+ * @see com.google.zxing.common.reedsolomon.GenericGFPoly
  */
 final class ModulusPoly {
 

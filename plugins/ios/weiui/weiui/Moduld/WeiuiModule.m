@@ -20,6 +20,7 @@
 #import "WeiuiNewPageManager.h"
 #import "WeiuiVersion.h"
 #import "DeviceUtil.h"
+#import "Config.h"
 #import "scanViewController.h"
 #import "CustomWeexSDKManager.h"
 #import "UIImage+itdCategory.h"
@@ -189,6 +190,7 @@ WX_EXPORT_METHOD(@selector(closePage:))
 WX_EXPORT_METHOD(@selector(closePageTo:))
 WX_EXPORT_METHOD(@selector(openWeb:))
 WX_EXPORT_METHOD(@selector(goDesktop))
+WX_EXPORT_METHOD_SYNC(@selector(getConfigString:))
 
 - (void)openPage:(NSDictionary*)params callback:(WXModuleKeepAliveCallback)callback
 {
@@ -281,6 +283,10 @@ WX_EXPORT_METHOD(@selector(goDesktop))
     [[WeiuiNewPageManager sharedIntstance] goDesktop];
 }
 
+- (NSString*)getConfigString:(NSString*)key
+{
+    return [Config getString:key defaultVal:@""];
+}
 
 #pragma mark 打开其他APP
 

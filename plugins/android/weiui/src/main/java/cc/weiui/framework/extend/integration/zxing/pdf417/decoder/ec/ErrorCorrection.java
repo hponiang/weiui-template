@@ -25,7 +25,7 @@ import cc.weiui.framework.extend.integration.zxing.ChecksumException;
  * is quite useful in understanding the algorithm.</p>
  *
  * @author Sean Owen
- * @see cc.weiui.framework.extend.integration.zxing.common.reedsolomon.ReedSolomonDecoder
+ * @see com.google.zxing.common.reedsolomon.ReedSolomonDecoder
  */
 public final class ErrorCorrection {
 

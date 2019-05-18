@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -56,8 +57,10 @@ import cc.weiui.framework.extend.integration.glide.request.target.SimpleTarget;
 import cc.weiui.framework.extend.integration.glide.request.transition.Transition;
 import cc.weiui.framework.extend.integration.xutils.common.util.FileUtil;
 import cc.weiui.framework.extend.integration.xutils.x;
+import cc.weiui.framework.extend.interfaces.OnStringListener;
 import cc.weiui.framework.extend.module.rxtools.tool.RxEncryptTool;
 import cc.weiui.framework.extend.module.utilcode.util.PermissionUtils;
+import cc.weiui.framework.ui.weiui;
 
 public class weiuiCommon {
 
@@ -537,6 +540,40 @@ public class weiuiCommon {
     }
 
     /**
+     * 保存图片（会申请权限）
+     * @param context
+     * @param bmp
+     * @param fileName      自定义文件名
+     * @param appDir        保存目录地址
+     * @param onStringListener
+     */
+    @SuppressLint("WrongConstant")
+    public static void saveImageToGallery(Context context, Bitmap bmp, String fileName, File appDir, OnStringListener onStringListener) {
+        Context finalContext = context != null ? context : weiui.getActivityList().getLast();
+        String path = imageToGallery(finalContext, bmp, fileName, appDir);
+        if (path != null) {
+            onStringListener.doSomething(path);
+            return;
+        }
+        PermissionUtils.permission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .rationale(shouldRequest -> PermissionUtils.showRationaleDialog(finalContext, shouldRequest, "存储"))
+                .callback(new PermissionUtils.FullCallback() {
+                    @Override
+                    public void onGranted(List<String> permissionsGranted) {
+                        onStringListener.doSomething(imageToGallery(finalContext, bmp, fileName, appDir));
+                    }
+
+                    @Override
+                    public void onDenied(List<String> permissionsDeniedForever, List<String> permissionsDenied) {
+                        if (!permissionsDeniedForever.isEmpty()) {
+                            PermissionUtils.showOpenAppSettingDialog(finalContext, "存储");
+                        }
+                        onStringListener.doSomething(null);
+                    }
+                }).request();
+    }
+
+    /**
      * 保存图片
      * @param context
      * @param bmp
@@ -544,7 +581,7 @@ public class weiuiCommon {
      * @param appDir        保存目录地址
      * @return
      */
-    public static String saveImageToGallery(Context context, Bitmap bmp, String fileName, File appDir) {
+    private static String imageToGallery(Context context, Bitmap bmp, String fileName, File appDir) {
         if (appDir == null) {
             appDir = FileUtil.getCacheDir("image");
         }
@@ -575,10 +612,11 @@ public class weiuiCommon {
             // 通知图库更新
             context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(currentFile.getPath()))));
             //
-            return currentFile.getPath();
-        }else{
-            return null;
+            if (currentFile.exists()) {
+                return currentFile.getPath();
+            }
         }
+        return null;
     }
 
     /**
@@ -820,6 +858,7 @@ public class weiuiCommon {
                 Map<String, Object> data = new HashMap<>();
                 data.put("status", "error");
                 data.put("error", "地址出错");
+                data.put("path", "");
                 mJSCallback.invoke(data);
             }
             return;
@@ -831,18 +870,25 @@ public class weiuiCommon {
                 .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL))
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                    public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
                         if (!loadSure[0]) {
                             loadSure[0] = true;
                             File appDir = new File(Environment.getExternalStorageDirectory(), x.app().getPackageName());
                             String fileName = RxEncryptTool.encryptMD5ToString(url) + ".jpg";
-                            String path = weiuiCommon.saveImageToGallery(context, resource, fileName, appDir);
-                            if (mJSCallback != null) {
-                                Map<String, Object> data = new HashMap<>();
-                                data.put("status", "success");
-                                data.put("path", path);
-                                mJSCallback.invoke(data);
-                            }
+                            weiuiCommon.saveImageToGallery(context, resource, fileName, appDir, path -> {
+                                if (mJSCallback != null) {
+                                    Map<String, Object> data = new HashMap<>();
+                                    data.put("status", "error");
+                                    data.put("error", "保存失败");
+                                    data.put("path", "");
+                                    if (path != null) {
+                                        data.put("status", "success");
+                                        data.put("error", "");
+                                        data.put("path", path);
+                                    }
+                                    mJSCallback.invoke(data);
+                                }
+                            });
                         }
                     }
                 });
@@ -852,7 +898,8 @@ public class weiuiCommon {
                 if (mJSCallback != null) {
                     Map<String, Object> data = new HashMap<>();
                     data.put("status", "error");
-                    data.put("error", "保存失败");
+                    data.put("error", "保存超时");
+                    data.put("path", "");
                     mJSCallback.invoke(data);
                 }
             }

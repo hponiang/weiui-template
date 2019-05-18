@@ -113,7 +113,7 @@ public class QRCodeReader implements Reader {
    * around it. This is a specialized method that works exceptionally fast in this special
    * case.
    *
-   * @see cc.weiui.framework.extend.integration.zxing.datamatrix.DataMatrixReader#extractPureBits(BitMatrix)
+   * @see com.google.zxing.datamatrix.DataMatrixReader#extractPureBits(BitMatrix)
    */
   private static BitMatrix extractPureBits(BitMatrix image) throws NotFoundException {
 

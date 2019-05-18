@@ -20,6 +20,7 @@
 #import "WeiuiNewPageManager.h"
 #import "WeiuiVersion.h"
 #import "DeviceUtil.h"
+#import "Config.h"
 #import "scanViewController.h"
 #import <AdSupport/AdSupport.h>
 #import "CustomWeexSDKManager.h"
@@ -226,6 +227,10 @@
     [[WeiuiNewPageManager sharedIntstance] goDesktop];
 }
 
+- (NSString*)getConfigString:(NSString*)key
+{
+    return [Config getString:key defaultVal:@""];
+}
 
 #pragma mark 打开其他APP
 

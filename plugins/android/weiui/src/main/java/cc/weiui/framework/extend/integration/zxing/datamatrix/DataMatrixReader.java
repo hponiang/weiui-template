@@ -97,7 +97,7 @@ public final class DataMatrixReader implements Reader {
    * around it. This is a specialized method that works exceptionally fast in this special
    * case.
    *
-   * @see cc.weiui.framework.extend.integration.zxing.qrcode.QRCodeReader#extractPureBits(BitMatrix)
+   * @see com.google.zxing.qrcode.QRCodeReader#extractPureBits(BitMatrix)
    */
   private static BitMatrix extractPureBits(BitMatrix image) throws NotFoundException {
 

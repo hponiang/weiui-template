@@ -19,7 +19,7 @@ package cc.weiui.framework.extend.integration.zxing.client.result;
 /**
  * <p>Abstract class representing the result of decoding a barcode, as more than
  * a String -- as some type of structured data. This might be a subclass which represents
- * a URL, or an e-mail address. {@link ResultParser#parseResult(cc.weiui.framework.extend.integration.zxing.Result)} will turn a raw
+ * a URL, or an e-mail address. {@link ResultParser#parseResult(com.google.zxing.Result)} will turn a raw
  * decoded string into the most appropriate type of structured representation.</p>
  *
  * <p>Thanks to Jeff Griffin for proposing rewrite of these classes that relies less

@@ -180,6 +180,16 @@ public class WebModule {
         myApp().goDesktop(webView.getContext());
     }
 
+    /**
+     * 获取weiui.config.js配置指定参数
+     * @param webView
+     * @param key
+     * @return
+     */
+    public String getConfigString(ExtendWebView webView, String key) {
+        return myApp().getConfigString(key);
+    }
+
     /****************************************************************************************/
     /****************************************************************************************/
 

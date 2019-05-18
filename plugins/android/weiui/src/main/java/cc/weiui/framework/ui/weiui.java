@@ -55,6 +55,7 @@ import cc.weiui.framework.extend.module.utilcode.utilcodeModule;
 import cc.weiui.framework.extend.module.weiuiAdDialog;
 import cc.weiui.framework.extend.module.weiuiAjax;
 import cc.weiui.framework.extend.module.weiuiAlertDialog;
+import cc.weiui.framework.extend.module.weiuiBase;
 import cc.weiui.framework.extend.module.weiuiCommon;
 import cc.weiui.framework.extend.module.weiuiIhttp;
 import cc.weiui.framework.extend.module.weiuiJson;
@@ -808,6 +809,15 @@ public class weiui {
         home.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         home.addCategory(Intent.CATEGORY_HOME);
         context.startActivity(home);
+    }
+
+    /**
+     * 获取weiui.config.js配置指定参数
+     * @param key
+     * @return
+     */
+    public String getConfigString(String key) {
+        return weiuiBase.config.getString(key, "");
     }
 
     /****************************************************************************************/
