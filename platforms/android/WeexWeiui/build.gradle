@@ -13,7 +13,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.0'
+        classpath 'com.android.tools.build:gradle:3.4.1'
         classpath 'com.taobao.android:weexplugin-gradle-plugin:1.3'
     }
 }
@@ -44,10 +44,10 @@ subprojects {
         applicationId = "cc.weiui.playground"
 
         versionCode = 1
-        versionName = "1.0.36"
+        versionName = "1.0.40"
 
-        weiuiVersionCode = 39
-        weiuiVersionName = "0.0.39"
+        weiuiVersionCode = 40
+        weiuiVersionName = "0.0.40"
 
         compileSdkVersion = 28
         appMinSdkVersion = 16
