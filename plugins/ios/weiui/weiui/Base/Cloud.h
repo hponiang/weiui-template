@@ -10,11 +10,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef void (^ClickWelcome)(void);
+
 @interface Cloud : NSObject
 
-+ (NSInteger) welcome:(nullable UIView *) view;
++ (NSInteger) welcome:(nullable UIView *) view click:(nullable ClickWelcome) click;
 + (void) welcomeClose;
 + (void) appData;
++ (NSMutableDictionary *) getAppInfo;
 + (void) saveWelcomeImage:(NSString*)url wait:(NSInteger)wait;
 + (void) checkUpdateLists:(NSMutableArray*)lists number:(NSInteger)number isReboot:(BOOL)isReboot;
 + (void) reboot;

@@ -58,7 +58,7 @@ NSDictionary *mLaunchOptions;
         [self addReachabilityManager:application didFinishLaunchingWithOptions:launchOptions];
     }
     
-    [Cloud welcome:self.window];
+    [Cloud welcome:self.window click:nil];
     [WeexInitManager didFinishLaunchingWithOptions:launchOptions];
     return YES;
 }
@@ -398,7 +398,7 @@ NSDictionary *mLaunchOptions;
         [[[ViewController alloc]init] loadUrl:[Config getHome]];
         
         [Cloud appData];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)([Cloud welcome:self.window] * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)([Cloud welcome:self.window click:nil] * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [Cloud welcomeClose];
         });
         

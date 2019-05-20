@@ -19,25 +19,50 @@
 
 static NSString *apiUrl = @"https://console.weiui.app/";
 static UIImageView *welcomeView;
+static ClickWelcome myClickWelcome;
 
 //加载启动图
-+ (NSInteger) welcome:(nullable UIView *) view
++ (NSInteger) welcome:(nullable UIView *) view click:(nullable ClickWelcome) click
 {
     WeiuiStorageManager *storage = [WeiuiStorageManager sharedIntstance];
     NSString *welcome_image = [storage getCachesString:@"welcome_image" defaultVal:@""];
     if (welcome_image.length == 0 || ![welcome_image hasPrefix:@"http"]) {
         return 0;
     }
+    //
+    NSTimeInterval interval = [[NSDate date] timeIntervalSince1970];
+    long timeStamp = interval;
+    NSDictionary *appInfo = [Cloud getAppInfo];
+    long welcome_limit_s = [WXConvert NSInteger:appInfo[@"welcome_limit_s"]];
+    long welcome_limit_e = [WXConvert NSInteger:appInfo[@"welcome_limit_e"]];
+    if (welcome_limit_s > 0 && welcome_limit_s > timeStamp) {
+        return 0;
+    }
+    if (welcome_limit_e > 0 && welcome_limit_e < timeStamp) {
+        return 0;
+    }
+    //
+    myClickWelcome = click;
     if (view != nil) {
         welcomeView = [[UIImageView alloc] initWithFrame:[UIScreen mainScreen].bounds];
         [welcomeView sd_setImageWithURL:[NSURL URLWithString:(NSString*) welcome_image]];
         welcomeView.contentMode = UIViewContentModeScaleAspectFill;
         welcomeView.clipsToBounds = YES;
         [view addSubview:welcomeView];
+        //
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickWelcome:)];
+        [view addGestureRecognizer:tapGesture];
     }
     NSInteger welcome_wait = [[storage getCachesString:@"welcome_wait" defaultVal:@"2000"] intValue];
     welcome_wait = welcome_wait > 100 ? welcome_wait : 2000;
     return welcome_wait / 1000;
+}
+
+//点击启动图
++ (void)clickWelcome:(UIGestureRecognizer *)gestureRecognizer {
+    if (myClickWelcome != nil) {
+        myClickWelcome();
+    }
 }
 
 //手动删除启动图
@@ -80,12 +105,30 @@ static UIImageView *welcomeView;
                 if ([[responseObject objectForKey:@"ret"] integerValue] == 1) {
                     NSDictionary *data = responseObject[@"data"];
                     NSMutableDictionary *jsonData = [NSMutableDictionary dictionaryWithDictionary:data];
+                    [[WeiuiStorageManager sharedIntstance] setCachesString:@"main::appInfo" value:jsonData expired:0];
                     [self saveWelcomeImage:[NSString stringWithFormat:@"%@", jsonData[@"welcome_image"]] wait:[[jsonData objectForKey:@"welcome_wait"] integerValue]];
                     [self checkUpdateLists:[jsonData objectForKey:@"uplists"] number:0 isReboot:NO];
                 }
             }
         }@catch (NSException *exception) { }
     } failure:nil];
+}
+
+//获取云数据缓存
++ (NSMutableDictionary *) getAppInfo {
+    id jsonString = [[WeiuiStorageManager sharedIntstance] getCachesString:@"main::appInfo" defaultVal:@""];
+    NSMutableDictionary *appInfo = [NSMutableDictionary new];
+    if ([jsonString isKindOfClass:[NSString class]]) {
+        NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+        NSError *err;
+        appInfo = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&err];
+        if (err) {
+            appInfo = [NSMutableDictionary new];
+        }
+    } else if ([jsonString isKindOfClass:[NSDictionary class]]) {
+        appInfo = jsonString;
+    }
+    return appInfo;
 }
 
 //缓存启动图

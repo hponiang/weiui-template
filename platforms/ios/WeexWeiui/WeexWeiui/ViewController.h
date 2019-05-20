@@ -13,5 +13,7 @@
 
 - (BOOL) isReady;
 
+- (void) clickWelcome;
+
 @end
 
