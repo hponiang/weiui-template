@@ -26,11 +26,15 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         // 跳过按钮
-        ZLDrawCircleProgressBtn *drawCircleBtn = [[ZLDrawCircleProgressBtn alloc]initWithFrame:CGRectMake(kscreenWidth - 60, 60, 40, 40)];
+        float witdh = 38.0f;
+        float height = 38.0f;
+        float top = [[UIApplication sharedApplication] statusBarFrame].size.height + 18;
+        float letf = kscreenWidth - witdh - 18;
+        ZLDrawCircleProgressBtn *drawCircleBtn = [[ZLDrawCircleProgressBtn alloc]initWithFrame:CGRectMake(letf, top, witdh, height)];
         drawCircleBtn.lineWidth = 2;
         [drawCircleBtn setTitle:@"跳过" forState:UIControlStateNormal];
         [drawCircleBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        drawCircleBtn.titleLabel.font = [UIFont systemFontOfSize:14];
+        drawCircleBtn.titleLabel.font = [UIFont systemFontOfSize:13];
         
         [drawCircleBtn addTarget:self action:@selector(removeProgress) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:drawCircleBtn];
