@@ -50,17 +50,31 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
 
-        <ProgressBar
-            android:id="@+id/fillload"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
             android:layout_marginTop="18dp"
             android:layout_marginEnd="18dp"
             android:layout_marginRight="18dp"
-            android:visibility="gone"
-            style="?android:attr/progressBarStyle" />
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <cc.weiui.framework.extend.view.SkipView
+                android:id="@+id/fillskip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <ProgressBar
+                android:id="@+id/fillload"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:visibility="gone"
+                style="?android:attr/progressBarStyle" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 

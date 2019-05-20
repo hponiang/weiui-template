@@ -305,5 +305,26 @@
         <attr name="cancelActionMarginTop" format="dimension|reference" />
         <attr name="actionTextSize" format="dimension|reference" />
     </declare-styleable>
+    <declare-styleable name="SkipView">
+        <attr name="circleSolidColor" format="color"/>
+        <attr name="circleFrameColor" format="color"/>
+        <attr name="progressColor"/>
+        <attr name="textColor" />
+        <attr name="progressWidth" format="integer"/>
+        <attr name="textSize" format="integer"/>
+        <attr name="textPadding" format="integer"/>
+        <attr name="totalTime" format="integer"/>
+        <attr name="text" format="string"/>
+        <attr name="startPosition" format="enum">
+            <enum name="LEFT" value="180"/>
+            <enum name="RIGHT" value="0"/>
+            <enum name="TOP" value="-90"/>
+            <enum name="BOTTOM" value="90"/>
+        </attr>
+        <attr name="progressType" format="enum">
+            <enum name="CLOCKWISE" value="0"/>
+            <enum name="COUNTERCLOCKWISE" value="1"/>
+        </attr>
+    </declare-styleable>
 
 </resources>

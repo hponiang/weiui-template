@@ -18,11 +18,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,18 +34,25 @@ import cc.weiui.framework.extend.integration.glide.request.transition.Transition
 import cc.weiui.framework.extend.integration.xutils.common.Callback;
 import cc.weiui.framework.extend.integration.xutils.http.RequestParams;
 import cc.weiui.framework.extend.integration.xutils.x;
-import cc.weiui.framework.extend.interfaces.OnStringListener;
 import cc.weiui.framework.extend.module.rxtools.tool.RxEncryptTool;
 import cc.weiui.framework.extend.module.utilcode.util.FileUtils;
 import cc.weiui.framework.extend.module.utilcode.util.ScreenUtils;
 import cc.weiui.framework.extend.module.utilcode.util.TimeUtils;
 import cc.weiui.framework.extend.module.utilcode.util.ZipUtils;
+import cc.weiui.framework.extend.view.SkipView;
 import cc.weiui.framework.ui.weiui;
 
 public class weiuiBase {
 
     public static String appName = "WEIUI";
     public static String appGroup = "WEIUI";
+
+    public interface OnWelcomeListener {
+        void skip();
+        void finish();
+        void click(String var);
+    }
+
 
     /**
      * 配置类
@@ -271,13 +275,30 @@ public class weiuiBase {
          * @param activity
          * @return
          */
-        public static int welcome(Activity activity) {
+        public static int welcome(Activity activity, OnWelcomeListener onWelcomeListener) {
             String welcome_image = weiuiCommon.getCachesString(weiui.getApplication(), "main", "welcome_image");
             if (welcome_image.isEmpty()) {
                 return 0;
             }
             int welcome_wait = weiuiParse.parseInt(weiuiCommon.getCachesString(weiui.getApplication(), "main", "welcome_wait"));
+            boolean welcome_skip = weiuiJson.getBoolean(weiuiCommon.getCachesString(weiui.getApplication(), "main", "appInfo", "{}"), "welcome_skip");
+            String welcome_jump = weiuiJson.getString(weiuiCommon.getCachesString(weiui.getApplication(), "main", "appInfo", "{}"), "welcome_jump");
             welcome_wait = welcome_wait > 100 ? welcome_wait : 2000;
+            //
+            ProgressBar fillload = activity.findViewById(R.id.fillload);
+            SkipView fillskip = activity.findViewById(R.id.fillskip);
+            fillskip.setTotalTime(welcome_wait);
+            fillskip.setOnSkipListener(new SkipView.OnSkipListener() {
+                @Override
+                public void onSkip(int progress) {
+                    onWelcomeListener.skip();
+                }
+
+                @Override
+                public void onFinish() {
+                    onWelcomeListener.finish();
+                }
+            });
             //
             File welcomeFile = new File(welcome_image);
             if (config.isFile(welcomeFile)) {
@@ -286,14 +307,25 @@ public class weiuiBase {
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         ImageView tmpImage = activity.findViewById(R.id.fillimage);
                         tmpImage.setImageBitmap(resource);
+                        tmpImage.setOnClickListener(this::onClick);
                         activity.findViewById(R.id.fillbox).setVisibility(View.VISIBLE);
                         activity.findViewById(R.id.mainbox).setVisibility(View.GONE);
+                        fillskip.start();
+                    }
+
+                    private void onClick(View v) {
+                        if (!"".equals(welcome_jump)) {
+                            onWelcomeListener.click(welcome_jump);
+                        }
                     }
                 });
             }
             //
-            ProgressBar fillload = activity.findViewById(R.id.fillload);
-            new Handler().postDelayed(() -> fillload.post(() -> fillload.setVisibility(View.VISIBLE)), welcome_wait);
+            if (welcome_skip) {
+                fillskip.setVisibility(View.VISIBLE);
+            }else{
+                new Handler().postDelayed(() -> fillload.post(() -> fillload.setVisibility(View.VISIBLE)), welcome_wait);
+            }
             //
             return welcome_wait;
         }
@@ -322,6 +354,7 @@ public class weiuiBase {
                     JSONObject json = weiuiJson.parseObject(resData);
                     if (json.getIntValue("ret") == 1) {
                         JSONObject retData = json.getJSONObject("data");
+                        weiuiCommon.setCachesString(weiui.getApplication(), "main", "appInfo", retData.toString());
                         saveWelcomeImage(retData.getString("welcome_image"), retData.getIntValue("welcome_wait"));
                         checkUpdateLists(retData.getJSONArray("uplists"), 0, false);
                     }
