@@ -280,10 +280,20 @@ public class weiuiBase {
             if (welcome_image.isEmpty()) {
                 return 0;
             }
-            int welcome_wait = weiuiParse.parseInt(weiuiCommon.getCachesString(weiui.getApplication(), "main", "welcome_wait"));
-            boolean welcome_skip = weiuiJson.getBoolean(weiuiCommon.getCachesString(weiui.getApplication(), "main", "appInfo", "{}"), "welcome_skip");
-            String welcome_jump = weiuiJson.getString(weiuiCommon.getCachesString(weiui.getApplication(), "main", "appInfo", "{}"), "welcome_jump");
-            welcome_wait = welcome_wait > 100 ? welcome_wait : 2000;
+            JSONObject appInfo = weiuiJson.parseObject(weiuiCommon.getCachesString(weiui.getApplication(), "main", "appInfo", "{}"));
+            int welcome_wait = weiuiParse.parseInt(weiuiCommon.getCachesString(weiui.getApplication(), "main", "welcome_wait")); welcome_wait = welcome_wait > 100 ? welcome_wait : 2000;
+            boolean welcome_skip = weiuiJson.getBoolean(appInfo, "welcome_skip");
+            String welcome_jump = weiuiJson.getString(appInfo, "welcome_jump");
+            long welcome_limit_s = weiuiJson.getLong(appInfo, "welcome_limit_s");
+            long welcome_limit_e = weiuiJson.getLong(appInfo, "welcome_limit_e");
+            //
+            long timeStamp = System.currentTimeMillis() / 1000;
+            if (welcome_limit_s > 0 && welcome_limit_s > timeStamp) {
+                return 0;
+            }
+            if (welcome_limit_e > 0 && welcome_limit_e < timeStamp) {
+                return 0;
+            }
             //
             ProgressBar fillload = activity.findViewById(R.id.fillload);
             SkipView fillskip = activity.findViewById(R.id.fillskip);
