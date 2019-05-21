@@ -17,9 +17,10 @@
  * under the License.
  */
 
-#include <math.h>
 #include "core/render/node/render_object.h"
-#include "base/ViewUtils.h"
+#include <math.h>
+
+#include "core/common/view_utils.h"
 #include "core/css/constants_name.h"
 #include "core/css/constants_value.h"
 #include "core/css/css_value_getter.h"
@@ -369,6 +370,7 @@ bool RenderObject::UpdateStyleInternal(const std::string key,
   } else {
     float fvalue = getFloatByViewport(value,
                                       RenderManager::GetInstance()->viewport_width(page_id()),
+                                      RenderManager::GetInstance()->DeviceWidth(page_id()),
                                       RenderManager::GetInstance()->round_off_deviation(page_id()));
     if (!isnan(fvalue)) {
       functor(fvalue);

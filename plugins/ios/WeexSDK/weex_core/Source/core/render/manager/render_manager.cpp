@@ -16,25 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+#include "core/render/manager/render_manager.h"
 
+#include <chrono>
 #include <utility>
 #include <vector>
-#include <chrono>
 
-#include "wson/wson_parser.h"
-#include "base/LogDefines.h"
-#include "base/ViewUtils.h"
-#include "base/TimeUtils.h"
+#include "base/log_defines.h"
+#include "base/time_utils.h"
+#include "core/common/view_utils.h"
 #include "core/css/constants_name.h"
 #include "core/layout/measure_func_adapter.h"
 #include "core/parser/dom_wson.h"
-#include "core/render/manager/render_manager.h"
 #include "core/render/node/render_object.h"
 #include "core/render/page/render_page.h"
+#include "wson/wson_parser.h"
 
 namespace WeexCore {
 
 RenderManager *RenderManager::g_pInstance = nullptr;
+
+
 
 bool RenderManager::CreatePage(const std::string& page_id, const char *data) {
     
@@ -47,19 +49,7 @@ bool RenderManager::CreatePage(const std::string& page_id, const char *data) {
   RenderPage *page = new RenderPage(page_id);
   pages_.insert(std::pair<std::string, RenderPage *>(page_id, page));
 
-  std::map<std::string, float>::iterator iter_viewport =
-      this->viewports_.find(page_id);
-  if (iter_viewport != this->viewports_.end()) {
-    this->set_viewport_width(page_id, iter_viewport->second);
-    this->viewports_.erase(page_id);
-  }
-
-  std::map<std::string, bool>::iterator iter_deviation =
-      this->round_off_deviations_.find(page_id);
-  if (iter_deviation != this->round_off_deviations_.end()) {
-    this->set_round_off_deviation(page_id, iter_deviation->second);
-    this->round_off_deviations_.erase(page_id);
-  }
+    initDeviceConfig(page, page_id);
 
   int64_t start_time = getCurrentTime();
   RenderObject *root = Wson2RenderObject(data, page_id);
@@ -75,15 +65,11 @@ bool RenderManager::CreatePage(const std::string& page_id, RenderObject *root) {
   LOGD("[RenderManager] CreatePage >>>> pageId: %s, dom data: %s",
        pageId.c_str(), parser.toStringUTF8().c_str());
 #endif
+
   RenderPage *page = new RenderPage(page_id);
   this->pages_.insert(std::pair<std::string, RenderPage *>(page_id, page));
 
-  std::map<std::string, float>::iterator iter =
-      this->viewports_.find(page_id);
-  if (iter != this->viewports_.end()) {
-    RenderManager::GetInstance()->set_viewport_width(page_id, iter->second);
-    this->viewports_.erase(page_id);
-  }
+    initDeviceConfig(page, page_id);
 
   page->set_is_dirty(true);
   return page->CreateRootRender(root);
@@ -96,13 +82,8 @@ bool RenderManager::CreatePage(const std::string& page_id, std::function<RenderO
     
     RenderPage *page = new RenderPage(page_id);
     this->pages_.insert(std::pair<std::string, RenderPage *>(page_id, page));
-    
-    std::map<std::string, float>::iterator iter =
-    this->viewports_.find(page_id);
-    if (iter != this->viewports_.end()) {
-        RenderManager::GetInstance()->set_viewport_width(page_id, iter->second);
-        this->viewports_.erase(page_id);
-    }
+
+    initDeviceConfig(page, page_id);
     
     int64_t start_time = getCurrentTime();
     RenderObject *root = constructRoot(page);
@@ -370,9 +351,31 @@ float RenderManager::viewport_width(const std::string &page_id) {
 
 void RenderManager::set_viewport_width(const std::string &page_id, float viewport_width) {
   RenderPage *page = GetPage(page_id);
-  if (page == nullptr) return;
+  if (page == nullptr) {
+      // page is not created yet, we should store the view port value
+      viewports_.insert(std::pair<std::string, float>(page_id, viewport_width));
+      return;
+  }
 
   page->set_viewport_width(viewport_width);
+}
+
+float RenderManager::DeviceWidth(const std::string &page_id) {
+  RenderPage *page = GetPage(page_id);
+  if(page == nullptr){
+    return WXCoreEnvironment::getInstance()->DeviceWidth();
+  }
+  return page->device_width();
+}
+
+void RenderManager::setDeviceWidth(const std::string &page_id, float device_width) {
+  RenderPage *page = GetPage(page_id);
+  if (page == nullptr) {
+    // page is not created yet, we should store the device width value
+    device_heights_.insert(std::pair<std::string, float>(page_id, device_width));
+    return;
+  }
+  page->set_device_width(device_width);
 }
 
 bool RenderManager::round_off_deviation(const std::string &page_id) {
@@ -394,6 +397,30 @@ void RenderManager::Batch(const std::string &page_id) {
   if (page == nullptr) return;
 
   page->Batch();
+}
+
+void RenderManager::initDeviceConfig(RenderPage *page, const std::string &page_id) {
+  std::map<std::string, float>::iterator iter_viewport =
+          this->viewports_.find(page_id);
+  if (iter_viewport != this->viewports_.end()) {
+    page->set_viewport_width(iter_viewport->second);
+    this->viewports_.erase(page_id);
+  }
+
+  std::map<std::string, float>::iterator iter_device_width =
+          this->device_heights_.find(page_id);
+  if (iter_device_width != this->device_heights_.end()) {
+    page->set_device_width(iter_device_width->second);
+    this->device_heights_.erase(page_id);
+  }
+
+  std::map<std::string, bool>::iterator iter_deviation =
+          this->round_off_deviations_.find(page_id);
+  if (iter_deviation != this->round_off_deviations_.end()) {
+    this->set_round_off_deviation(page_id, iter_deviation->second);
+    this->round_off_deviations_.erase(page_id);
+  }
+
 }
 
 }  // namespace WeexCore

@@ -28,9 +28,9 @@
 #import "WXComponent+PseudoClassManagement.h"
 #import "WXTextInputComponent.h"
 #import "WXComponent+Layout.h"
-#import "CustomWeexSDKManager.h"
 
 //weiui dev
+#import "CustomWeexSDKManager.h"
 #define iPhoneXSeries (([[UIApplication sharedApplication] statusBarFrame].size.height == 44.0f) ? (YES):(NO))
 
 @interface WXEditComponent()
@@ -731,7 +731,7 @@ WX_EXPORT_METHOD(@selector(setTextFormatter:))
             };
         }
     }
-
+    
     if ([[CustomWeexSDKManager getSoftInputMode] isEqualToString:@"pan"]) {
         //若键盘盖住输入框，页面不会自动上移
     }else{
@@ -964,7 +964,7 @@ WX_EXPORT_METHOD(@selector(setTextFormatter:))
     }
     
     if (_keyboardEvent) {
-        [self fireEvent:@"keyboard" params:@{ @"isShow": @YES, @"keyboardSize": @{@"width": @(end.size.width), @"height": @(end.size.height)} }];
+        [self fireEvent:@"keyboard" params:@{ @"isShow": @YES, @"keyboardSize": @(end.size.height / self.weexInstance.pixelScaleFactor) }];
     }
     
     _keyboardHidden = NO;

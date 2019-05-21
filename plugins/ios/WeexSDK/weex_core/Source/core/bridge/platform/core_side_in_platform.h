@@ -46,6 +46,7 @@ class CoreSideInPlatform : public PlatformBridge::CoreSide {
   void MarkDirty(const std::string &instance_id,
                  const std::string &render_ref) override;
   void SetViewPortWidth(const std::string &instance_id, float width) override;
+  void SetDeviceDisplay(const std::string &instance_id, float width, float height, float scale) override;
   void SetPageDirty(const std::string &instance_id) override;
   void ForceLayout(const std::string &instance_id) override;
   bool NotifyLayout(const std::string &instance_id) override;
@@ -97,13 +98,16 @@ class CoreSideInPlatform : public PlatformBridge::CoreSide {
                           long callback_id) override;
   int CreateInstance(const char *instanceId, const char *func,
                      const char *script, int script_length, const char *opts, const char *initData,
-                     const char *extendsApi, const char* render_strategy) override;
+                     const char *extendsApi, std::vector<INIT_FRAMEWORK_PARAMS*>& params, const char* render_strategy) override;
   std::unique_ptr<WeexJSResult> ExecJSOnInstance(const char *instanceId,
                                const char *script) override;
   int DestroyInstance(const char *instanceId) override;
   int UpdateGlobalConfig(const char *config) override;
 
- private:
+  int UpdateInitFrameworkParams(const std::string& key, const std::string& value, const std::string& desc) override;
+
+
+private:
   DISALLOW_COPY_AND_ASSIGN(CoreSideInPlatform);
 };
 }  // namespace WeexCore

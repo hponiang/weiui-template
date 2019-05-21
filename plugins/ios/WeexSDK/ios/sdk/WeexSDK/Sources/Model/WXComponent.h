@@ -17,12 +17,6 @@
  * under the License.
  */
 
-/**
- *  def : use weex_flex_engin
- *  ndef: use yoga
- **/
-
-
 #import <Foundation/Foundation.h>
 #import "WXType.h"
 
@@ -32,6 +26,10 @@ typedef enum : NSUInteger {
     WXDisplayTypeNone,
     WXDisplayTypeBlock
 } WXDisplayType;
+
+typedef enum : NSUInteger {
+    WXComponentViewCreatedCallback
+} WXComponentCallbackType;
 
 /**
  * @abstract the component callback , result can be string or dictionary.
@@ -174,6 +172,15 @@ NS_ASSUME_NONNULL_BEGIN
  *
  */
 - (nullable CGSize (^)(CGSize constrainedSize))measureBlock;
+
+/**
+ *  The callback of the component
+ *
+ *  When the callbackType is WXComponentViewCreatedCallback, the result type is UIView.
+ *
+ *  @return A block that takes component, callbackType and a result.
+ **/
+@property (nonatomic, copy) void (^componentCallback)(WXComponent *component, WXComponentCallbackType callbackType, id result);
 
 /**
  * @abstract Called on main thread when the component has just laid out.

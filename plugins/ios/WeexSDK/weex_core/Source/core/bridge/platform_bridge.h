@@ -25,6 +25,7 @@
 #include <string>
 #include <vector>
 #include "base/common.h"
+#include "base/closure.h"
 #include "include/WeexApiHeader.h"
 
 namespace WeexCore {
@@ -63,6 +64,8 @@ class PlatformBridge {
                            const std::string& render_ref) = 0;
     virtual void SetViewPortWidth(const std::string& instance_id,
                                   float width) = 0;
+    virtual void SetDeviceDisplay(const std::string &instance_id, float width, float height, float scale) = 0;
+
     virtual void SetPageDirty(const std::string& instance_id) = 0;
     virtual void ForceLayout(const std::string& instance_id) = 0;
     virtual bool NotifyLayout(const std::string& instance_id) = 0;
@@ -119,12 +122,15 @@ class PlatformBridge {
                                     long callback_id) = 0;
     virtual int CreateInstance(const char* instanceId, const char* func,
                                const char* script, int script_length, const char* opts,
-                               const char* initData, const char* extendsApi,
+                               const char* initData, const char* extendsApi, std::vector<INIT_FRAMEWORK_PARAMS*>& params,
                                const char* render_strategy) = 0;
     virtual std::unique_ptr<WeexJSResult> ExecJSOnInstance(const char* instanceId,
                                          const char* script) = 0;
     virtual int DestroyInstance(const char* instanceId) = 0;
+
     virtual int UpdateGlobalConfig(const char* config) = 0;
+
+    virtual int UpdateInitFrameworkParams(const std::string& key, const std::string& value, const std::string& desc) = 0;
 
     inline PlatformBridge* bridge() { return bridge_; }
 
@@ -169,6 +175,11 @@ class PlatformBridge {
                                      const char* method, const char* arguments,
                                      int arguments_length, const char* options,
                                      int options_length) = 0;
+#if OS_IOS
+    virtual std::unique_ptr<ValueWithType> RegisterPluginModule(const char *name, const char *class_name, const char *version) = 0;
+    virtual std::unique_ptr<ValueWithType> RegisterPluginComponent(const char *name, const char *class_name, const char *version) = 0;
+    virtual void PostTaskOnComponentThread(const weex::base::Closure closure) = 0;
+#endif
     virtual void SetTimeout(const char* callback_id, const char* time) = 0;
     virtual void NativeLog(const char* str_array) = 0;
     virtual int UpdateFinish(const char* page_id, const char* task, int taskLen,
