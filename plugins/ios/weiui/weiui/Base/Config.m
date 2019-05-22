@@ -121,6 +121,7 @@ static NSMutableArray *verifyDir;
     NSFileManager *myFileManager = [NSFileManager defaultManager];
     BOOL isDir = NO;
     BOOL isExist = NO;
+    long localVersion = (long)[Config getLocalVersion];
     
     if (verifyDir == nil) {
         verifyDir = [NSMutableArray array];
@@ -128,7 +129,10 @@ static NSMutableArray *verifyDir;
         for (NSString * dirName in tmpArray) {
             isExist = [myFileManager fileExistsAtPath:[NSString stringWithFormat:@"%@/%@", path, dirName] isDirectory:&isDir];
             if (isDir) {
-                [verifyDir addObject:dirName];
+                isExist = [myFileManager fileExistsAtPath:[NSString stringWithFormat:@"%@/%@/%ld.release", path, dirName, localVersion] isDirectory:&isDir];
+                if (isExist && !isDir) {
+                    [verifyDir addObject:dirName];
+                }
             }
         }
         [verifyDir sortUsingComparator:^NSComparisonResult(id _Nonnull obj1, id _Nonnull obj2) {

@@ -173,6 +173,7 @@ static ClickWelcome myClickWelcome;
     }
     NSString *zipFile = [Config getSandPath:[[NSString alloc] initWithFormat:@"update/%@.zip", id]];
     NSString *zipUnDir = [Config getSandPath:[[NSString alloc] initWithFormat:@"update/%@", id]];
+    NSString *releaseFile = [Config getSandPath:[[NSString alloc] initWithFormat:@"update/%@/%ld.release", id, (long)[Config getLocalVersion]]];
     if (valid == 1) {
         //开始修复
         if ([Config isFile:lockFile]) {
@@ -190,6 +191,7 @@ static ClickWelcome myClickWelcome;
         }
         //标记回调
         [fm createFileAtPath:lockFile contents:[[Config getyyyMMddHHmmss] dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
+        [fm createFileAtPath:releaseFile contents:[[Config getyyyMMddHHmmss] dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
         AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
         NSString *tempUrl = [[NSString alloc] initWithFormat:@"%@api/client/update/success?id=%@", apiUrl, id];
         [manager GET:tempUrl parameters:nil progress:nil success:nil failure:nil];
