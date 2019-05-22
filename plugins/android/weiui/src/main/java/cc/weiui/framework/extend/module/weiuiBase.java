@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -79,7 +78,6 @@ public class weiuiBase {
                         int read = fis.read(buffer);
                         fis.close();
                         if (read != -1) {
-                            weiuiCommon.setVariate("configDataIsDist", "true");
                             configData = weiuiJson.parseObject(new String(buffer));
                             return configData;
                         }
@@ -162,8 +160,9 @@ public class weiuiBase {
             }
             rootPath+= "/";
 
+            String localVersion = String.valueOf(weiuiCommon.getLocalVersion(weiui.getApplication()));
             String originalPath = originalUrl.replace(rootPath, "");
-            File path = weiui.getApplication().getExternalFilesDir("update");
+            File path = weiui.getApplication().getExternalFilesDir("update/" + localVersion);
             if (path == null) {
                 return originalUrl;
             }
@@ -190,13 +189,10 @@ public class weiuiBase {
 
             String newUrl = "";
             for (int i = 0; i < verifyDir.size(); i++) {
-                File tempPath = weiui.getApplication().getExternalFilesDir("update/" + verifyDir.getString(i) + "/" + originalPath);
+                File tempPath = weiui.getApplication().getExternalFilesDir("update/" + localVersion + "/" + verifyDir.getString(i));
                 if (tempPath != null) {
-                    if (isDir(tempPath)) {
-                        Log.d("gggggg", "verifyFile: 11");
-                    }
+                    tempPath = new File(tempPath.getPath() + "/" + originalPath);
                     if (isFile(tempPath)) {
-                        Log.d("gggggg", "verifyFile: 22");
                         newUrl = "file://" + tempPath.getPath();
                         break;
                     }
@@ -211,7 +207,8 @@ public class weiuiBase {
          * @return
          */
         public static boolean verifyIsUpdate() {
-            File tempDir = weiui.getApplication().getExternalFilesDir("update");
+            String localVersion = String.valueOf(weiuiCommon.getLocalVersion(weiui.getApplication()));
+            File tempDir = weiui.getApplication().getExternalFilesDir("update/" + localVersion);
             if (tempDir == null) {
                 return false;
             }
@@ -427,7 +424,8 @@ public class weiuiBase {
                 return;
             }
             //
-            File tempDir = weiui.getApplication().getExternalFilesDir("update");
+            String localVersion = String.valueOf(weiuiCommon.getLocalVersion(weiui.getApplication()));
+            File tempDir = weiui.getApplication().getExternalFilesDir("update/" + localVersion);
             File lockFile = new File(tempDir, RxEncryptTool.encryptMD5ToString(url) + ".lock");
             File zipSaveFile = new File(tempDir, id + ".zip");
             File zipUnDir = new File(tempDir, id);

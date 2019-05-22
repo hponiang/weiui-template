@@ -1832,9 +1832,8 @@ public class PageActivity extends AppCompatActivity {
         mActionItem.add(new ActionItem(5, "刷新"));
         mActionItem.add(new ActionItem(6, "隐藏DEV"));
         mActionItem.add(new ActionItem(7, "重启APP"));
-        if ("true".equals(weiuiCommon.getVariateStr("configDataIsDist"))) {
+        if (weiuiBase.config.verifyIsUpdate()) {
             mActionItem.add(new ActionItem(8, "清除热更新数据"));
-
         }
         ActionSheet.createBuilder(this, getSupportFragmentManager())
                 .setSubTitle("开发工具菜单")
