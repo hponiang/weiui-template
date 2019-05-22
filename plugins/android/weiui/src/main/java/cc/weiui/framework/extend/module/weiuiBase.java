@@ -160,15 +160,15 @@ public class weiuiBase {
             }
             rootPath+= "/";
 
-            String localVersion = String.valueOf(weiuiCommon.getLocalVersion(weiui.getApplication()));
             String originalPath = originalUrl.replace(rootPath, "");
-            File path = weiui.getApplication().getExternalFilesDir("update/" + localVersion);
+            File path = weiui.getApplication().getExternalFilesDir("update");
             if (path == null) {
                 return originalUrl;
             }
 
             if (verifyDir == null) {
                 verifyDir = new JSONArray();
+                String localVersion = String.valueOf(weiuiCommon.getLocalVersion(weiui.getApplication()));
                 File[] files = path.listFiles();
                 List<File> fileList = Arrays.asList(files);
                 Collections.sort(fileList, (o1, o2) -> {
@@ -181,7 +181,7 @@ public class weiuiBase {
                 });
                 Collections.reverse(fileList);
                 for (File file1 : files) {
-                    if (file1.isDirectory()) {
+                    if (file1.isDirectory() && isFile(new File(file1.getPath() + "/" + localVersion + ".release"))) {
                         verifyDir.add(file1.getName());
                     }
                 }
@@ -189,7 +189,7 @@ public class weiuiBase {
 
             String newUrl = "";
             for (int i = 0; i < verifyDir.size(); i++) {
-                File tempPath = weiui.getApplication().getExternalFilesDir("update/" + localVersion + "/" + verifyDir.getString(i));
+                File tempPath = weiui.getApplication().getExternalFilesDir("update/" + verifyDir.getString(i));
                 if (tempPath != null) {
                     tempPath = new File(tempPath.getPath() + "/" + originalPath);
                     if (isFile(tempPath)) {
@@ -207,8 +207,7 @@ public class weiuiBase {
          * @return
          */
         public static boolean verifyIsUpdate() {
-            String localVersion = String.valueOf(weiuiCommon.getLocalVersion(weiui.getApplication()));
-            File tempDir = weiui.getApplication().getExternalFilesDir("update/" + localVersion);
+            File tempDir = weiui.getApplication().getExternalFilesDir("update");
             if (tempDir == null) {
                 return false;
             }
@@ -424,11 +423,11 @@ public class weiuiBase {
                 return;
             }
             //
-            String localVersion = String.valueOf(weiuiCommon.getLocalVersion(weiui.getApplication()));
-            File tempDir = weiui.getApplication().getExternalFilesDir("update/" + localVersion);
+            File tempDir = weiui.getApplication().getExternalFilesDir("update");
             File lockFile = new File(tempDir, RxEncryptTool.encryptMD5ToString(url) + ".lock");
             File zipSaveFile = new File(tempDir, id + ".zip");
             File zipUnDir = new File(tempDir, id);
+            File releaseFile = new File(tempDir, id + "/" + weiuiCommon.getLocalVersion(weiui.getApplication()) + ".release");
             if (valid == 1) {
                 //开始修复
                 if (config.isFile(lockFile)) {
@@ -449,6 +448,11 @@ public class weiuiBase {
                                 //
                                 FileOutputStream fos = new FileOutputStream(lockFile);
                                 byte[] bytes = TimeUtils.getNowString().getBytes();
+                                fos.write(bytes);
+                                fos.close();
+                                //
+                                fos = new FileOutputStream(releaseFile);
+                                bytes = TimeUtils.getNowString().getBytes();
                                 fos.write(bytes);
                                 fos.close();
                                 //
