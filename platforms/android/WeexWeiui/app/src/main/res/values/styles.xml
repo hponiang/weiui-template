@@ -30,7 +30,7 @@
     </style>
 
     <style name="WelcomeStyle" parent="FullscreenTheme">
-        <item name="android:windowBackground">@drawable/screen</item>
+        <item name="android:windowBackground">@drawable/screen_bitmap</item>
     </style>
 
 </resources>
