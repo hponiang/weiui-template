@@ -33,6 +33,4 @@
 
 - (void)setIndicatorHidden:(BOOL)hidden;
 
-- (void)setDisplay;
-
 @end

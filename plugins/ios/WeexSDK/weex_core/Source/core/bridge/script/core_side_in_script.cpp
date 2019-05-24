@@ -469,15 +469,7 @@ void CoreSideInScript::OnReceivedResult(long callback_id,
 void CoreSideInScript::UpdateComponentData(const char* page_id,
                                            const char* cid,
                                            const char* json_data) {
-    auto handler = EagleBridge::GetInstance()->data_render_handler();
-    if(handler){
-      handler->UpdateComponentData(page_id, cid, json_data);
-    }
-    else{
-      WeexCore::WeexCoreManager::Instance()->getPlatformBridge()->platform_side()->ReportException(
-        page_id, "UpdateComponentData", 
-        "There is no data_render_handler when UpdateComponentData invoked");
-    }
+    EagleBridge::GetInstance()->data_render_handler()->UpdateComponentData(page_id, cid, json_data);
 }
 
 }  // namespace WeexCore

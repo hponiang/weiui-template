@@ -173,14 +173,6 @@ public:
     this->viewport_width_ = viewport_width;
   }
 
-  inline float device_width(){
-    return this->device_width_;
-  }
-
-  inline void set_device_width(float device_width){
-    this->device_width_ = device_width;
-  }
-
   inline bool round_off_deviation() const { return this->round_off_deviation_; }
 
   inline void set_round_off_deviation(float round_off_deviation) { this->round_off_deviation_ = round_off_deviation; }
@@ -209,7 +201,6 @@ public:
   std::atomic_bool is_platform_layout_needed_{false};
   std::atomic_bool is_after_layout_needed_{true};
   float viewport_width_ = -1;
-  float device_width_ = -1;
   bool round_off_deviation_ = kDefaultRoundOffDeviation;
 };
 }  // namespace WeexCore

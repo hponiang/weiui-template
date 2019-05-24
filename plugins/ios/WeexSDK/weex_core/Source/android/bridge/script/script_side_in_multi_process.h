@@ -70,10 +70,7 @@ class ScriptSideInMultiProcess : public ScriptBridge::ScriptSide {
 
   int UpdateGlobalConfig(const char *config) override;
 
-  int UpdateInitFrameworkParams(const std::string& key, const std::string& value, const std::string& desc) override;
-
-
-    ScriptSideInMultiProcess();
+  ScriptSideInMultiProcess();
 
   virtual ~ScriptSideInMultiProcess();
 

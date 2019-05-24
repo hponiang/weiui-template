@@ -863,11 +863,7 @@ if ([removeEventName isEqualToString:@#eventName1]||[removeEventName isEqualToSt
 {
     if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] &&
         [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-        if (otherGestureRecognizer.state != UIGestureRecognizerStateFailed) {
-            if ([gestureRecognizer view].wx_component != nil && [otherGestureRecognizer view].wx_component != nil) {
-                return YES;
-            }
-        }
+        return YES;
     }
     
     return NO;

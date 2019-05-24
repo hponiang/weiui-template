@@ -174,9 +174,6 @@ static void MarkDirty(JNIEnv* env, jobject jcaller,
     jstring ref,
     jboolean dirty);
 
-static void SetDeviceDisplay(JNIEnv* env, jobject jcaller,
-        jstring instanceId, jfloat width, jfloat height, jfloat scale);
-
 static void RegisterCoreEnv(JNIEnv* env, jobject jcaller,
     jstring key,
     jstring value);
@@ -184,11 +181,6 @@ static void RegisterCoreEnv(JNIEnv* env, jobject jcaller,
 static void ResetWXBridge(JNIEnv* env, jobject jcaller,
     jobject bridge,
     jstring className);
-
-static void UpdateInitFrameworkParams(JNIEnv* env, jobject jcaller,
-                                      jstring key,
-                                      jstring value,
-                                      jstring desc);
 
 static void UpdateGlobalConfig(JNIEnv* env, jobject jcaller,
     jstring config);
@@ -1144,14 +1136,6 @@ static const JNINativeMethod kMethodsWXBridge[] = {
 "Z"
 ")"
 "V", reinterpret_cast<void*>(MarkDirty) },
-  { "nativeSetDeviceDisplay",
-  "("
-  "Ljava/lang/String;"
-  "F"
-  "F"
-  "F"
-  ")"
-  "V", reinterpret_cast<void*>(SetDeviceDisplay) },
     { "nativeRegisterCoreEnv",
 "("
 "Ljava/lang/String;"
@@ -1164,13 +1148,6 @@ static const JNINativeMethod kMethodsWXBridge[] = {
 "Ljava/lang/String;"
 ")"
 "V", reinterpret_cast<void*>(ResetWXBridge) },
-    { "nativeUpdateInitFrameworkParams",
-        "("
-        "Ljava/lang/String;"
-        "Ljava/lang/String;"
-        "Ljava/lang/String;"
-        ")"
-        "V", reinterpret_cast<void*>(UpdateInitFrameworkParams) },
     { "nativeUpdateGlobalConfig",
 "("
 "Ljava/lang/String;"

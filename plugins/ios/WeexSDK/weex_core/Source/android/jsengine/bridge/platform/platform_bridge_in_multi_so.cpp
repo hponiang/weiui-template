@@ -87,8 +87,7 @@ PlatformBridgeInMultiSo::GetExposedFunctions() {
                                             CreateInstance,
                                             ExecJSOnInstance,
                                             DestroyInstance,
-                                            UpdateGlobalConfig,
-                                            UpdateInitFrameworkParams};
+                                            UpdateGlobalConfig};
   auto functions = (CoreSideFunctionsOfPlatformBridge *)malloc(
       sizeof(CoreSideFunctionsOfPlatformBridge));
   memset(functions, 0, sizeof(CoreSideFunctionsOfPlatformBridge));
@@ -297,10 +296,5 @@ int PlatformBridgeInMultiSo::DestroyInstance(const char *instanceId) {
 int PlatformBridgeInMultiSo::UpdateGlobalConfig(const char *config) {
   return Instance()->core_side()->UpdateGlobalConfig(config);
 }
-
-int PlatformBridgeInMultiSo::UpdateInitFrameworkParams(const std::string& key, const std::string& value, const std::string& desc){
-    return Instance()->core_side()->UpdateInitFrameworkParams(key, value, desc);
-}
-
 
 }  // namespace weex

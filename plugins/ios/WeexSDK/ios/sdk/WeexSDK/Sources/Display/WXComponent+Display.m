@@ -105,26 +105,19 @@ typedef NS_ENUM(NSInteger, WXComponentBorderRecord) {
 
 - (WXDisplayBlock)_displayBlock
 {
-    __weak WXComponent* wself = self;
     WXDisplayBlock displayBlock = ^UIImage *(CGRect bounds, BOOL(^isCancelled)(void)) {
         if (isCancelled()) {
             return nil;
         }
         
-        __strong WXComponent* sself = wself;
-        if (sself) {
-            UIGraphicsBeginImageContextWithOptions(bounds.size, [sself _bitmapOpaqueWithSize:bounds.size] , 0.0);
-            UIImage *image = [sself drawRect:bounds];
-            if (!image) {
-                image = UIGraphicsGetImageFromCurrentImageContext();
-            }
-            UIGraphicsEndImageContext();
-            
-            return image;
+        UIGraphicsBeginImageContextWithOptions(bounds.size, [self _bitmapOpaqueWithSize:bounds.size] , 0.0);
+        UIImage *image = [self drawRect:bounds];
+        if (!image) {
+            image = UIGraphicsGetImageFromCurrentImageContext();
         }
-        else {
-            return nil;
-        }
+        UIGraphicsEndImageContext();
+        
+        return image;
     };
     
     return displayBlock;

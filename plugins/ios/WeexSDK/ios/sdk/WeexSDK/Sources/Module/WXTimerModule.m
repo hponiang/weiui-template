@@ -23,8 +23,6 @@
 #import "WXAssert.h"
 #import "WXMonitor.h"
 #import "WXSDKInstance_performance.h"
-#import "WXSDKError.h"
-#import "WXExceptionUtils.h"
 
 @interface WXTimerTarget : NSObject
 
@@ -77,7 +75,6 @@
 
 @implementation WXTimerModule
 {
-    BOOL _tooManyTimersReported;
     NSMutableDictionary *_timers;
 }
 
@@ -167,23 +164,6 @@ WX_EXPORT_METHOD(@selector(clearInterval:))
     
     if (!_timers[callbackID]) {
         _timers[callbackID] = timer;
-        
-        if ([_timers count] > 30) {
-            if (!_tooManyTimersReported) {
-                [WXExceptionUtils commitCriticalExceptionRT:self.weexInstance.instanceId errCode:[NSString stringWithFormat:@"%d", WX_KEY_EXCEPTION_TOO_MANY_TIMERS] function:@"" exception:@"Too many timers." extParams:nil];
-                _tooManyTimersReported = YES;
-            }
-            
-            // remove invalid timers
-            NSMutableArray* invalidTimerIds = [[NSMutableArray alloc] init];
-            for (NSString *cbId in _timers) {
-                NSTimer *timer = _timers[cbId];
-                if (![timer isValid]) {
-                    [invalidTimerIds addObject:cbId];
-                }
-            }
-            [_timers removeObjectsForKeys:invalidTimerIds];
-        }
     }
 }
 

@@ -377,9 +377,10 @@ do {\
 {
     CGContextRef context = UIGraphicsGetCurrentContext();
     if (_isCompositingChild) {
-        [self drawTextWithContext:context bounds:rect padding:_padding];
+        [self drawTextWithContext:context bounds:rect padding:_padding view:nil];
     } else {
-        [self drawTextWithContext:context bounds:rect padding:_padding];
+        WXTextView *textView = (WXTextView *)_view;
+        [self drawTextWithContext:context bounds:rect padding:_padding view:textView];
     }
     
     return nil;
@@ -540,13 +541,14 @@ do {\
         paragraphStyle.alignment = retAlign;
     }
     
-    if ([[_wordWrap lowercaseString] isEqualToString:@"anywhere"]) {
+    if ([[_wordWrap lowercaseString] isEqualToString:@"break-word"]) {
+        paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    } else if ([[_wordWrap lowercaseString] isEqualToString:@"normal"]){
+        paragraphStyle.lineBreakMode = NSLineBreakByClipping;
+    } else {
+         // set default lineBreakMode
         paragraphStyle.lineBreakMode = NSLineBreakByCharWrapping;
     }
-    else {
-        paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-    }
-    
     _truncationLine = NO;
     if (_textOverflow && [_textOverflow length] > 0) {
         if (_lines && [_textOverflow isEqualToString:@"ellipsis"])
@@ -739,7 +741,7 @@ do {\
     [self syncTextStorageForView];
 }
 
-- (void)drawTextWithContext:(CGContextRef)context bounds:(CGRect)bounds padding:(UIEdgeInsets)padding
+- (void)drawTextWithContext:(CGContextRef)context bounds:(CGRect)bounds padding:(UIEdgeInsets)padding view:(WXTextView *)view
 {
     if (bounds.size.width <= 0 || bounds.size.height <= 0) {
         return;

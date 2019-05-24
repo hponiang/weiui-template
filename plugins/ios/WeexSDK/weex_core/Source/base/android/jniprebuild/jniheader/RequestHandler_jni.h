@@ -43,8 +43,7 @@ jclass g_RequestHandler_clazz = NULL;
 
 static void InvokeOnSuccess(JNIEnv* env, jobject jcaller,
     jlong callback,
-    jstring script,
-    jstring bundleType);
+    jstring result);
 
 static void InvokeOnFailed(JNIEnv* env, jobject jcaller,
     jlong callback);
@@ -109,7 +108,6 @@ static const JNINativeMethod kMethodsRequestHandler[] = {
     { "nativeInvokeOnSuccess",
 "("
 "J"
-"Ljava/lang/String;"
 "Ljava/lang/String;"
 ")"
 "V", reinterpret_cast<void*>(InvokeOnSuccess) },

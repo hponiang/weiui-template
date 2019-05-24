@@ -238,7 +238,6 @@ typedef enum : NSUInteger {
         WXLogError(@"Url must be passed if you use renderWithURL");
         return;
     }
-    [WXCoreBridge install];
 
     _scriptURL = url;
     [self _checkPageName];
@@ -257,8 +256,7 @@ typedef enum : NSUInteger {
 {
     _options = [options isKindOfClass:[NSDictionary class]] ? options : nil;
     _jsData = data;
-    [WXCoreBridge install];
-
+    
     self.needValidate = [[WXHandlerFactory handlerForProtocol:@protocol(WXValidateProtocol)] needValidate:self.scriptURL];
 
     if ([source isKindOfClass:[NSString class]]) {
@@ -272,7 +270,7 @@ typedef enum : NSUInteger {
 }
 
 - (void)_downloadAndExecScript:(NSURL *)url {
-    [[WXSDKManager bridgeMgr] DownloadJS:_instanceId url:url completion:^(NSString *script) {
+    [[WXSDKManager bridgeMgr] DownloadJS:url completion:^(NSString *script) {
         if (!script) {
             return;
         }
@@ -287,13 +285,7 @@ typedef enum : NSUInteger {
                 });
             }
             else {
-                if (self.componentManager.isValid) {
-                    WXSDKErrCode errorCode = WX_KEY_EXCEPTION_DEGRADE_EAGLE_RENDER_ERROR;
-                    NSError *error = [NSError errorWithDomain:WX_ERROR_DOMAIN code:errorCode userInfo:@{@"message":@"No data render handler found!"}];
-                    WXPerformBlockOnComponentThread(^{
-                        [self.componentManager renderFailed:error];
-                    });
-                }
+                WXLogError(@"No data render handler found!");
             }
             return;
         }

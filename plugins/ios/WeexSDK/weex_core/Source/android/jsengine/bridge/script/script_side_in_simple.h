@@ -73,10 +73,6 @@ class ScriptSideInSimple : public WeexCore::ScriptBridge::ScriptSide {
 
   int UpdateGlobalConfig(const char *config) override;
 
-  int UpdateInitFrameworkParams(const std::string& key, const std::string& value, const std::string& desc) override;
-
-
-
   inline void set_runtime(WeexRuntime *runtime) { runtime_ = runtime; }
 
   ScriptSideInSimple() : runtime_(nullptr) {}

@@ -413,13 +413,4 @@ int CoreSideInSimple::UpdateGlobalConfig(const char *config) {
       ->script_side()
       ->UpdateGlobalConfig(config);
 }
-
- int CoreSideInSimple::UpdateInitFrameworkParams(const std::string& key, const std::string& value, const std::string& desc){
-return WeexCoreManager::Instance()
-      ->script_bridge()
-      ->script_side()
-      ->UpdateInitFrameworkParams(key, value, desc);
- }
-
-
 }  // namespace weex

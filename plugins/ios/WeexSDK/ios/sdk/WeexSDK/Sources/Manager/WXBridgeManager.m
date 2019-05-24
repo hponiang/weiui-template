@@ -24,7 +24,6 @@
 #import "WXBridgeMethod.h"
 #import "WXCallJSMethod.h"
 #import "WXSDKManager.h"
-#import "WXSDKInstance_private.h"
 #import "WXServiceFactory.h"
 #import "WXResourceRequest.h"
 #import "WXResourceLoader.h"
@@ -301,37 +300,21 @@ void WXPerformBlockSyncOnBridgeThread(void (^block) (void))
     return value;
 }
 
-- (void)DownloadJS:(NSString*)instance url:(NSURL *)scriptUrl completion:(void (^)(NSString *script))complection;
+- (void)DownloadJS:(NSURL *)scriptUrl completion:(void (^)(NSString *script))complection;
 {
     if (!scriptUrl || ![scriptUrl.absoluteString length]) {
-        if (complection) {
-            complection(nil);
-        }
+        complection(nil);
         return;
     }
     WXResourceRequest* request = [WXResourceRequest requestWithURL:scriptUrl];
     WXResourceLoader* jsLoader = [[WXResourceLoader alloc] initWithRequest:request];
     jsLoader.onFinished = ^(WXResourceResponse *response, NSData *data) {
         NSString* jsString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        if (complection) {
-            complection(jsString);
-        }
+        complection(jsString);
     };
     jsLoader.onFailed = ^(NSError *loadError) {
-        if (complection) {
-            complection(nil);
-        }
-
-        WXSDKInstance *sdkInstance = [WXSDKManager instanceForID:instance];
-        WXComponentManager *manager = sdkInstance.componentManager;
-        if (manager.isValid) {
-            NSString *errorMessage = [NSString stringWithFormat:@"Request to %@ occurs an error:%@, info:%@", request.URL, loadError.localizedDescription, loadError.userInfo];
-            WXSDKErrCode errorCode = WX_KEY_EXCEPTION_JS_DOWNLOAD;
-            NSError *error = [NSError errorWithDomain:WX_ERROR_DOMAIN code:errorCode userInfo:@{NSLocalizedDescriptionKey:(errorMessage?:@"No message")}];
-            WXPerformBlockOnComponentThread(^{
-                [manager renderFailed:error];
-            });
-        }
+        WXLogError(@"No js URL found");
+        complection(nil);
     };
 
    [jsLoader start];
@@ -441,14 +424,7 @@ void WXPerformBlockSyncOnBridgeThread(void (^block) (void))
             });
         }
         else {
-            WXComponentManager *manager = instance.componentManager;
-            if (manager.isValid) {
-                WXSDKErrCode errorCode = WX_KEY_EXCEPTION_DEGRADE_EAGLE_RENDER_ERROR;
-                NSError *error = [NSError errorWithDomain:WX_ERROR_DOMAIN code:errorCode userInfo:@{@"message":@"No data render handler found!"}];
-                WXPerformBlockOnComponentThread(^{
-                    [manager renderFailed:error];
-                });
-            }
+            WXLogError(@"No data render handler found!");
         }
         return;
     }
@@ -521,14 +497,7 @@ void WXPerformBlockSyncOnBridgeThread(void (^block) (void))
             });
         }
         else {
-            WXComponentManager *manager = instance.componentManager;
-            if (manager.isValid) {
-                WXSDKErrCode errorCode = WX_KEY_EXCEPTION_DEGRADE_EAGLE_RENDER_ERROR;
-                NSError *error = [NSError errorWithDomain:WX_ERROR_DOMAIN code:errorCode userInfo:@{@"message":@"No data render handler found!"}];
-                WXPerformBlockOnComponentThread(^{
-                    [manager renderFailed:error];
-                });
-            }
+            WXLogError(@"No data render handler found!");
         }
     }
     else {
