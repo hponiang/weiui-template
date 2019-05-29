@@ -755,6 +755,7 @@ public class PageActivity extends AppCompatActivity {
                 mWebView.loadUrl(mPageInfo.getUrl());
                 break;
 
+            case "app":
             case "weex":
                 mWeexView = findViewById(R.id.v_weexview);
                 mWeexProgress = findViewById(R.id.v_weexprogress);
@@ -773,7 +774,7 @@ public class PageActivity extends AppCompatActivity {
 
             case "auto":
                 if (mPageInfo.getUrl().endsWith(".bundle.wx")) {
-                    mPageInfo.setPageType("weex");
+                    mPageInfo.setPageType("app");
                     initDefaultPageView();
                     break;
                 }
@@ -784,7 +785,7 @@ public class PageActivity extends AppCompatActivity {
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
-                    mPageInfo.setPageType("weex");
+                    mPageInfo.setPageType("app");
                     mPageInfo.setUrl(outurl);
                     initDefaultPageView();
                     break;
@@ -800,7 +801,7 @@ public class PageActivity extends AppCompatActivity {
                             html = temp[0];
                             html = html.replaceAll(" ", "");
                         }
-                        mPageInfo.setPageType(html.startsWith("//{\"framework\":\"Vue\"") ? "weex" : "web");
+                        mPageInfo.setPageType(html.startsWith("//{\"framework\":\"Vue\"") ? "app" : "web");
                         initDefaultPageView();
                         mAuto.setVisibility(View.GONE);
                     }
@@ -1316,6 +1317,7 @@ public class PageActivity extends AppCompatActivity {
                 mWebView.loadUrl(mPageInfo.getUrl());
                 break;
 
+            case "app":
             case "weex":
                 weexLoad();
                 break;

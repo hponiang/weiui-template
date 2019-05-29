@@ -2,6 +2,7 @@
     "name": "weiui-template",
     "version": "1.0.0",
     "description": "A weex project",
+    "weiuiclimin": "1.2.4",
     "author": "",
     "private": true,
     "scripts": {
@@ -12,6 +13,7 @@
         "weex",
         "weex ui",
         "weiui",
+        "weiui app",
         "vue",
         "hybird app"
     ],

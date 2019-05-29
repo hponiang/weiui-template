@@ -147,10 +147,10 @@
 </style>
 
 <script>
-    import {openViewCode} from "../../common/js/app";
+    import {openViewCode} from "../../common/js/common";
 
-    const weiui = weex.requireModule('weiui');
-    const websocket = weex.requireModule('websocket');
+    const weiui = app.requireModule('weiui');
+    const websocket = app.requireModule('websocket');
 
     export default {
         data() {

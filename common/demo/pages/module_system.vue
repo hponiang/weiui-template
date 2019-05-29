@@ -54,9 +54,9 @@
 </style>
 
 <script>
-    import {openViewCode} from "../../common/js/app";
+    import {openViewCode} from "../../common/js/common";
 
-    const weiui = weex.requireModule('weiui');
+    const weiui = app.requireModule('weiui');
 
     export default {
         data() {
@@ -67,9 +67,9 @@
 
         mounted() {
             this.lists.push("获取状态栏高度（屏幕像素）：" + weiui.getStatusBarHeight());
-            this.lists.push("获取状态栏高度（weex px单位）：" + weiui.getStatusBarHeightPx());
+            this.lists.push("获取状态栏高度（px单位）：" + weiui.getStatusBarHeightPx());
             this.lists.push("获取虚拟键盘高度（屏幕像素）：" + weiui.getNavigationBarHeight());
-            this.lists.push("获取虚拟键盘高度（weex px单位）：" + weiui.getNavigationBarHeightPx());
+            this.lists.push("获取虚拟键盘高度（px单位）：" + weiui.getNavigationBarHeightPx());
             this.lists.push("获取本地软件版本号：" + weiui.getLocalVersion());
             this.lists.push("获取本地软件版本号名称：" + weiui.getLocalVersionName());
             this.lists.push("获取手机的IMEI：" + weiui.getImei());

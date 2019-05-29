@@ -1,18 +1,18 @@
 import {runNum} from "./global";
 
-let weiui = weex.requireModule('weiui');
+let weiui = app.requireModule('weiui');
 
-let app = {
+let common = {
 
-    jshome: 'https://weiui.app/dist/0.3.0/',
+    jshome: 'https://weiui.app/dist/0.4.0/',
 
     openViewCode(str) {
-        app.openViewUrl("https://weiui.app/" + str + ".html");
+        common.openViewUrl("https://weiui.app/" + str + ".html");
     },
 
     openViewUrl(url) {
         weiui.openPage({
-            url: app.jshome + 'index_browser.js',
+            url: common.jshome + 'index_browser.js',
             pageType: 'weex',
             statusBarColor: "#3EB4FF",
             params: {
@@ -31,4 +31,4 @@ let app = {
 
 };
 
-module.exports = app;
+module.exports = common;

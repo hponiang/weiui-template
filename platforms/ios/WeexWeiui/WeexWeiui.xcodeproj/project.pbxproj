@@ -201,7 +201,6 @@
 		B21356322124045E00EDD991 /* WeexWeiui */ = {
 			isa = PBXGroup;
 			children = (
-				B2FF80F222290D1800DB1E47 /* WeexWeiui.entitlements */,
 				B21356332124045E00EDD991 /* AppDelegate.h */,
 				B21356342124045E00EDD991 /* AppDelegate.m */,
 				B213563C2124046000EDD991 /* Assets.xcassets */,
@@ -211,6 +210,7 @@
 				B21356392124045E00EDD991 /* Main.storyboard */,
 				B21356362124045E00EDD991 /* ViewController.h */,
 				B21356372124045E00EDD991 /* ViewController.m */,
+				B2FF80F222290D1800DB1E47 /* WeexWeiui.entitlements */,
 			);
 			path = WeexWeiui;
 			sourceTree = "<group>";

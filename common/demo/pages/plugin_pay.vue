@@ -68,10 +68,10 @@
 </style>
 
 <script>
-    import {openViewCode} from "../../common/js/app";
+    import {openViewCode} from "../../common/js/common";
 
-    const weiui = weex.requireModule('weiui');
-    const pay = weex.requireModule('pay');
+    const weiui = app.requireModule('weiui');
+    const pay = app.requireModule('pay');
 
     export default {
         data() {

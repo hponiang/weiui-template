@@ -85,10 +85,10 @@ static int easyNavigationButtonTag = 8000;
     if ([_pageType isEqualToString:@"auto"]) {
         _pageType = @"web";
         if ([_url hasSuffix:@".bundle.wx"]) {
-            _pageType = @"weex";
+            _pageType = @"app";
         }else if ([_url containsString:@"?_wx_tpl="]) {
             NSRange range = [_url rangeOfString:@"?_wx_tpl="];
-            _pageType = @"weex";
+            _pageType = @"app";
             _url = [_url substringToIndex:range.location];
         }else {
             [self setupActivityView];
@@ -100,7 +100,7 @@ static int easyNavigationButtonTag = 8000;
                     html = [html stringByReplacingOccurrencesOfString:@" " withString:@""];
                 }
                 if ([html hasPrefix:@"//{\"framework\":\"Vue\""]) {
-                    self.pageType = @"weex";
+                    self.pageType = @"app";
                 }
                 [self loadBegin];
             });

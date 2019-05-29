@@ -100,10 +100,10 @@
 </style>
 
 <script>
-    import {openViewCode} from "../../common/js/app";
+    import {openViewCode} from "../../common/js/common";
     import WSwitch from "../components/WSwitch.vue";
 
-    const weiui = weex.requireModule('weiui');
+    const weiui = app.requireModule('weiui');
 
     export default {
         components: {WSwitch},

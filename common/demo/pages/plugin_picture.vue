@@ -101,11 +101,11 @@
 </style>
 
 <script>
-    import {openViewCode} from "../../common/js/app";
+    import {openViewCode} from "../../common/js/common";
     import {each} from "../../common/js/global";
 
-    const weiui = weex.requireModule('weiui');
-    const picture = weex.requireModule('picture');
+    const weiui = app.requireModule('weiui');
+    const picture = app.requireModule('picture');
 
     export default {
         data() {

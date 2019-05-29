@@ -44,7 +44,7 @@ public class PageBean {
      * url :                网址
      * pageName :           页面标识（可选）
      * pageTitle :          页面标题（可选）
-     * pageType :           类型（可选，如：web|weex，默认：weex）
+     * pageType :           类型（可选，如：web|app，默认：app）
      * params :             传递参数（可选）
      * cache :              缓存时间（可选，单位：毫秒，仅weex有效，默认：0不启用）
      * loading :            是否显示等待（可选，默认：true）
@@ -70,7 +70,7 @@ public class PageBean {
     private String url;
     private String pageName;
     private String pageTitle;
-    private String pageType = "weex";
+    private String pageType = "app";
     private Object params;
     private long cache = 0;
     private boolean loading = true;

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    const animation = weex.requireModule('animation');
+    const animation = app.requireModule('animation');
 
     export default {
         name: 'WSwitch',

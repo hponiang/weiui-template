@@ -67,10 +67,10 @@
 </style>
 
 <script>
-    import {openViewCode} from "../../common/js/app";
+    import {openViewCode} from "../../common/js/common";
 
-    const weiui = weex.requireModule('weiui');
-    const rongim = weex.requireModule('rongim');
+    const weiui = app.requireModule('weiui');
+    const rongim = app.requireModule('rongim');
 
     export default {
         data() {

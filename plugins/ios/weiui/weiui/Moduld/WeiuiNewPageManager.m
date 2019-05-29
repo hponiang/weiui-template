@@ -50,7 +50,7 @@
     NSString *pageTitle = params[@"pageTitle"] ? [WXConvert NSString:params[@"pageTitle"]] : @"";
     NSString *safeAreaBottom = params[@"safeAreaBottom"] ? [WXConvert NSString:params[@"safeAreaBottom"]] : @"";
     
-    NSString *pageType = params[@"pageType"] ? [WXConvert NSString:params[@"pageType"]] : @"weex";
+    NSString *pageType = params[@"pageType"] ? [WXConvert NSString:params[@"pageType"]] : @"app";
     id data = params[@"params"];
     NSInteger cache = params[@"cache"] ? [WXConvert NSInteger:params[@"cache"]] : 0;
     BOOL loading = params[@"loading"] ? [WXConvert BOOL:params[@"loading"]] : YES;

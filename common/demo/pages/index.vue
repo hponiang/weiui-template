@@ -208,9 +208,9 @@
 
 <script>
     import {jsonParse, jsonStringify} from "../../common/js/global";
-    import {jshome, openViewCode, openViewUrl} from "../../common/js/app";
+    import {jshome, openViewCode, openViewUrl} from "../../common/js/common";
 
-    const weiui = weex.requireModule('weiui');
+    const weiui = app.requireModule('weiui');
 
     export default {
         data() {
@@ -282,12 +282,7 @@
                     title_en: 'caches',
                     icon: 'md-beaker',
                     url: jshome + 'module_caches.js',
-                }, /*{
-                    title: '单位转换',
-                    title_en: 'weex px',
-                    icon: 'md-calculator',
-                    url: jshome + 'module_weexpx.js',
-                }, */{
+                }, {
                     title: '确认对话框',
                     title_en: 'alert',
                     icon: 'md-alert',

@@ -72,10 +72,10 @@
     }
 </style>
 <script>
-    import {openViewCode} from "../../common/js/app";
+    import {openViewCode} from "../../common/js/common";
 
-    const weiui = weex.requireModule('weiui');
-    const screenshots = weex.requireModule('screenshots');
+    const weiui = app.requireModule('weiui');
+    const screenshots = app.requireModule('screenshots');
 
     export default {
         data() {

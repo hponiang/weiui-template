@@ -53,7 +53,7 @@ public class WelcomeActivity extends AppCompatActivity {
         mPageBean.setUrl(weiuiBase.config.getHome());
         mPageBean.setPageName(weiuiBase.config.getHomeParams("pageName", "firstPage"));
         mPageBean.setPageTitle(weiuiBase.config.getHomeParams("pageTitle", ""));
-        mPageBean.setPageType(weiuiBase.config.getHomeParams("pageType", "weex"));
+        mPageBean.setPageType(weiuiBase.config.getHomeParams("pageType", "app"));
         mPageBean.setParams(weiuiBase.config.getHomeParams("params", "{}"));
         mPageBean.setCache(weiuiParse.parseLong(weiuiBase.config.getHomeParams("cache", "0")));
         mPageBean.setLoading(weiuiParse.parseBool(weiuiBase.config.getHomeParams("loading", "true")));
@@ -86,7 +86,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         if (tmpBean != null) {
                             JSONObject json = new JSONObject();
                             json.put("url", pageUrl);
-                            json.put("pageType", "weex");
+                            json.put("pageType", "app");
                             new weiui().openPage(tmpBean.getContext(), json.toJSONString(), null);
                         }
                     }

@@ -50,7 +50,7 @@
     import {getObject} from "../../common/js/global";
     import HeadNav from "../components/headNav.vue";
 
-    const weiui = weex.requireModule('weiui');
+    const weiui = app.requireModule('weiui');
 
     export default {
         components: {HeadNav},
@@ -78,11 +78,11 @@
             },
 
             apiReady() {
-                this.title = getObject(weex.config.params, 'title');
-                this.url = getObject(weex.config.params, 'url');
-                this.fixedTitle = getObject(weex.config.params, 'fixedTitle') === true;
-                this.hideBottomNav = getObject(weex.config.params, 'hideBottomNav') === true;
-                this.$refs.myWebview.setProgressbarVisibility(getObject(weex.config.params, 'progressbarVisibility') !== false);
+                this.title = getObject(app.config.params, 'title');
+                this.url = getObject(app.config.params, 'url');
+                this.fixedTitle = getObject(app.config.params, 'fixedTitle') === true;
+                this.hideBottomNav = getObject(app.config.params, 'hideBottomNav') === true;
+                this.$refs.myWebview.setProgressbarVisibility(getObject(app.config.params, 'progressbarVisibility') !== false);
                 this.$refs.myWebview.setUrl(this.url);
                 setTimeout(() => { this.loadIng--; }, 100);
             },

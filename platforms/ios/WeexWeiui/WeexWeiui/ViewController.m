@@ -77,7 +77,7 @@ WXMainViewController *homeController;
     homeController.url = bundleUrl;
     homeController.pageName = [Config getHomeParams:@"pageName" defaultVal:@"firstPage"];
     homeController.pageTitle = [Config getHomeParams:@"pageTitle" defaultVal:@""];
-    homeController.pageType = [Config getHomeParams:@"pageType" defaultVal:@"weex"];
+    homeController.pageType = [Config getHomeParams:@"pageType" defaultVal:@"app"];
     homeController.safeAreaBottom = [Config getHomeParams:@"safeAreaBottom" defaultVal:@""];
     homeController.params = [Config getHomeParams:@"params" defaultVal:@"{}"];
     homeController.cache = [[Config getHomeParams:@"cache" defaultVal:@"0"] intValue];
@@ -94,7 +94,7 @@ WXMainViewController *homeController;
             [Cloud appData];
             //
             if (pageUrl.length > 0) {
-                [[WeiuiNewPageManager sharedIntstance] openPage:@{@"url": pageUrl, @"pageType": @"weex"} callback:nil];
+                [[WeiuiNewPageManager sharedIntstance] openPage:@{@"url": pageUrl, @"pageType": @"app"} callback:nil];
             }
         }
     };

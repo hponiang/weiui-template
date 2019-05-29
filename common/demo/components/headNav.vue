@@ -12,7 +12,7 @@
 </template>
 
 <script>
-    const weiui = weex.requireModule('weiui');
+    const weiui = app.requireModule('weiui');
 
     export default {
         name: 'head-nav',
