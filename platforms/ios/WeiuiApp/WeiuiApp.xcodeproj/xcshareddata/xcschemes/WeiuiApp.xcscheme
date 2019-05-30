@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B213562F2124045E00EDD991"
-               BuildableName = "WeexWeiui.app"
-               BlueprintName = "WeexWeiui"
-               ReferencedContainer = "container:WeexWeiui.xcodeproj">
+               BuildableName = "WeiuiApp.app"
+               BlueprintName = "WeiuiApp"
+               ReferencedContainer = "container:WeiuiApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B21356472124046000EDD991"
-               BuildableName = "WeexWeiuiTests.xctest"
-               BlueprintName = "WeexWeiuiTests"
-               ReferencedContainer = "container:WeexWeiui.xcodeproj">
+               BuildableName = "WeiuiAppTests.xctest"
+               BlueprintName = "WeiuiAppTests"
+               ReferencedContainer = "container:WeiuiApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B21356522124046000EDD991"
-               BuildableName = "WeexWeiuiUITests.xctest"
-               BlueprintName = "WeexWeiuiUITests"
-               ReferencedContainer = "container:WeexWeiui.xcodeproj">
+               BuildableName = "WeiuiAppUITests.xctest"
+               BlueprintName = "WeiuiAppUITests"
+               ReferencedContainer = "container:WeiuiApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -53,9 +53,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B213562F2124045E00EDD991"
-            BuildableName = "WeexWeiui.app"
-            BlueprintName = "WeexWeiui"
-            ReferencedContainer = "container:WeexWeiui.xcodeproj">
+            BuildableName = "WeiuiApp.app"
+            BlueprintName = "WeiuiApp"
+            ReferencedContainer = "container:WeiuiApp.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -76,9 +76,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B213562F2124045E00EDD991"
-            BuildableName = "WeexWeiui.app"
-            BlueprintName = "WeexWeiui"
-            ReferencedContainer = "container:WeexWeiui.xcodeproj">
+            BuildableName = "WeiuiApp.app"
+            BlueprintName = "WeiuiApp"
+            ReferencedContainer = "container:WeiuiApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -95,9 +95,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B213562F2124045E00EDD991"
-            BuildableName = "WeexWeiui.app"
-            BlueprintName = "WeexWeiui"
-            ReferencedContainer = "container:WeexWeiui.xcodeproj">
+            BuildableName = "WeiuiApp.app"
+            BlueprintName = "WeiuiApp"
+            ReferencedContainer = "container:WeiuiApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

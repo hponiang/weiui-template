@@ -7,6 +7,6 @@ def common
     pod 'SocketRocket', '0.4.2'
 end
 
-target 'WeexWeiui' do
+target 'WeiuiApp' do
     common
 end

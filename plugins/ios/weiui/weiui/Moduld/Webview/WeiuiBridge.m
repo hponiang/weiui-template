@@ -1,6 +1,6 @@
 //
 //  WeiuiBridge.m
-//  WeexWeiui
+//  WeiuiProject
 //
 //  Created by 高一 on 2019/1/2.
 //

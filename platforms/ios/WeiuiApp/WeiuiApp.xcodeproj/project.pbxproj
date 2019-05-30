@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		532E406F594B06E77A17129D /* libPods-WeexWeiui.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4738D867E50FB2D943A92A /* libPods-WeexWeiui.a */; };
+		532E406F594B06E77A17129D /* libPods-WeiuiApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF4738D867E50FB2D943A92A /* libPods-WeiuiApp.a */; };
 		B210031C2191D6C5001F2CBA /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B210031B2191D6C5001F2CBA /* CoreText.framework */; };
 		B210031E2191D703001F2CBA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B210031D2191D703001F2CBA /* Foundation.framework */; };
 		B21003202191D727001F2CBA /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B210031F2191D727001F2CBA /* CoreMotion.framework */; };
@@ -50,29 +50,29 @@
 			containerPortal = B21356282124045E00EDD991 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = B213562F2124045E00EDD991;
-			remoteInfo = WeexWeiui;
+			remoteInfo = WeiuiApp;
 		};
 		B21356542124046000EDD991 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B21356282124045E00EDD991 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = B213562F2124045E00EDD991;
-			remoteInfo = WeexWeiui;
+			remoteInfo = WeiuiApp;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		21618EA4FE8A980870624E1A /* libPods-WeexWeiuiUITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WeexWeiuiUITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5B7109449833C8668CA8EA08 /* Pods-WeexWeiui.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeexWeiui.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WeexWeiui/Pods-WeexWeiui.debug.xcconfig"; sourceTree = "<group>"; };
+		21618EA4FE8A980870624E1A /* libPods-WeiuiAppUITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WeiuiAppUITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5B7109449833C8668CA8EA08 /* Pods-WeiuiApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeiuiApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WeiuiApp/Pods-WeiuiApp.debug.xcconfig"; sourceTree = "<group>"; };
 		B21003132191CB27001F2CBA /* AlipaySDK.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = AlipaySDK.bundle; path = ../../../../../Downloads/AlipaySDK_No_UTDID/IOS/AlipaySDK.bundle; sourceTree = "<group>"; };
 		B21003142191CB27001F2CBA /* AlipaySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AlipaySDK.framework; path = ../../../../../Downloads/AlipaySDK_No_UTDID/IOS/AlipaySDK.framework; sourceTree = "<group>"; };
 		B21003172191CBB3001F2CBA /* AlipaySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AlipaySDK.framework; path = ../../../plugins/ios/AlipaySDK.framework; sourceTree = "<group>"; };
-		B21003192191D5D7001F2CBA /* AlipaySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AlipaySDK.framework; path = WeexWeiui/Weiui/Utility/Alipay/AlipaySDK.framework; sourceTree = "<group>"; };
+		B21003192191D5D7001F2CBA /* AlipaySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AlipaySDK.framework; path = WeiuiApp/Weiui/Utility/Alipay/AlipaySDK.framework; sourceTree = "<group>"; };
 		B210031B2191D6C5001F2CBA /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		B210031D2191D703001F2CBA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		B210031F2191D727001F2CBA /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
-		B210034521924EEF001F2CBA /* libUMSPosPayOnly.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUMSPosPayOnly.a; path = WeexWeiui/Weiui/Utility/Pay/Union/libUMSPosPayOnly.a; sourceTree = "<group>"; };
-		B21356302124045E00EDD991 /* WeexWeiui.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeexWeiui.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B210034521924EEF001F2CBA /* libUMSPosPayOnly.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libUMSPosPayOnly.a; path = WeiuiApp/Weiui/Utility/Pay/Union/libUMSPosPayOnly.a; sourceTree = "<group>"; };
+		B21356302124045E00EDD991 /* WeiuiApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeiuiApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B21356332124045E00EDD991 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B21356342124045E00EDD991 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		B21356362124045E00EDD991 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
@@ -82,8 +82,8 @@
 		B213563F2124046000EDD991 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B21356412124046000EDD991 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B21356422124046000EDD991 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		B21356482124046000EDD991 /* WeexWeiuiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeexWeiuiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		B21356532124046000EDD991 /* WeexWeiuiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeexWeiuiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B21356482124046000EDD991 /* WeiuiAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeiuiAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B21356532124046000EDD991 /* WeiuiAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeiuiAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2135A7D2124058300EDD991 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		B2135A7F2124059300EDD991 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		B2135A812124059C00EDD991 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -109,10 +109,10 @@
 		B2135AA9212406EF00EDD991 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		B2135AAB212406F800EDD991 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		B25A71E921257A0500AA0AB9 /* bundlejs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bundlejs; sourceTree = "<group>"; };
-		B2FF80F222290D1800DB1E47 /* WeexWeiui.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeexWeiui.entitlements; sourceTree = "<group>"; };
-		B3954AB0077F67222589658D /* libPods-WeexWeiuiTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WeexWeiuiTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BF4738D867E50FB2D943A92A /* libPods-WeexWeiui.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WeexWeiui.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8F4A873379E80A140D7BD31 /* Pods-WeexWeiui.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeexWeiui.release.xcconfig"; path = "Pods/Target Support Files/Pods-WeexWeiui/Pods-WeexWeiui.release.xcconfig"; sourceTree = "<group>"; };
+		B2FF80F222290D1800DB1E47 /* WeiuiApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WeiuiApp.entitlements; sourceTree = "<group>"; };
+		B3954AB0077F67222589658D /* libPods-WeiuiAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WeiuiAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF4738D867E50FB2D943A92A /* libPods-WeiuiApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WeiuiApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8F4A873379E80A140D7BD31 /* Pods-WeiuiApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeiuiApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-WeiuiApp/Pods-WeiuiApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,7 +147,7 @@
 				B2135A822124059C00EDD991 /* AudioToolbox.framework in Frameworks */,
 				B2135A802124059300EDD991 /* AssetsLibrary.framework in Frameworks */,
 				B2135A7E2124058300EDD991 /* AVFoundation.framework in Frameworks */,
-				532E406F594B06E77A17129D /* libPods-WeexWeiui.a in Frameworks */,
+				532E406F594B06E77A17129D /* libPods-WeiuiApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,8 +171,8 @@
 		AE4D0F9343A758F3C54EA5E0 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				5B7109449833C8668CA8EA08 /* Pods-WeexWeiui.debug.xcconfig */,
-				D8F4A873379E80A140D7BD31 /* Pods-WeexWeiui.release.xcconfig */,
+				5B7109449833C8668CA8EA08 /* Pods-WeiuiApp.debug.xcconfig */,
+				D8F4A873379E80A140D7BD31 /* Pods-WeiuiApp.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -180,7 +180,7 @@
 		B21356272124045E00EDD991 = {
 			isa = PBXGroup;
 			children = (
-				B21356322124045E00EDD991 /* WeexWeiui */,
+				B21356322124045E00EDD991 /* WeiuiApp */,
 				AE4D0F9343A758F3C54EA5E0 /* Pods */,
 				B21356312124045E00EDD991 /* Products */,
 				B25A71EB21257A0900AA0AB9 /* resource */,
@@ -191,14 +191,14 @@
 		B21356312124045E00EDD991 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B21356302124045E00EDD991 /* WeexWeiui.app */,
-				B21356482124046000EDD991 /* WeexWeiuiTests.xctest */,
-				B21356532124046000EDD991 /* WeexWeiuiUITests.xctest */,
+				B21356302124045E00EDD991 /* WeiuiApp.app */,
+				B21356482124046000EDD991 /* WeiuiAppTests.xctest */,
+				B21356532124046000EDD991 /* WeiuiAppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B21356322124045E00EDD991 /* WeexWeiui */ = {
+		B21356322124045E00EDD991 /* WeiuiApp */ = {
 			isa = PBXGroup;
 			children = (
 				B21356332124045E00EDD991 /* AppDelegate.h */,
@@ -210,9 +210,9 @@
 				B21356392124045E00EDD991 /* Main.storyboard */,
 				B21356362124045E00EDD991 /* ViewController.h */,
 				B21356372124045E00EDD991 /* ViewController.m */,
-				B2FF80F222290D1800DB1E47 /* WeexWeiui.entitlements */,
+				B2FF80F222290D1800DB1E47 /* WeiuiApp.entitlements */,
 			);
-			path = WeexWeiui;
+			path = WeiuiApp;
 			sourceTree = "<group>";
 		};
 		B25A71EB21257A0900AA0AB9 /* resource */ = {
@@ -258,9 +258,9 @@
 				B2135A812124059C00EDD991 /* AudioToolbox.framework */,
 				B2135A7F2124059300EDD991 /* AssetsLibrary.framework */,
 				B2135A7D2124058300EDD991 /* AVFoundation.framework */,
-				BF4738D867E50FB2D943A92A /* libPods-WeexWeiui.a */,
-				B3954AB0077F67222589658D /* libPods-WeexWeiuiTests.a */,
-				21618EA4FE8A980870624E1A /* libPods-WeexWeiuiUITests.a */,
+				BF4738D867E50FB2D943A92A /* libPods-WeiuiApp.a */,
+				B3954AB0077F67222589658D /* libPods-WeiuiAppTests.a */,
+				21618EA4FE8A980870624E1A /* libPods-WeiuiAppUITests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -268,9 +268,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B213562F2124045E00EDD991 /* WeexWeiui */ = {
+		B213562F2124045E00EDD991 /* WeiuiApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B213565C2124046000EDD991 /* Build configuration list for PBXNativeTarget "WeexWeiui" */;
+			buildConfigurationList = B213565C2124046000EDD991 /* Build configuration list for PBXNativeTarget "WeiuiApp" */;
 			buildPhases = (
 				6CBDE484C89DF9ADF06C0F90 /* [CP] Check Pods Manifest.lock */,
 				B213562C2124045E00EDD991 /* Sources */,
@@ -282,14 +282,14 @@
 			);
 			dependencies = (
 			);
-			name = WeexWeiui;
-			productName = WeexWeiui;
-			productReference = B21356302124045E00EDD991 /* WeexWeiui.app */;
+			name = WeiuiApp;
+			productName = WeiuiApp;
+			productReference = B21356302124045E00EDD991 /* WeiuiApp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B21356472124046000EDD991 /* WeexWeiuiTests */ = {
+		B21356472124046000EDD991 /* WeiuiAppTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B213565F2124046000EDD991 /* Build configuration list for PBXNativeTarget "WeexWeiuiTests" */;
+			buildConfigurationList = B213565F2124046000EDD991 /* Build configuration list for PBXNativeTarget "WeiuiAppTests" */;
 			buildPhases = (
 				B21356442124046000EDD991 /* Sources */,
 				B21356452124046000EDD991 /* Frameworks */,
@@ -300,14 +300,14 @@
 			dependencies = (
 				B213564A2124046000EDD991 /* PBXTargetDependency */,
 			);
-			name = WeexWeiuiTests;
-			productName = WeexWeiuiTests;
-			productReference = B21356482124046000EDD991 /* WeexWeiuiTests.xctest */;
+			name = WeiuiAppTests;
+			productName = WeiuiAppTests;
+			productReference = B21356482124046000EDD991 /* WeiuiAppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		B21356522124046000EDD991 /* WeexWeiuiUITests */ = {
+		B21356522124046000EDD991 /* WeiuiAppUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B21356622124046000EDD991 /* Build configuration list for PBXNativeTarget "WeexWeiuiUITests" */;
+			buildConfigurationList = B21356622124046000EDD991 /* Build configuration list for PBXNativeTarget "WeiuiAppUITests" */;
 			buildPhases = (
 				B213564F2124046000EDD991 /* Sources */,
 				B21356502124046000EDD991 /* Frameworks */,
@@ -318,9 +318,9 @@
 			dependencies = (
 				B21356552124046000EDD991 /* PBXTargetDependency */,
 			);
-			name = WeexWeiuiUITests;
-			productName = WeexWeiuiUITests;
-			productReference = B21356532124046000EDD991 /* WeexWeiuiUITests.xctest */;
+			name = WeiuiAppUITests;
+			productName = WeiuiAppUITests;
+			productReference = B21356532124046000EDD991 /* WeiuiAppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -352,7 +352,7 @@
 					};
 				};
 			};
-			buildConfigurationList = B213562B2124045E00EDD991 /* Build configuration list for PBXProject "WeexWeiui" */;
+			buildConfigurationList = B213562B2124045E00EDD991 /* Build configuration list for PBXProject "WeiuiApp" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -365,9 +365,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B213562F2124045E00EDD991 /* WeexWeiui */,
-				B21356472124046000EDD991 /* WeexWeiuiTests */,
-				B21356522124046000EDD991 /* WeexWeiuiUITests */,
+				B213562F2124045E00EDD991 /* WeiuiApp */,
+				B21356472124046000EDD991 /* WeiuiAppTests */,
+				B21356522124046000EDD991 /* WeiuiAppUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -409,7 +409,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WeexWeiui/Pods-WeexWeiui-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-WeiuiApp/Pods-WeiuiApp-resources.sh",
 				"${PODS_ROOT}/../../../../plugins/ios/WeexSDK/pre-build/native-bundle-main.js",
 				"${PODS_ROOT}/../../../../plugins/ios/WeexSDK/pre-build/weex-main-jsfm.js",
 				"${PODS_ROOT}/../../../../plugins/ios/WeexSDK/pre-build/weex-polyfill.js",
@@ -436,7 +436,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WeexWeiui/Pods-WeexWeiui-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WeiuiApp/Pods-WeiuiApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6CBDE484C89DF9ADF06C0F90 /* [CP] Check Pods Manifest.lock */ = {
@@ -450,7 +450,7 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-WeexWeiui-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-WeiuiApp-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -489,12 +489,12 @@
 /* Begin PBXTargetDependency section */
 		B213564A2124046000EDD991 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B213562F2124045E00EDD991 /* WeexWeiui */;
+			target = B213562F2124045E00EDD991 /* WeiuiApp */;
 			targetProxy = B21356492124046000EDD991 /* PBXContainerItemProxy */;
 		};
 		B21356552124046000EDD991 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B213562F2124045E00EDD991 /* WeexWeiui */;
+			target = B213562F2124045E00EDD991 /* WeiuiApp */;
 			targetProxy = B21356542124046000EDD991 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -631,7 +631,7 @@
 		};
 		B213565D2124046000EDD991 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B7109449833C8668CA8EA08 /* Pods-WeexWeiui.debug.xcconfig */;
+			baseConfigurationReference = 5B7109449833C8668CA8EA08 /* Pods-WeiuiApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -640,10 +640,10 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/WeexWeiui/Weiui/Utility/Pay/Alipay",
-					"\"$(SRCROOT)/WeexWeiui/Weiui/Utility/Pay/Alipay/AlipaySDK.framework\"",
+					"$(PROJECT_DIR)/WeiuiApp/Weiui/Utility/Pay/Alipay",
+					"\"$(SRCROOT)/WeiuiApp/Weiui/Utility/Pay/Alipay/AlipaySDK.framework\"",
 				);
-				INFOPLIST_FILE = WeexWeiui/Info.plist;
+				INFOPLIST_FILE = WeiuiApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -651,9 +651,9 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/WeexWeiui/Weiui/Utility/Pay/Union/Chinaums",
-					"$(PROJECT_DIR)/WeexWeiui/Weiui/Utility/Pay/Union/UPPaymentControl",
-					"$(PROJECT_DIR)/WeexWeiui/Weiui/Utility/Pay/Union/WeChat",
+					"$(PROJECT_DIR)/WeiuiApp/Weiui/Utility/Pay/Union/Chinaums",
+					"$(PROJECT_DIR)/WeiuiApp/Weiui/Utility/Pay/Union/UPPaymentControl",
+					"$(PROJECT_DIR)/WeiuiApp/Weiui/Utility/Pay/Union/WeChat",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cc.weiui.playground;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -663,7 +663,7 @@
 		};
 		B213565E2124046000EDD991 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D8F4A873379E80A140D7BD31 /* Pods-WeexWeiui.release.xcconfig */;
+			baseConfigurationReference = D8F4A873379E80A140D7BD31 /* Pods-WeiuiApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -672,10 +672,10 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/WeexWeiui/Weiui/Utility/Pay/Alipay",
-					"\"$(SRCROOT)/WeexWeiui/Weiui/Utility/Pay/Alipay/AlipaySDK.framework\"",
+					"$(PROJECT_DIR)/WeiuiApp/Weiui/Utility/Pay/Alipay",
+					"\"$(SRCROOT)/WeiuiApp/Weiui/Utility/Pay/Alipay/AlipaySDK.framework\"",
 				);
-				INFOPLIST_FILE = WeexWeiui/Info.plist;
+				INFOPLIST_FILE = WeiuiApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -683,9 +683,9 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/WeexWeiui/Weiui/Utility/Pay/Union/Chinaums",
-					"$(PROJECT_DIR)/WeexWeiui/Weiui/Utility/Pay/Union/UPPaymentControl",
-					"$(PROJECT_DIR)/WeexWeiui/Weiui/Utility/Pay/Union/WeChat",
+					"$(PROJECT_DIR)/WeiuiApp/Weiui/Utility/Pay/Union/Chinaums",
+					"$(PROJECT_DIR)/WeiuiApp/Weiui/Utility/Pay/Union/UPPaymentControl",
+					"$(PROJECT_DIR)/WeiuiApp/Weiui/Utility/Pay/Union/WeChat",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cc.weiui.playground;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -699,16 +699,16 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4829D55G53;
-				INFOPLIST_FILE = WeexWeiuiTests/Info.plist;
+				INFOPLIST_FILE = WeiuiAppTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = top.weiui.WeexWeiuiTests;
+				PRODUCT_BUNDLE_IDENTIFIER = top.weiui.WeiuiAppTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WeexWeiui.app/WeexWeiui";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WeiuiApp.app/WeiuiApp";
 			};
 			name = Debug;
 		};
@@ -718,16 +718,16 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4829D55G53;
-				INFOPLIST_FILE = WeexWeiuiTests/Info.plist;
+				INFOPLIST_FILE = WeiuiAppTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = top.weiui.WeexWeiuiTests;
+				PRODUCT_BUNDLE_IDENTIFIER = top.weiui.WeiuiAppTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WeexWeiui.app/WeexWeiui";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WeiuiApp.app/WeiuiApp";
 			};
 			name = Release;
 		};
@@ -736,16 +736,16 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4829D55G53;
-				INFOPLIST_FILE = WeexWeiuiUITests/Info.plist;
+				INFOPLIST_FILE = WeiuiAppUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = top.weiui.WeexWeiuiUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = top.weiui.WeiuiAppUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = WeexWeiui;
+				TEST_TARGET_NAME = WeiuiApp;
 			};
 			name = Debug;
 		};
@@ -754,23 +754,23 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4829D55G53;
-				INFOPLIST_FILE = WeexWeiuiUITests/Info.plist;
+				INFOPLIST_FILE = WeiuiAppUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = top.weiui.WeexWeiuiUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = top.weiui.WeiuiAppUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = WeexWeiui;
+				TEST_TARGET_NAME = WeiuiApp;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B213562B2124045E00EDD991 /* Build configuration list for PBXProject "WeexWeiui" */ = {
+		B213562B2124045E00EDD991 /* Build configuration list for PBXProject "WeiuiApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B213565A2124046000EDD991 /* Debug */,
@@ -779,7 +779,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B213565C2124046000EDD991 /* Build configuration list for PBXNativeTarget "WeexWeiui" */ = {
+		B213565C2124046000EDD991 /* Build configuration list for PBXNativeTarget "WeiuiApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B213565D2124046000EDD991 /* Debug */,
@@ -788,7 +788,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B213565F2124046000EDD991 /* Build configuration list for PBXNativeTarget "WeexWeiuiTests" */ = {
+		B213565F2124046000EDD991 /* Build configuration list for PBXNativeTarget "WeiuiAppTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B21356602124046000EDD991 /* Debug */,
@@ -797,7 +797,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B21356622124046000EDD991 /* Build configuration list for PBXNativeTarget "WeexWeiuiUITests" */ = {
+		B21356622124046000EDD991 /* Build configuration list for PBXNativeTarget "WeiuiAppUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B21356632124046000EDD991 /* Debug */,
