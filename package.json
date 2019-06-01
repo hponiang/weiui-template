@@ -2,7 +2,7 @@
     "name": "weiui-template",
     "version": "1.0.0",
     "description": "A weex project",
-    "weiuiclimin": "1.2.4",
+    "weiuiclimin": "1.2.7",
     "author": "",
     "private": true,
     "scripts": {
