@@ -147,6 +147,11 @@
     return [[WeiuiNewPageManager sharedIntstance] getPageInfo:params];
 }
 
+- (void)getPageInfoAsync:(id)params callback:(WXModuleCallback)callback
+{
+    [[WeiuiNewPageManager sharedIntstance] getPageInfoAsync:params callback:callback];
+}
+
 - (void)reloadPage:(id)params
 {
     [[WeiuiNewPageManager sharedIntstance] reloadPage:params];

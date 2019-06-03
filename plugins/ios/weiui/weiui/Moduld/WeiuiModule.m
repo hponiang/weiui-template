@@ -174,6 +174,7 @@ WX_EXPORT_METHOD(@selector(loadingClose:))
 
 WX_EXPORT_METHOD(@selector(openPage:callback:))
 WX_EXPORT_METHOD_SYNC(@selector(getPageInfo:))
+WX_EXPORT_METHOD(@selector(getPageInfoAsync:callback:))
 WX_EXPORT_METHOD(@selector(reloadPage:))
 WX_EXPORT_METHOD(@selector(setSoftInputMode:modo:))
 WX_EXPORT_METHOD(@selector(setStatusBarStyle:))
@@ -201,6 +202,11 @@ WX_EXPORT_METHOD_SYNC(@selector(getConfigString:))
 - (NSDictionary*)getPageInfo:(id)params
 {
     return [[WeiuiNewPageManager sharedIntstance] getPageInfo:params];
+}
+
+- (void)getPageInfoAsync:(id)params callback:(WXModuleCallback)callback
+{
+    [[WeiuiNewPageManager sharedIntstance] getPageInfoAsync:params callback:callback];
 }
 
 - (void)reloadPage:(id)params

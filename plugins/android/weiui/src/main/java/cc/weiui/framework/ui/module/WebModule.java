@@ -40,6 +40,15 @@ public class WebModule {
     }
 
     /**
+     * 获取页面信息（异步）
+     * @param object
+     * @return
+     */
+    public static void getPageInfoAsync(ExtendWebView webView, String object, JsCallback callback) {
+        myApp().getPageInfoAsync(webView.getContext(), object, weiui.MCallback(callback));
+    }
+
+    /**
      * 获取页面传递的参数
      * @param object
      * @return

@@ -43,6 +43,16 @@ public class WeexModule extends WXModule {
     }
 
     /**
+     * 获取页面信息（异步）
+     * @param object
+     * @return
+     */
+    @JSMethod
+    public void getPageInfoAsync(String object, JSCallback callback) {
+        myApp().getPageInfoAsync(mWXSDKInstance.getContext(), object, callback);
+    }
+
+    /**
      * 获取页面传递的参数
      * @param object
      * @return

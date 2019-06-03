@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
@@ -490,6 +491,22 @@ public class weiui {
             return null;
         }
         return weiuiPage.getWinInfo(pageName).toMap();
+    }
+
+    /**
+     * 获取页面信息（异步）
+     * @param context
+     * @param object
+     * @param callback
+     */
+    public void getPageInfoAsync(Context context, String object, JSCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        new Handler().post(() -> {
+            Object info = getPageInfo(context, object);
+            callback.invoke(info);
+        });
     }
 
     /**

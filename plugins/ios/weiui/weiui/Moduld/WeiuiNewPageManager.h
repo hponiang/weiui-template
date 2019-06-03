@@ -21,6 +21,7 @@ static NSMutableDictionary *tabViewDebug;
 - (void)openPage:(NSDictionary*)params callback:(WXModuleKeepAliveCallback)callback;
 
 - (NSDictionary*)getPageInfo:(id)params;
+- (void)getPageInfoAsync:(id)params callback:(WXModuleCallback)callback;
 - (void)reloadPage:(id)params;
 - (void)setSoftInputMode:(id)params modo:(NSString*)modo;
 - (void)setStatusBarStyle:(BOOL)isLight;

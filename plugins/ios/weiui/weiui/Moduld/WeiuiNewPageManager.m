@@ -155,6 +155,16 @@
     return nil;
 }
 
+- (void)getPageInfoAsync:(id)params callback:(WXModuleCallback)callback
+{
+    if (callback == nil) {
+        return;
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        callback([self getPageInfo:params]);
+    });
+}
+
 - (void)reloadPage:(id)params
 {
     NSString *name = @"";
