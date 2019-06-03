@@ -159,6 +159,20 @@ const CGFloat ZYCRippleInitialRaius = 20;
                     }
                 }
             }];
+            [[WeiuiNewPageManager sharedIntstance] setPageStatusListener:@{@"listenerName": @"otherPlugin", @"pageName": vc.pageName} callback:^(id result, BOOL keepAlive) {
+                NSString *status = @"";
+                if ([result isKindOfClass:[NSString class]]) {
+                    status = result;
+                } else if ([result isKindOfClass:[NSDictionary class]]) {
+                    status = result[@"status"];
+                }
+                if ([status isEqualToString:@"pauseBefore"]) {
+                    CALayer *layer = [anim valueForKey:@"rippleLayer"];
+                    if (layer) {
+                        [layer removeFromSuperlayer];
+                    }
+                }
+            }];
         }
         self.rippleBlock();
     }
