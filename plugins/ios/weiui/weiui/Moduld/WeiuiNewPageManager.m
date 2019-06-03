@@ -41,6 +41,22 @@
     return self;
 }
 
+- (NSString *) getPageName:(id)params
+{
+    NSString *name = @"";
+    if (params) {
+        if ([params isKindOfClass:[NSString class]]) {
+            name = params;
+        } else if ([params isKindOfClass:[NSDictionary class]]) {
+            name = [WXConvert NSString:params[@"pageName"]];
+        }
+    }
+    if (name.length == 0) {
+        name = [(WXMainViewController*)[DeviceUtil getTopviewControler] pageName];
+    }
+    return name;
+}
+
 #pragma mark openPage
 - (void)openPage:(NSDictionary*)params callback:(WXModuleKeepAliveCallback)callback
 {
@@ -135,17 +151,7 @@
 
 - (NSDictionary*)getPageInfo:(id)params
 {
-    NSString *name = @"";
-    if (params) {
-        if ([params isKindOfClass:[NSString class]]) {
-            name = params;
-        } else if ([params isKindOfClass:[NSDictionary class]]) {
-            name = [WXConvert NSString:params[@"pageName"]];
-        }
-    } else {
-        name = [(WXMainViewController*)[DeviceUtil getTopviewControler] pageName];
-    }
-    
+    NSString *name = [self getPageName:params];
     if (name.length > 0) {
         NSDictionary *data = self.pageData[name];
         if (data) {
@@ -167,18 +173,8 @@
 
 - (void)reloadPage:(id)params
 {
-    NSString *name = @"";
-    if (params) {
-        if ([params isKindOfClass:[NSString class]]) {
-            name = params;
-        } else if ([params isKindOfClass:[NSDictionary class]]) {
-            name = [WXConvert NSString:params[@"pageName"]];
-        }
-    } else {
-        name = [(WXMainViewController*)[DeviceUtil getTopviewControler] pageName];
-    }
-    
     WXMainViewController *vc = nil;
+    NSString *name = [self getPageName:params];
     if (name.length > 0) {
         id data = self.viewData[name];
         if (data && [data isKindOfClass:[UIViewController class]]) {
@@ -196,17 +192,8 @@
 
 - (void)setSoftInputMode:(id)params modo:(NSString*)modo
 {
-    NSString *name = @"";
-    if (params) {
-        if ([params isKindOfClass:[NSString class]]) {
-            name = params;
-        } else if ([params isKindOfClass:[NSDictionary class]]) {
-            name = [WXConvert NSString:params[@"pageName"]];
-        }
-    } else {
-        name = [(WXMainViewController*)[DeviceUtil getTopviewControler] pageName];
-    }
     WXMainViewController *vc = nil;
+    NSString *name = [self getPageName:params];
     if (name.length > 0) {
         id data = self.viewData[name];
         if (data && [data isKindOfClass:[UIViewController class]]) {
@@ -234,16 +221,7 @@
 
 - (void)setPageBackPressed:(id)params callback:(WXModuleKeepAliveCallback)callback
 {
-    NSString *name = @"";
-    if (params) {
-        if ([params isKindOfClass:[NSString class]]) {
-            name = params;
-        } else if ([params isKindOfClass:[NSDictionary class]]) {
-            name = [WXConvert NSString:params[@"pageName"]];
-        }
-    } else {
-        name = [(WXMainViewController*)[DeviceUtil getTopviewControler] pageName];
-    }
+    NSString *name = [self getPageName:params];
     
     //    if (callback) {
     //        callback(nil, YES);
@@ -252,18 +230,8 @@
 
 - (void)setOnRefreshListener:(id)params callback:(WXModuleKeepAliveCallback)callback
 {
-    NSString *name = @"";
-    if (params) {
-        if ([params isKindOfClass:[NSString class]]) {
-            name = params;
-        } else if ([params isKindOfClass:[NSDictionary class]]) {
-            name = [WXConvert NSString:params[@"pageName"]];
-        }
-    } else {
-        name = [(WXMainViewController*)[DeviceUtil getTopviewControler] pageName];
-    }
-    
     WXMainViewController *vc = nil;
+    NSString *name = [self getPageName:params];
     id data = self.viewData[name];
     if (data && [data isKindOfClass:[WXMainViewController class]]) {
         vc = (WXMainViewController*)data;
@@ -274,18 +242,8 @@
 
 - (void)setRefreshing:(id)params refreshing:(BOOL)refreshing
 {
-    NSString *name = @"";
-    if (params) {
-        if ([params isKindOfClass:[NSString class]]) {
-            name = params;
-        } else if ([params isKindOfClass:[NSDictionary class]]) {
-            name = [WXConvert NSString:params[@"pageName"]];
-        }
-    } else {
-        name = [(WXMainViewController*)[DeviceUtil getTopviewControler] pageName];
-    }
-    
     WXMainViewController *vc = nil;
+    NSString *name = [self getPageName:params];
     id data = self.viewData[name];
     if (data && [data isKindOfClass:[WXMainViewController class]]) {
         vc = (WXMainViewController*)data;
