@@ -71,6 +71,20 @@
     return url;
 }
 
+//url添加js后缀
++ (NSString*)suffixUrl:(NSString*)pageType url:(NSString*)url
+{
+    if ([pageType isEqualToString:@"app"] || [pageType isEqualToString:@"weex"]) {
+        NSArray *array = [url componentsSeparatedByString:@"/"];
+        NSString *lastUrl = [array lastObject];
+        if (!([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"] || [url hasPrefix:@"ftp://"] || [url hasPrefix:@"file://"])
+            && ![lastUrl containsString:@"."]) {
+            url = [NSString stringWithFormat:@"%@.js", url];
+        }
+    }
+    return url;
+}
+
 //重写url
 + (NSString*)rewriteUrl:(NSString*)url
 {
@@ -79,7 +93,7 @@
         return [url stringByReplacingOccurrencesOfString:@"file://file://" withString:@"file://"];
     }
     
-    if (url == nil || [url hasPrefix:@"http"] || [url hasPrefix:@"ftp://"] || [url hasPrefix:@"file://"] || [url hasPrefix:@"data:image/"]) {
+    if (url == nil || [url hasPrefix:@"http://"] || [url hasPrefix:@"https://"] || [url hasPrefix:@"ftp://"] || [url hasPrefix:@"file://"] || [url hasPrefix:@"data:image/"]) {
         NSArray* elts = [url componentsSeparatedByString:@"?"];
         if (elts.count >= 2) {
             NSArray *urls = [elts.lastObject componentsSeparatedByString:@"="];

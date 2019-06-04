@@ -27,6 +27,8 @@
 
 + (NSString*)realUrl:(NSString*)url;
 
++ (NSString*)suffixUrl:(NSString*)pageType url:(NSString*)url;
+
 + (NSString*)rewriteUrl:(NSString*)url;
 
 + (UIImage*)getIconText:(NSString*)text font:(NSInteger)font color:(NSString*)icolor;

@@ -806,7 +806,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
         NSString *tempName = [NSString stringWithFormat: @"%@:%d", tabName, arc4random() % 100000];
         
         WXMainViewController *vc = [[WXMainViewController alloc] init];
-        vc.url = [DeviceUtil rewriteUrl:url];
+        vc.url = [DeviceUtil rewriteUrl:[DeviceUtil suffixUrl:@"app" url:url]];
         vc.cache = cache;
         vc.params = params;
         vc.isChildSubview = YES;
@@ -1161,7 +1161,7 @@ WX_EXPORT_METHOD(@selector(setTabPageAnimated:))
                 id params = dic[@"params"];
                 
                 WXMainViewController *vc = [[WXMainViewController alloc] init];
-                vc.url = [DeviceUtil rewriteUrl:url];
+                vc.url = [DeviceUtil rewriteUrl:[DeviceUtil suffixUrl:@"app" url:url]];
                 vc.cache = cache;
                 vc.params = params;
                 vc.isChildSubview = YES;

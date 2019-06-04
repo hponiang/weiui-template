@@ -227,13 +227,31 @@ public class weiuiPage {
     }
 
     /**
+     * url添加js后缀
+     * @param pageType
+     * @param url
+     * @return
+     */
+    public static String suffixUrl(String pageType, String url) {
+        if (pageType.equals("app") || pageType.equals("weex")) {
+            String[] array = url.split("/");
+            String lastUrl = array.length > 0 ? array[array.length - 1] : url;
+            if (!(url.startsWith("http://") || url.startsWith("https://") || url.startsWith("ftp://") || url.startsWith("file://"))
+                && !lastUrl.contains(".")) {
+                url = url + ".js";
+            }
+        }
+        return url;
+    }
+
+    /**
      * 补全地址
      * @param context
      * @param url
      * @return
      */
     public static String rewriteUrl(Context context, String url) {
-        if (url == null || url.startsWith("http") || url.startsWith("ftp://") || url.startsWith("file://") || url.startsWith("data:image/")) {
+        if (url == null || url.startsWith("http://") || url.startsWith("https://") || url.startsWith("ftp://") || url.startsWith("file://") || url.startsWith("data:image/")) {
             Uri mUri = Uri.parse(url);
             if (TextUtils.equals("http", mUri.getScheme()) || TextUtils.equals("https", mUri.getScheme())) {
                 String weexTpl = mUri.getQueryParameter("_wx_tpl");

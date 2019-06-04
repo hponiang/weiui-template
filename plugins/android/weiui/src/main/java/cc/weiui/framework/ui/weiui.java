@@ -405,9 +405,10 @@ public class weiui {
             return;
         }
         PageBean mBean = new PageBean();
+        String pageType = weiuiJson.getString(json, "pageType", "app");
 
         //网址
-        mBean.setUrl(weiuiPage.rewriteUrl(context, json.getString("url")));
+        mBean.setUrl(weiuiPage.rewriteUrl(context, weiuiPage.suffixUrl(pageType, json.getString("url"))));
         //名称（默认：随机生成）
         if (json.getString("pageName") != null) {
             mBean.setPageName(json.getString("pageName"));
@@ -418,7 +419,7 @@ public class weiui {
         }
         //类型（默认：weex）
         if (json.getString("pageType") != null) {
-            mBean.setPageType(json.getString("pageType"));
+            mBean.setPageType(pageType);
         }
         //缓存（默认：0）
         if (json.getString("cache") != null) {

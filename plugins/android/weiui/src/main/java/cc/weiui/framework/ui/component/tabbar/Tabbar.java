@@ -214,7 +214,7 @@ public class Tabbar extends WXVContainer<ViewGroup> {
                             for (Map.Entry<String, Object> entry : item.entrySet()) {
                                 barBean = TabbarPage.setBarAttr(barBean, entry.getKey(), entry.getValue());
                             }
-                            barBean.setView(weiuiPage.rewriteUrl(getContext(), barBean.getUrl()));
+                            barBean.setView(weiuiPage.rewriteUrl(getContext(), weiuiPage.suffixUrl("app", barBean.getUrl())));
                             addPageView(barBean);
                         }
                     }
