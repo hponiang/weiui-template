@@ -61,7 +61,7 @@ public class InjectedChromeClient extends WebChromeClient {
                     view.loadUrl(value.getPreloadInterfaceJS());
                 }
             }
-            view.loadUrl("javascript:(function(b){console.log('requireModuleJs initialization begin');if(b.__requireModuleJs===true){return}b.__requireModuleJs=true;var a=function(name){var moduleName='__weiui_js_'+name;if(typeof b[moduleName]==='object'&&b[moduleName]!==null){return b[moduleName]}};b.requireModuleJs=a;if(typeof b.weiuiApi==='function'){b.weiuiApi()}else if(typeof weiuiApi==='function'){weiuiApi()}console.log('requireModuleJs initialization end')})(window);");
+            view.loadUrl("javascript:(function(b){console.log('requireModuleJs initialization begin');if(b.__requireModuleJs===true){return}b.__requireModuleJs=true;var a=function(name){var moduleName='__weiui_js_'+name;if(typeof b[moduleName]==='object'&&b[moduleName]!==null){return b[moduleName]}};b.requireModuleJs=a;var apiNum=0;var apiInter=setInterval(function(){if(typeof b.weiuiApi==='function'){b.weiuiApi();apiNum=300}else if(typeof weiuiApi==='function'){weiuiApi();apiNum=300}if(apiNum>=300){clearInterval(apiInter)}apiNum++},100);console.log('requireModuleJs initialization end')})(window);");
             mAgainInjectedJS = true;
         }
         //JS注入结束
