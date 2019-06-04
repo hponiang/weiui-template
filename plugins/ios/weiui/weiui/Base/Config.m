@@ -68,7 +68,7 @@ static NSMutableArray *verifyDir;
 {
     NSString *homePage = [self getString:@"homePage" defaultVal:@""];
     if (homePage.length == 0) {
-        homePage = [NSString stringWithFormat:@"file://%@", [self getResourcePath:@"bundlejs/weiui/index.js"]];
+        homePage = [NSString stringWithFormat:@"file://%@", [self getResourcePath:@"bundlejs/weiui/pages/index.js"]];
     }
     return homePage;
 }

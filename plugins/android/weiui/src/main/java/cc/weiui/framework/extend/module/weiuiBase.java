@@ -122,7 +122,7 @@ public class weiuiBase {
         public static String getHome() {
             String homePage = weiuiJson.getString(get(), "homePage");
             if (homePage.length() == 0) {
-                homePage = "file://assets/weiui/index.js";
+                homePage = "file://assets/weiui/pages/index.js";
             }
             return homePage;
         }

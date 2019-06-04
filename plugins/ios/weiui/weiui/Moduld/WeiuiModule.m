@@ -192,6 +192,8 @@ WX_EXPORT_METHOD(@selector(closePageTo:))
 WX_EXPORT_METHOD(@selector(openWeb:))
 WX_EXPORT_METHOD(@selector(goDesktop))
 WX_EXPORT_METHOD_SYNC(@selector(getConfigString:))
+WX_EXPORT_METHOD_SYNC(@selector(realUrl:))
+WX_EXPORT_METHOD_SYNC(@selector(rewriteUrl:))
 
 - (void)openPage:(NSDictionary*)params callback:(WXModuleKeepAliveCallback)callback
 {
@@ -292,6 +294,16 @@ WX_EXPORT_METHOD_SYNC(@selector(getConfigString:))
 - (NSString*)getConfigString:(NSString*)key
 {
     return [Config getString:key defaultVal:@""];
+}
+
+- (NSString*)realUrl:(NSString*)url
+{
+    return [DeviceUtil realUrl:url];
+}
+
+- (NSString*)rewriteUrl:(NSString*)url
+{
+    return [DeviceUtil rewriteUrl:url];
 }
 
 #pragma mark 打开其他APP

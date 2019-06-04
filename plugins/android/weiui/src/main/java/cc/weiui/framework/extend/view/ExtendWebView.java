@@ -266,6 +266,16 @@ public class ExtendWebView extends WebView {
         }
     }
 
+    @Override
+    public void loadUrl(String url) {
+        if (url.startsWith("file://assets/")) {
+            url = "file:///android_asset/" + url.substring(14);
+        }else if (url.startsWith("file:///assets/")) {
+            url = "file:///android_asset/" + url.substring(15);
+        }
+        super.loadUrl(url);
+    }
+
     /**
      * 【图片上传部分】检查SD卡是否挂载
      * @param context

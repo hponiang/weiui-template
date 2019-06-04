@@ -237,6 +237,16 @@
     return [Config getString:key defaultVal:@""];
 }
 
+- (NSString*)realUrl:(NSString*)url
+{
+    return [DeviceUtil realUrl:url];
+}
+
+- (NSString*)rewriteUrl:(NSString*)url
+{
+    return [DeviceUtil rewriteUrl:url];
+}
+
 #pragma mark 打开其他APP
 
 - (void)openOtherApp:(NSString*)type

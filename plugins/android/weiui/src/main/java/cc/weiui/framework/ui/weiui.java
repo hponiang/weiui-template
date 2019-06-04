@@ -838,6 +838,25 @@ public class weiui {
         return weiuiBase.config.getString(key, "");
     }
 
+    /**
+     * 规范化url
+     * @param url
+     * @return
+     */
+    public String realUrl(String url) {
+        return weiuiPage.realUrl(url);
+    }
+
+    /**
+     * 补全地址
+     * @param context
+     * @param url
+     * @return
+     */
+    public String rewriteUrl(Context context, String url) {
+        return weiuiPage.rewriteUrl(context, url);
+    }
+
     /****************************************************************************************/
     /****************************************************************************************/
 

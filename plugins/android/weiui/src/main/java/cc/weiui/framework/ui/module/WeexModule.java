@@ -220,6 +220,26 @@ public class WeexModule extends WXModule {
         return myApp().getConfigString(key);
     }
 
+    /**
+     * 规范化url，删除所有符号连接（比如'/./', '/../' 以及多余的'/'）
+     * @param url
+     * @return
+     */
+    @JSMethod(uiThread = false)
+    public String realUrl(String url) {
+        return myApp().realUrl(url);
+    }
+
+    /**
+     * 补全地址
+     * @param url
+     * @return
+     */
+    @JSMethod(uiThread = false)
+    public String rewriteUrl(String url) {
+        return myApp().rewriteUrl(mWXSDKInstance.getContext(), url);
+    }
+
     /****************************************************************************************/
     /****************************************************************************************/
 

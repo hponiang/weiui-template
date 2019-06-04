@@ -199,6 +199,26 @@ public class WebModule {
         return myApp().getConfigString(key);
     }
 
+    /**
+     * 规范化url，删除所有符号连接（比如'/./', '/../' 以及多余的'/'）
+     * @param webView
+     * @param url
+     * @return
+     */
+    public String realUrl(ExtendWebView webView, String url) {
+        return myApp().realUrl(url);
+    }
+
+    /**
+     * 补全地址
+     * @param webView
+     * @param url
+     * @return
+     */
+    public String rewriteUrl(ExtendWebView webView, String url) {
+        return myApp().rewriteUrl(webView.getContext(), url);
+    }
+
     /****************************************************************************************/
     /****************************************************************************************/
 
