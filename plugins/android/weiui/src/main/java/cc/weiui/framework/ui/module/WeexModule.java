@@ -485,7 +485,7 @@ public class WeexModule extends WXModule {
      * alert 警告框
      */
     @JSMethod
-    public void alert(String object, JSCallback callback) {
+    public void alert(Object object, JSCallback callback) {
         myApp().alert(mWXSDKInstance.getContext(), object, callback);
     }
 
@@ -493,7 +493,7 @@ public class WeexModule extends WXModule {
      * confirm 确认对话框
      */
     @JSMethod
-    public void confirm(String object, JSCallback callback) {
+    public void confirm(Object object, JSCallback callback) {
         myApp().confirm(mWXSDKInstance.getContext(), object, callback);
     }
 
@@ -501,7 +501,7 @@ public class WeexModule extends WXModule {
      * input 输入对话框
      */
     @JSMethod
-    public void input(String object, JSCallback callback) {
+    public void input(Object object, JSCallback callback) {
         myApp().input(mWXSDKInstance.getContext(), object, callback);
     }
 

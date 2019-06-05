@@ -31,9 +31,11 @@ public class weiuiAlertDialog {
 
 
     public static void alert(Context context, Object object, JSCallback callback) {
-        JSONObject json = weiuiJson.parseObject(object);
-        if (json.size() == 0) {
-            json.put("message", object);
+        JSONObject json = new JSONObject();
+        if (object instanceof JSONObject) {
+            json = (JSONObject) object;
+        }else{
+            json.put("title", object);
         }
         //
         JSONObject newJson = new JSONObject();
@@ -60,9 +62,11 @@ public class weiuiAlertDialog {
     }
 
     public static void confirm(Context context, Object object, JSCallback callback) {
-        JSONObject json = weiuiJson.parseObject(object);
-        if (json.size() == 0) {
-            json.put("message", object);
+        JSONObject json = new JSONObject();
+        if (object instanceof JSONObject) {
+            json = (JSONObject) object;
+        }else{
+            json.put("title", object);
         }
         //
         JSONArray buttons = weiuiJson.parseArray(json.get("buttons"));
@@ -78,9 +82,11 @@ public class weiuiAlertDialog {
     }
 
     public static void input(Context context, Object object, JSCallback callback) {
-        JSONObject json = weiuiJson.parseObject(object);
-        if (json.size() == 0) {
-            json.put("message", object);
+        JSONObject json = new JSONObject();
+        if (object instanceof JSONObject) {
+            json = (JSONObject) object;
+        }else{
+            json.put("title", object);
         }
         //
         JSONArray inputs = weiuiJson.parseArray(json.get("inputs"));
@@ -106,9 +112,11 @@ public class weiuiAlertDialog {
     }
 
     private static void Builder(Context context, Object object, JSCallback callback) {
-        JSONObject json = weiuiJson.parseObject(object);
-        if (json.size() == 0) {
-            json.put("message", object);
+        JSONObject json = new JSONObject();
+        if (object instanceof JSONObject) {
+            json = (JSONObject) object;
+        }else{
+            json.put("title", object);
         }
         //
         String title = weiuiJson.getString(json, "title");

@@ -46,13 +46,13 @@
     NSString *message = @"";
     NSString *button = @"确定";
     BOOL cancelable = YES;
-    if ([params isKindOfClass:[NSString class]]) {
-        title = (NSString*)params;
-    } else if ([params isKindOfClass:[NSDictionary class]]) {
+    if ([params isKindOfClass:[NSDictionary class]]) {
         title = params[@"title"] ? [WXConvert NSString:params[@"title"]] : @"";
         message = params[@"message"] ? [WXConvert NSString:params[@"message"]] : @"";
         button = params[@"button"] ? [WXConvert NSString:params[@"button"]] : @"确定";
         cancelable = params[@"cancelable"] ? [WXConvert BOOL:params[@"cancelable"]] : YES;
+    }else{
+        title = [WXConvert NSString:params];
     }
 
     UIAlertController *alertCtrl = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
@@ -72,13 +72,13 @@
     NSString *message = @"";
     BOOL cancelable = YES;
     NSArray *buttons = @[@"取消", @"确定"];
-    if ([params isKindOfClass:[NSString class]]) {
-        title = (NSString*)params;
-    } else if ([params isKindOfClass:[NSDictionary class]]) {
+    if ([params isKindOfClass:[NSDictionary class]]) {
         title = params[@"title"] ? [WXConvert NSString:params[@"title"]] : @"";
         message = params[@"message"] ? [WXConvert NSString:params[@"message"]] : @"";
         cancelable = params[@"cancelable"] ? [WXConvert BOOL:params[@"cancelable"]] : YES;
         if (params[@"buttons"]) buttons = params[@"buttons"];
+    }else{
+        title = [WXConvert NSString:params];
     }
     
     UIAlertController *alertCtrl = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
@@ -128,11 +128,20 @@
 #pragma mark input
 - (void)input:(NSDictionary*)params callback:(WXModuleKeepAliveCallback)callback
 {
-    NSString *title = params[@"title"] ? [WXConvert NSString:params[@"title"]] : @"";
-    NSString *message = params[@"message"] ? [WXConvert NSString:params[@"message"]] : @"";
-    BOOL cancelable = params[@"cancelable"] ? [WXConvert BOOL:params[@"cancelable"]] : YES;
-    NSArray *buttons = params[@"buttons"] ? params[@"buttons"] : @[@"取消", @"确定"];
-    NSArray *inputs = params[@"inputs"];
+    NSString *title = @"";
+    NSString *message = @"";
+    BOOL cancelable = YES;
+    NSArray *buttons = @[@"取消", @"确定"];
+    NSArray *inputs = @[@{@"type":@"text"}];
+    if ([params isKindOfClass:[NSDictionary class]]) {
+        title = params[@"title"] ? [WXConvert NSString:params[@"title"]] : @"";
+        message = params[@"message"] ? [WXConvert NSString:params[@"message"]] : @"";
+        cancelable = params[@"cancelable"] ? [WXConvert BOOL:params[@"cancelable"]] : YES;
+        if (params[@"buttons"]) buttons = params[@"buttons"];
+        if (params[@"inputs"]) inputs = params[@"inputs"];
+    }else{
+        title = [WXConvert NSString:params];
+    }
     
     UIAlertController *alertCtrl = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
     

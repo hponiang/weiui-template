@@ -1181,21 +1181,21 @@ public class weiui {
     /**
      * alert 警告框
      */
-    public void alert(Context context, String object, JSCallback callback) {
+    public void alert(Context context, Object object, JSCallback callback) {
         weiuiAlertDialog.alert(context, object, callback);
     }
 
     /**
      * confirm 确认对话框
      */
-    public void confirm(Context context, String object, JSCallback callback) {
+    public void confirm(Context context, Object object, JSCallback callback) {
         weiuiAlertDialog.confirm(context, object, callback);
     }
 
     /**
      * input 输入对话框
      */
-    public void input(Context context, String object, JSCallback callback) {
+    public void input(Context context, Object object, JSCallback callback) {
         weiuiAlertDialog.input(context, object, callback);
     }
 

@@ -16,7 +16,7 @@
     <div id="container" style="height:100%"></div>
     <script type="text/javascript">
         let weiui = null;
-        let myChart = echarts.init(document.getElementById("container"));
+        let myChart = null;
 
         function loadOption() {
             let option = null;
@@ -52,10 +52,14 @@
             c.appendChild(b)
         }
 
-        function weiuiApi() {
+        function $ready() {
             weiui = requireModuleJs("weiui");
+            myChart = echarts.init(document.getElementById("container"));
             loadJs("https://api.map.baidu.com/api?v=2.0&ak=" + weiui.getVariate("components::echarts::baidukey"), function () {
                 loadOption();
+                window.onresize = function(){
+                    myChart.resize();
+                }
             });
         }
     </script>

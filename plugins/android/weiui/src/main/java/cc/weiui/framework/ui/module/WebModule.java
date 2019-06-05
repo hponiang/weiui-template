@@ -437,21 +437,21 @@ public class WebModule {
     /**
      * alert 警告框
      */
-    public static void alert(ExtendWebView webView, String object, JsCallback callback) {
+    public static void alert(ExtendWebView webView, Object object, JsCallback callback) {
         myApp().alert(webView.getContext(), object, weiui.MCallback(callback));
     }
 
     /**
      * confirm 确认对话框
      */
-    public static void confirm(ExtendWebView webView, String object, JsCallback callback) {
+    public static void confirm(ExtendWebView webView, Object object, JsCallback callback) {
         myApp().confirm(webView.getContext(), object, weiui.MCallback(callback));
     }
 
     /**
      * input 输入对话框
      */
-    public static void input(ExtendWebView webView, String object, JsCallback callback) {
+    public static void input(ExtendWebView webView, Object object, JsCallback callback) {
         myApp().input(webView.getContext(), object, weiui.MCallback(callback));
     }
 

@@ -117,7 +117,8 @@
     }
     
     id result = [bridge performSelector:sel withObjects:params];
-    if (result == nil || [result isEqual:[NSNull null]] || [result isEqualToString:@"(null)"]) {
+    if (![result isKindOfClass:[NSDictionary class]]
+        && (result == nil || [result isEqual:[NSNull null]] || [result isEqualToString:@"(null)"])) {
         result = @"";
     }
     

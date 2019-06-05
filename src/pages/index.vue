@@ -27,7 +27,20 @@
                 </div>
                 <div class="list-item-right">
                     <text class="list-right-title"><{{item.title_en}}></text>
-                    <icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></icon>
+                    <icon class="list-right-icon"></icon>
+                </div>
+            </div>
+
+            <text class="list-title">自定义组件 UI</text>
+
+            <div class="list-item" v-for="(item, index) in uis" :key="index" @click="openUrl(item.url)">
+                <div class="list-item-left">
+                    <icon class="list-left-icon" :weiui="{content: item.icon}"></icon>
+                    <text class="list-left-title">{{item.title}}</text>
+                </div>
+                <div class="list-item-right">
+                    <text class="list-right-title"><{{item.title_en}}></text>
+                    <icon class="list-right-icon"></icon>
                 </div>
             </div>
 
@@ -40,7 +53,7 @@
                 </div>
                 <div class="list-item-right">
                     <text class="list-right-title">{{item.title_en}}</text>
-                    <icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></icon>
+                    <icon class="list-right-icon"></icon>
                 </div>
             </div>
 
@@ -53,7 +66,7 @@
                 </div>
                 <div class="list-item-right">
                     <text class="list-right-title">{{item.title_en}}</text>
-                    <icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></icon>
+                    <icon class="list-right-icon"></icon>
                 </div>
             </div>
 
@@ -66,7 +79,7 @@
                 </div>
                 <div class="list-item-right">
                     <text class="list-right-title">{{item.title_en}}</text>
-                    <icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></icon>
+                    <icon class="list-right-icon"></icon>
                 </div>
             </div>
 
@@ -81,7 +94,7 @@
                         <text class="list-left-title-history">{{text}}</text>
                     </div>
                     <div class="list-item-right">
-                        <icon class="list-right-icon" :weiui="{content: 'tb-right 70%'}"></icon>
+                        <icon class="list-right-icon"></icon>
                     </div>
                 </div>
             </div>
@@ -193,9 +206,11 @@
     }
 
     .list-right-icon {
+        font-size: 24px;
         width: 40px;
         height: 40px;
         color: #C9C9CE;
+        content: 'tb-right'
     }
 
     .list-item-right {
@@ -219,146 +234,158 @@
                     title: '轮播控件',
                     title_en: 'banner',
                     icon: 'md-easel',
-                    url: jshome + 'component_banner.js',
+                    url: jshome + 'component_banner',
                 }, {
                     title: '常用按钮',
                     title_en: 'button',
                     icon: 'logo-youtube',
-                    url: jshome + 'component_button.js',
+                    url: jshome + 'component_button',
                 }, {
                     title: '网格容器',
                     title_en: 'grid',
                     icon: 'md-grid',
-                    url: jshome + 'component_grid.js',
+                    url: jshome + 'component_grid',
                 }, {
                     title: '字体图标',
                     title_en: 'icon',
                     icon: 'logo-ionic',
-                    url: jshome + 'component_icon.js',
+                    url: jshome + 'component_icon',
                 }, {
                     title: '跑马文字',
                     title_en: 'marquee',
                     icon: 'md-code-working',
-                    url: jshome + 'component_marquee.js',
+                    url: jshome + 'component_marquee',
                 }, {
                     title: '导航栏',
                     title_en: 'navbar',
                     icon: 'md-menu',
-                    url: jshome + 'component_navbar.js',
+                    url: jshome + 'component_navbar',
                 }, {
                     title: '列表容器',
                     title_en: 'scroll-view',
                     icon: 'md-list',
-                    url: jshome + 'component_list.js',
+                    url: jshome + 'component_list',
                 }, {
                     title: '滚动文字',
                     title_en: 'scroll-text',
                     icon: 'ios-more',
-                    url: jshome + 'component_scroll_text.js',
+                    url: jshome + 'component_scroll_text',
                 }, {
                     title: '侧边栏',
                     title_en: 'side-panel',
                     icon: 'md-albums',
-                    url: jshome + 'component_side_panel.js',
+                    url: jshome + 'component_side_panel',
                 }, {
                     title: '标签页面',
                     title_en: 'tabbar',
                     icon: 'md-filing',
-                    url: jshome + 'component_tabbar.js',
+                    url: jshome + 'component_tabbar',
+                }],
+
+                uis: [{
+                    title: 'Echarts图表',
+                    title_en: 'w-echarts',
+                    icon: 'md-trending-up',
+                    url: jshome + 'ui_echarts',
+                },{
+                    title: 'Switch开关',
+                    title_en: 'w-switch',
+                    icon: 'md-switch',
+                    url: jshome + 'ui_switch',
                 }],
 
                 module: [{
                     title: '页面功能',
                     title_en: 'newPage',
                     icon: 'md-book',
-                    url: jshome + 'module_page.js',
+                    url: jshome + 'module_page',
                 }, {
                     title: '系统信息',
                     title_en: 'system',
                     icon: 'ios-cog',
-                    url: jshome + 'module_system.js',
+                    url: jshome + 'module_system',
                 }, {
                     title: '数据缓存',
                     title_en: 'caches',
                     icon: 'md-beaker',
-                    url: jshome + 'module_caches.js',
+                    url: jshome + 'module_caches',
                 }, {
                     title: '确认对话框',
                     title_en: 'alert',
                     icon: 'md-alert',
-                    url: jshome + 'module_alert.js',
+                    url: jshome + 'module_alert',
                 }, {
                     title: '等待弹窗',
                     title_en: 'loading',
                     icon: 'tb-loading',
-                    url: jshome + 'module_loading.js',
+                    url: jshome + 'module_loading',
                 }, {
                     title: '验证弹窗',
                     title_en: 'captcha',
                     icon: 'md-checkmark-circle',
-                    url: jshome + 'module_captcha.js',
+                    url: jshome + 'module_captcha',
                 }, {
                     title: '二维码扫描',
                     title_en: 'scaner',
                     icon: 'tb-scan',
-                    url: jshome + 'module_scaner.js',
+                    url: jshome + 'module_scaner',
                 }, {
                     title: '跨域异步请求',
                     title_en: 'ajax',
                     icon: 'md-git-pull-request',
-                    url: jshome + 'module_ajax.js',
+                    url: jshome + 'module_ajax',
                 }, {
                     title: '剪切板',
                     title_en: 'clipboard',
                     icon: 'md-copy',
-                    url: jshome + 'module_plate.js',
+                    url: jshome + 'module_plate',
                 }, {
                     title: '提示消息',
                     title_en: 'toast',
                     icon: 'md-notifications',
-                    url: jshome + 'module_toast.js',
+                    url: jshome + 'module_toast',
                 }, {
                     title: '广告弹窗',
                     title_en: 'adDialog',
                     icon: 'logo-buffer',
-                    url: jshome + 'module_ad_dialog.js',
+                    url: jshome + 'module_ad_dialog',
                 }],
 
                 plugin: [{
                     title: '城市选择器',
                     title_en: 'citypicker',
                     icon: 'md-pin',
-                    url: jshome + 'plugin_citypicker.js',
+                    url: jshome + 'plugin_citypicker',
                 }, {
                     title: '图片选择器',
                     title_en: 'picture',
                     icon: 'md-camera',
-                    url: jshome + 'plugin_picture.js',
+                    url: jshome + 'plugin_picture',
                 }, {
                     title: '组件截图',
                     title_en: 'screenshots',
                     icon: 'md-crop',
-                    url: jshome + 'plugin_screenshots.js',
+                    url: jshome + 'plugin_screenshots',
                 }, {
                     title: '融云通信模块',
                     title_en: 'rongim',
                     icon: 'tb-community',
-                    url: jshome + 'plugin_rongim.js',
+                    url: jshome + 'plugin_rongim',
                 }, {
                     title: '友盟推送模块',
                     title_en: 'umeng',
                     icon: 'md-send',
-                    url: jshome + 'plugin_umeng.js',
+                    url: jshome + 'plugin_umeng',
                 }, {
                     title: '第三方支付(微信/支付宝)',
                     title_en: 'pay',
                     icon: 'tb-sponsor',
-                    url: jshome + 'plugin_pay.js',
+                    url: jshome + 'plugin_pay',
                 }, {
                     title: '即时通讯',
                     title_en: 'websocket',
                     icon: 'md-repeat',
-                    url: jshome + 'plugin_websocket.js',
+                    url: jshome + 'plugin_websocket',
                 }],
 
                 about_lists: [{
@@ -434,7 +461,7 @@
             openUrl(url) {
                 weiui.openPage({
                     url: url,
-                    pageType: 'weex'
+                    pageType: 'app'
                 });
             },
 

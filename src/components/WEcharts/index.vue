@@ -1,7 +1,7 @@
 <template>
 
     <div class="app">
-        <web-view ref="reflectName" class="webview" @stateChanged="stateChanged"></web-view>
+        <web-view ref="reflectName" class="webview" @ready="webReady" @stateChanged="webState"></web-view>
         <icon v-if="loadIng" class="icon"></icon>
     </div>
 
@@ -9,7 +9,6 @@
 
 <style scoped>
     .app {
-        flex: 1;
         position: relative;
     }
     .webview {
@@ -34,7 +33,7 @@
     const weiui = app.requireModule('weiui');
 
     export default {
-        name: 'Echarts',
+        name: 'WEcharts',
 
         props: {
             baidukey: {
@@ -72,28 +71,30 @@
         mounted() {
             weiui.setVariate("components::echarts::baidukey", this.baidukey);
             weiui.setVariate("components::echarts::option", JSON.stringify(this.options));
-            this.$refs.reflectName.setUrl(weiui.rewriteUrl('../components/echarts/echarts.html'));
         },
 
         watch: {
             options(option) {
-                weiui.setVariate("components::echarts::option", JSON.stringify(option));
-                this.$refs.reflectName.setJavaScript("loadOption();");
+                this.setOptions(option);
             }
         },
 
         methods: {
-            setOptions(option) {
-                weiui.setVariate("components::echarts::option", JSON.stringify(option));
-                this.$refs.reflectName.setJavaScript("loadOption();");
+            webReady() {
+                this.$refs.reflectName.setUrl(weiui.rewriteUrl('../components/WEcharts/echarts.html'));
             },
 
-            stateChanged(data) {
+            webState(data) {
                 if (data.status === 'start') {
                     this.loadIng = true;
                 }else if (data.status === 'success' || data.status === 'error') {
                     this.loadIng = false;
                 }
+            },
+
+            setOptions(option) {
+                weiui.setVariate("components::echarts::option", JSON.stringify(option));
+                this.$refs.reflectName.setJavaScript("if (typeof loadOption == 'function') { loadOption() }");
             }
         }
     }
