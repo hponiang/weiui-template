@@ -184,7 +184,7 @@
     if (!webView) {
         return;
     }
-    NSString *javaScript = @";(function(b){console.log('requireModuleJs initialization begin');if(b.__requireModuleJs===true){return}b.__requireModuleJs=true;var a=function(name){var moduleName='__weiui_js_'+name;if(typeof b[moduleName]==='object'&&b[moduleName]!==null){return b[moduleName]}};b.requireModuleJs=a;var apiNum=0;var apiInter=setInterval(function(){if(typeof b.weiuiApi==='function'){b.weiuiApi();apiNum=300}else if(typeof weiuiApi==='function'){weiuiApi();apiNum=300}if(apiNum>=300){clearInterval(apiInter)}apiNum++},100);console.log('requireModuleJs initialization end')})(window);";
+    NSString *javaScript = @";(function(b){console.log('requireModuleJs initialization begin');if(b.__requireModuleJs===true){return}b.__requireModuleJs=true;var a=function(name){var moduleName='__weiui_js_'+name;if(typeof b[moduleName]==='object'&&b[moduleName]!==null){return b[moduleName]}};b.requireModuleJs=a;var apiNum=0;var apiInter=setInterval(function(){if(typeof b.$ready==='function'){b.$ready();apiNum=300}else if(typeof $ready==='function'){$ready();apiNum=300}if(apiNum>=300){clearInterval(apiInter)}apiNum++},100);console.log('requireModuleJs initialization end')})(window);";
     [webView evaluateJavaScript:javaScript completionHandler:nil];
 }
 
