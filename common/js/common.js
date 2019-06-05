@@ -4,7 +4,7 @@ let weiui = app.requireModule('weiui');
 
 let common = {
 
-    jshome: 'https://weiui.app/dist/0.4.8/',
+    jshome: 'https://weiui.app/dist/0.4.8/pages/',
 
     openViewCode(str) {
         common.openViewUrl("https://weiui.app/" + str + ".html");
